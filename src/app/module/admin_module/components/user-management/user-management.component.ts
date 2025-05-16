@@ -61,7 +61,7 @@ interface ExportColumn {
     CheckboxModule,
     ReactiveFormsModule
   ],
-  providers: [CustomerService, ProductService, ConfirmationService, MessageService],
+  providers: [CustomerService, ConfirmationService, MessageService],
   templateUrl: './user-management.component.html',
   styleUrl: './user-management.component.scss'
 })
@@ -87,7 +87,6 @@ export class UserManagementComponent {
   constructor(
     private userService: UserService,
     private confirmationService: ConfirmationService,
-    private productService: ProductService,
     private fb: FormBuilder,
     private toast: ToastrService,
   ) {

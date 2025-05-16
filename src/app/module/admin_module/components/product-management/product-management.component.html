@@ -2,18 +2,18 @@
     <ng-template #start>
         <p-button label="New" icon="pi pi-plus" severity="secondary" class="mr-2" (onClick)="openNew()" />
         <p-button severity="secondary" label="Delete" icon="pi pi-trash" outlined (onClick)="deleteSelectedProducts()"
-            [disabled]="!selectedProducts || !selectedProducts.length" />
+            [disabled]="!selectedUser || !selectedUser.length" />
     </ng-template>
 
-    <ng-template #end>
+    <!-- <ng-template #end>
         <p-button label="Export" icon="pi pi-upload" severity="secondary" (onClick)="exportCSV()" />
-    </ng-template>
+    </ng-template> -->
 </p-toolbar>
 
-<p-table #dt [value]="products()" [rows]="10" [columns]="cols" [paginator]="true"
-    [globalFilterFields]="['name', 'country.name', 'representative.name', 'status']"
-    [tableStyle]="{ 'min-width': '75rem' }" [(selection)]="selectedProducts" [rowHover]="true" dataKey="id"
-    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products" [showCurrentPageReport]="true"
+<p-table #dt [value]="productData" [rows]="10" [columns]="cols" [paginator]="true" dataKey="_id"
+    [globalFilterFields]="['name', 'email', 'phoneNumber', 'role']" [tableStyle]="{ 'min-width': '75rem' }"
+    [(selection)]="selectedUser" [rowHover]="true"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Users" [showCurrentPageReport]="true"
     [rowsPerPageOptions]="[10, 20, 30]">
     <ng-template #caption>
         <div class="flex items-center justify-between">
@@ -29,118 +29,127 @@
             <th style="width: 3rem">
                 <p-tableHeaderCheckbox />
             </th>
-            <th style="min-width: 16rem">Code</th>
-            <th pSortableColumn="name" style="min-width:16rem">
-                Name
-                <p-sortIcon field="name" />
-            </th>
-            <th>Image</th>
-            <th pSortableColumn="price" style="min-width: 8rem">
-                Price
-                <p-sortIcon field="price" />
-            </th>
-            <th pSortableColumn="category" style="min-width:10rem">
+            <th pSortableColumn="category" style="min-width:16rem">
                 Category
                 <p-sortIcon field="category" />
             </th>
-            <th pSortableColumn="rating" style="min-width: 12rem">
-                Reviews
-                <p-sortIcon field="rating" />
+            <th pSortableColumn="productName" style="min-width: 8rem">Product Name <p-sortIcon field="productName" />
             </th>
-            <th pSortableColumn="inventoryStatus" style="min-width: 12rem">
-                Status
-                <p-sortIcon field="inventoryStatus" />
+            <th pSortableColumn="productDescription" style="min-width: 8rem">
+                Product Description
+                <p-sortIcon field="productDescription" />
             </th>
-            <th style="min-width: 12rem"></th>
+            <th pSortableColumn="gender" style="min-width:10rem">
+                Gender
+                <p-sortIcon field="gender" />
+            </th>
+            <th pSortableColumn="images" style="min-width: 12rem">
+                Images
+                <p-sortIcon field="images" />
+            </th>
+            <th pSortableColumn="gallery" style="min-width: 12rem">
+                Gallery
+                <p-sortIcon field="gallery" />
+            </th>
+            <th pSortableColumn="price" style="min-width: 12rem">
+                Price
+                <p-sortIcon field="price" />
+            </th>
+            <th pSortableColumn="sizes" style="min-width: 12rem">
+                Sizes
+                <p-sortIcon field="sizes" />
+            </th>
+            <th pSortableColumn="stock" style="min-width: 12rem">
+                Stock
+                <p-sortIcon field="stock" />
+            </th>
+            <th pSortableColumn="tags" style="min-width: 12rem">
+                Tags
+                <p-sortIcon field="tags" />
+            </th>
+            <th style="min-width: 12rem">Action</th>
         </tr>
     </ng-template>
-    <ng-template #body let-product>
+    <ng-template #body let-user>
         <tr>
             <td style="width: 3rem">
-                <p-tableCheckbox [value]="product" />
+                <p-tableCheckbox [value]="user" />
             </td>
-            <td style="min-width: 12rem">{{ product.code }}</td>
-            <td style="min-width: 16rem">{{ product.name }}</td>
-            <td>
-                <img [src]="'https://primefaces.org/cdn/primeng/images/demo/product/' + product.image"
-                    [alt]="product.name" style="width: 64px" class="rounded" />
-            </td>
-            <td>{{ product.price | currency: 'USD' }}</td>
-            <td>{{ product.category }}</td>
-            <td>
-                <p-rating [(ngModel)]="product.rating" [readonly]="true" />
-            </td>
-            <td>
-                <p-tag [value]="product.inventoryStatus" [severity]="getSeverity(product.inventoryStatus)" />
-            </td>
+            <td style="min-width: 12rem">{{ user.category }}</td>
+            <td style="min-width: 16rem">{{ user.productName }}</td>
+            <td class="wraptext">{{ user.productDescription }}</td>
+
+            <td>{{ user.gender }}</td>
+            <td>{{ user.images }}</td>
+            <td>{{ user.gallery }}</td>
+            <td>{{ user.price }}</td>
+            <td>{{ user.sizes }}</td>
+            <td>{{ user.stock }}</td>
+            <td>{{ user.tags }}</td>
+
             <td>
                 <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true"
-                    (click)="editProduct(product)" />
+                    (click)="editUser(user,'Edit')" />
                 <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true"
-                    (click)="deleteProduct(product)" />
+                    (click)="deleteProduct(user)" />
             </td>
         </tr>
     </ng-template>
 </p-table>
 
-<p-dialog [(visible)]="productDialog" [style]="{ width: '450px' }" header="Product Details" [modal]="true">
+<p-dialog [(visible)]="userDialog" class="userModel" header="Products Details" [modal]="true">
     <ng-template #content>
-        <div class="flex flex-col gap-6">
-            <img [src]="'https://primefaces.org/cdn/primeng/images/demo/product/' + product.image" [alt]="product.image"
-                class="block m-auto pb-4" *ngIf="product.image" />
-            <div>
-                <label for="name" class="block font-bold mb-3">Name</label>
-                <input type="text" pInputText id="name" [(ngModel)]="product.name" required autofocus fluid />
-                <small class="text-red-500" *ngIf="submitted && !product.name">Name is required.</small>
-            </div>
-            <div>
-                <label for="description" class="block font-bold mb-3">Description</label>
-                <textarea id="description" pTextarea [(ngModel)]="product.description" required rows="3" cols="20"
-                    fluid></textarea>
-            </div>
+        <form [formGroup]="userForm">
+            <div class="grid grid-cols-3 gap-4">
 
-            <div>
-                <label for="inventoryStatus" class="block font-bold mb-3">Inventory Status</label>
-                <p-select [(ngModel)]="product.inventoryStatus" inputId="inventoryStatus" [options]="statuses"
-                    optionLabel="label" optionValue="label" placeholder="Select a Status" fluid />
-            </div>
-
-            <div>
-                <span class="block font-bold mb-4">Category</span>
-                <div class="grid grid-cols-12 gap-4">
-                    <div class="flex items-center gap-2 col-span-6">
-                        <p-radiobutton id="category1" name="category" value="Accessories"
-                            [(ngModel)]="product.category" />
-                        <label for="category1">Accessories</label>
-                    </div>
-                    <div class="flex items-center gap-2 col-span-6">
-                        <p-radiobutton id="category2" name="category" value="Clothing" [(ngModel)]="product.category" />
-                        <label for="category2">Clothing</label>
-                    </div>
-                    <div class="flex items-center gap-2 col-span-6">
-                        <p-radiobutton id="category3" name="category" value="Electronics"
-                            [(ngModel)]="product.category" />
-                        <label for="category3">Electronics</label>
-                    </div>
-                    <div class="flex items-center gap-2 col-span-6">
-                        <p-radiobutton id="category4" name="category" value="Fitness" [(ngModel)]="product.category" />
-                        <label for="category4">Fitness</label>
-                    </div>
+                <div>
+                    <label for="role" class="block font-bold mb-3">Role</label>
+                    <p-select inputId="role" formControlName="role" [options]="rolePeremission" optionLabel="label"
+                        optionValue="value" placeholder="Select a Role" fluid />
+                    <small class="text-red-500"
+                        *ngIf="userForm.get('role')?.invalid && userForm.get('role')?.touched">Role is required.</small>
+                </div>
+                <div>
+                    <label for="name" class="block font-bold mb-3">Name</label>
+                    <input type="text" formControlName="name" pInputText id="name" required autofocus fluid />
+                    <small class="text-red-500"
+                        *ngIf="userForm.get('name')?.invalid && userForm.get('name')?.touched">Role is required.</small>
+                </div>
+                <div>
+                    <label for="name" class="block font-bold mb-3">Phone Number</label>
+                    <input type="number" formControlName="phoneNumber" pInputText id="name" required autofocus fluid />
+                    <small class="text-red-500"
+                        *ngIf="userForm.get('phoneNumber')?.invalid && userForm.get('phoneNumber')?.touched">Role is
+                        required.</small>
+                </div>
+                <div>
+                    <label for="email" class="block font-bold mb-3">Email</label>
+                    <input type="email" formControlName="email" pInputText id="name" required autofocus fluid />
+                    <small class="text-red-500"
+                        *ngIf="userForm.get('email')?.invalid && userForm.get('email')?.touched">Role is
+                        required.</small>
+                </div>
+                <div>
+                    <label for="password" class="block font-bold mb-3">Password</label>
+                    <input type="text" formControlName="password" pInputText id="password" required autofocus fluid />
+                    <small class="text-red-500"
+                        *ngIf="userForm.get('password')?.invalid && userForm.get('password')?.touched">Role is
+                        required.</small>
+                </div>
+                <div>
+                    <label for="dateOfBirth" class="block font-bold mb-3">Date of Birth</label>
+                    <p-datepicker formControlName="dateOfBirth" class="userDOB" [showIcon]="true" [showButtonBar]="true"
+                        dateFormat="dd/mm/yy"></p-datepicker>
+                    <small class="text-red-500"
+                        *ngIf="userForm.get('dateOfBirth')?.invalid && userForm.get('dateOfBirth')?.touched">Role is
+                        required.</small>
+                </div>
+                <div class="flex items-center">
+                    <p-checkbox formControlName="isBlocked" inputId="checkOption1" binary="true" />
+                    <label for="checkOption1" class="ml-2">Is Blocked</label>
                 </div>
             </div>
-
-            <div class="grid grid-cols-12 gap-4">
-                <div class="col-span-6">
-                    <label for="price" class="block font-bold mb-3">Price</label>
-                    <p-inputnumber id="price" [(ngModel)]="product.price" mode="currency" currency="USD" locale="en-US"
-                        fluid />
-                </div>
-                <div class="col-span-6">
-                    <label for="quantity" class="block font-bold mb-3">Quantity</label>
-                    <p-inputnumber id="quantity" [(ngModel)]="product.quantity" fluid />
-                </div>
-            </div>
-        </div>
+        </form>
     </ng-template>
 
     <ng-template #footer>
