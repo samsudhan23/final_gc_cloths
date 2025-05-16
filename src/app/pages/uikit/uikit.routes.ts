@@ -15,9 +15,11 @@ import { OverlayDemo } from './overlaydemo';
 import { TreeDemo } from './treedemo';
 import { MenuDemo } from './menudemo';
 import { UserManagementComponent } from '../../module/admin_module/components/user-management/user-management.component';
+import { ProductManagementComponent } from '../../module/admin_module/components/product-management/product-management.component';
 
 export default [
     { path: 'user', data: { breadcrumb: 'Form Layout' }, component: UserManagementComponent },
+    { path: 'products', component: ProductManagementComponent },
     { path: 'button', data: { breadcrumb: 'Button' }, component: ButtonDemo },
     { path: 'charts', data: { breadcrumb: 'Charts' }, component: ChartDemo },
     { path: 'file', data: { breadcrumb: 'File' }, component: FileDemo },
