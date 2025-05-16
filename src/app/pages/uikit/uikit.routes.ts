@@ -14,7 +14,7 @@ import { TableDemo } from './tabledemo';
 import { OverlayDemo } from './overlaydemo';
 import { TreeDemo } from './treedemo';
 import { MenuDemo } from './menudemo';
-import { UserManagementComponent } from '../module/admin_module/user-management/user-management.component';
+import { UserManagementComponent } from '../../module/admin_module/user-management/user-management.component';
 
 export default [
     { path: 'user', data: { breadcrumb: 'Form Layout' }, component: UserManagementComponent },
