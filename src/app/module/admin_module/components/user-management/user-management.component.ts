@@ -1,148 +1,223 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { IconFieldModule } from 'primeng/iconfield';
-import { MultiSelectModule } from 'primeng/multiselect';
-import { ProgressBarModule } from 'primeng/progressbar';
 import { SelectModule } from 'primeng/select';
-import { SliderModule } from 'primeng/slider';
 import { Table, TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { InputIconModule } from 'primeng/inputicon';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { RatingModule } from 'primeng/rating';
+import { DatePickerModule } from 'primeng/datepicker';
 import { RippleModule } from 'primeng/ripple';
 import { ToastModule } from 'primeng/toast';
-import { ToggleButtonModule } from 'primeng/togglebutton';
-import { CustomerService, Customer, Representative } from '../../../pages/service/customer.service';
-import { ProductService, Product } from '../../../pages/service/product.service';
-import { UserService } from '../../../pages/service/user/user.service';
+import { CustomerService } from '../../../../pages/service/customer.service';
+import { ProductService } from '../../../../pages/service/product.service';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { DialogModule } from 'primeng/dialog';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { RadioButtonModule } from 'primeng/radiobutton';
+import { TextareaModule } from 'primeng/textarea';
+import { ToolbarModule } from 'primeng/toolbar';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { CheckboxModule } from 'primeng/checkbox';
+import { UserService } from '../../service/user/user.service';
+import { ToastrService } from 'ngx-toastr';
+
+interface Column {
+  field: string;
+  header: string;
+  customExportHeader?: string;
+}
+
+interface ExportColumn {
+  title: string;
+  dataKey: string;
+}
 
 @Component({
   selector: 'app-user-management',
   imports: [
-    TableModule,
-    MultiSelectModule,
-    SelectModule,
-    InputIconModule,
-    TagModule,
-    InputTextModule,
-    SliderModule,
-    ProgressBarModule,
-    ToggleButtonModule,
-    ToastModule,
     CommonModule,
+    TableModule,
     FormsModule,
     ButtonModule,
-    RatingModule,
     RippleModule,
-    IconFieldModule
+    ToastModule,
+    ToolbarModule,
+    RatingModule,
+    InputTextModule,
+    TextareaModule,
+    SelectModule,
+    RadioButtonModule,
+    InputNumberModule,
+    DialogModule,
+    TagModule,
+    InputIconModule,
+    IconFieldModule,
+    ConfirmDialogModule,
+    DatePickerModule,
+    CheckboxModule,
+    ReactiveFormsModule
   ],
-  providers: [CustomerService, ProductService],
+  providers: [CustomerService, ProductService, ConfirmationService, MessageService],
   templateUrl: './user-management.component.html',
   styleUrl: './user-management.component.scss'
 })
 export class UserManagementComponent {
-  customers1: Customer[] = [];
-  loading: boolean = true;
-  @ViewChild('filter') filter!: ElementRef;
-  representatives: Representative[] = [];
-  statuses: any[] = [];
-  activityValues: number[] = [0, 100];
-  products: Product[] = [];
-
+  @ViewChild('dt') dt!: Table;
+  userDialog: boolean = false;
+  selectedUser!: any | null;
+  usersList: any[] = [];
+  exportColumns!: ExportColumn[];
+  mode: 'add' | 'edit' | 'view' = 'add';
+  currentUserId: string | null = null;
+  rolePeremission: any[] = [
+    { label: 'Admin', value: 'admin' },
+    { label: 'User', value: 'user' },
+  ];
+  cols: Column[] = [
+    { field: 'Name', header: 'name' },
+    { field: 'Email', header: 'email' },
+    { field: 'Phone', header: 'phoneNumber' },
+    { field: 'Role', header: 'role' }
+  ];
+  userForm: FormGroup;
   constructor(
-    private customerService: CustomerService,
+    private userService: UserService,
+    private confirmationService: ConfirmationService,
     private productService: ProductService,
-    private userService: UserService
+    private fb: FormBuilder,
+    private toast: ToastrService,
   ) {
-    console.log(this.products, 'products');
+    this.userForm = this.fb.group({
+      name: ['', Validators.required],
+      phoneNumber: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', Validators.required],
+      dateOfBirth: [null, Validators.required],
+      role: ['user', Validators.required],
+      isBlocked: [false]
+    });
   }
 
   ngOnInit() {
     this.loadUsers()
-    this.customerService.getCustomersLarge().then((customers) => {
-      this.customers1 = customers;
-      this.loading = false;
-
-      // @ts-ignore
-      this.customers1.forEach((customer) => (customer.date = new Date(customer.date)));
-    });
-    this.productService.getProductsWithOrdersSmall().then((data) => (this.products = data));
-
-    // this.representatives = [
-    //   { name: 'Amy Elsner', image: 'amyelsner.png' },
-    //   { name: 'Anna Fali', image: 'annafali.png' },
-    //   { name: 'Asiya Javayant', image: 'asiyajavayant.png' },
-    //   { name: 'Bernardo Dominic', image: 'bernardodominic.png' },
-    //   { name: 'Elwin Sharvill', image: 'elwinsharvill.png' },
-    //   { name: 'Ioni Bowcher', image: 'ionibowcher.png' },
-    //   { name: 'Ivan Magalhaes', image: 'ivanmagalhaes.png' },
-    //   { name: 'Onyama Limba', image: 'onyamalimba.png' },
-    //   { name: 'Stephen Shaw', image: 'stephenshaw.png' },
-    //   { name: 'XuXue Feng', image: 'xuxuefeng.png' }
-    // ];
-
-    this.statuses = [
-      { label: 'Unqualified', value: 'unqualified' },
-      { label: 'Qualified', value: 'qualified' },
-      { label: 'New', value: 'new' },
-      { label: 'Negotiation', value: 'negotiation' },
-      { label: 'Renewal', value: 'renewal' },
-      { label: 'Proposal', value: 'proposal' }
-    ];
-  }
-
-  clear(table: Table) {
-    table.clear();
-    this.filter.nativeElement.value = '';
-  }
-
-  onGlobalFilter(table: Table, event: Event) {
-    table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
-  }
-
-  getSeverity(status: string) {
-    switch (status) {
-      case 'qualified':
-      case 'instock':
-      case 'INSTOCK':
-      case 'DELIVERED':
-      case 'delivered':
-        return 'success';
-
-      case 'negotiation':
-      case 'lowstock':
-      case 'LOWSTOCK':
-      case 'PENDING':
-      case 'pending':
-        return 'warn';
-
-      case 'unqualified':
-      case 'outofstock':
-      case 'OUTOFSTOCK':
-      case 'CANCELLED':
-      case 'cancelled':
-        return 'danger';
-
-      default:
-        return 'info';
-    }
+    this.exportColumns = this.cols.map((col) => ({ title: col.header, dataKey: col.field }));
   }
 
   // User Module
-  usersList: any[] = [];
-
   loadUsers(): void {
     this.userService.getUsers().subscribe((res: any) => {
       this.usersList = res.result;
-      console.log('this.usersList: ', this.usersList);
-      this.representatives = this.usersList
-    }, (error) => {
+    }, (error: any) => {
       console.log('error: ', error);
 
     })
   }
 
+  onGlobalFilter(table: Table, event: Event) {
+    table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
+  }
+  openNew() {
+    this.userDialog = true;
+    this.mode = 'add'
+    this.userForm.get('role')?.setValue('user')
+  }
+
+  deleteSelectedProducts() {
+    this.confirmationService.confirm({
+      message: 'Are you sure you want to delete the selected User?',
+      header: 'Confirm',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.userService.deleteUser(this.selectedUser[0]._id).subscribe((res: any) => {
+          if (res.code === 200 && res.success === true) {
+            this.toast.success(res.message);
+            this.loadUsers()
+          }
+        });
+      }
+    });
+  }
+
+  exportCSV() {
+    this.dt.exportCSV();
+  }
+
+  deleteProduct(user: any) {
+    this.confirmationService.confirm({
+      message: 'Are you sure you want to delete ' + user.name + '?',
+      header: 'Confirm',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.userService.deleteUser(user._id).subscribe((res: any) => {
+          if (res.code === 200 && res.success === true) {
+            this.toast.success(res.message);
+            this.loadUsers()
+          }
+        });
+      }
+    });
+  }
+
+  hideDialog() {
+    this.userDialog = false;
+    this.userForm.reset();
+  }
+
+
+  editUser(event: any, type: string) {
+    const editTableDatas = event
+    this.userDialog = true;
+
+    switch (type) {
+      case "Edit":
+        this.mode = 'edit';
+        this.currentUserId = editTableDatas._id;
+        this.userForm.patchValue(editTableDatas);
+        this.userForm.patchValue({
+          dateOfBirth: new Date(editTableDatas.dateOfBirth)
+        });
+        this.userForm.get('password')?.setValue('');
+        this.userForm.enable();
+        break;
+      case "View":
+        this.mode = 'view';
+        this.userForm.patchValue(editTableDatas);
+        this.userForm.patchValue({
+          dateOfBirth: new Date(editTableDatas.dateOfBirth)
+        });
+        this.userForm.disable();
+        break;
+    }
+
+  }
+  saveProduct() {
+    if (this.userForm.invalid) {
+      this.userForm.markAllAsTouched();
+    }
+    if (this.userForm.valid) {
+      const user = this.userForm.value;
+
+      if (this.mode === 'add') {
+        this.userService.addUser(user).subscribe((res: any) => {
+          if (res.code === 200 && res.success === true) {
+            this.toast.success(res.message);
+            this.loadUsers();
+            this.hideDialog();
+          }
+        });
+      } else if (this.mode === 'edit' && this.currentUserId) {
+        this.userService.updateUser(this.currentUserId, user).subscribe((res: any) => {
+          if (res.code === 200 && res.success === true) {
+            this.toast.success(res.message);
+            this.loadUsers();
+            this.hideDialog();
+          }
+        });
+      }
+    }
+  }
 }
