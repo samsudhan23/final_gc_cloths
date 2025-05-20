@@ -26,6 +26,10 @@ import { UserService } from '../../service/user/user.service';
 import { ToastrService } from 'ngx-toastr';
 import { CategoryService } from '../../service/category/category.service';
 import { AdminProductService } from '../../service/productService/admin-product.service';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
+// import { FileUpload } from 'primeng/fileupload';
 
 interface Column {
   field: string;
@@ -62,7 +66,11 @@ interface ExportColumn {
     ConfirmDialogModule,
     DatePickerModule,
     CheckboxModule,
-    ReactiveFormsModule
+    MultiSelectModule,
+    InputGroupModule,
+    ReactiveFormsModule,
+    // FileUpload,
+    InputGroupAddonModule
   ],
   providers: [CustomerService, ConfirmationService, CategoryService, MessageService, AdminProductService],
   templateUrl: './product-management.component.html',
@@ -70,12 +78,12 @@ interface ExportColumn {
 })
 export class ProductManagementComponent {
   @ViewChild('dt') dt!: Table;
-  userDialog: boolean = false;
+  formDialog: boolean = false;
   selectedUser!: any | null;
   usersList: any[] = [];
   exportColumns!: ExportColumn[];
   mode: 'add' | 'edit' | 'view' = 'add';
-  currentUserId: string | null = null;
+  currentId: string | null = null;
   rolePeremission: any[] = [
     { label: 'Admin', value: 'admin' },
     { label: 'User', value: 'user' },
@@ -86,8 +94,17 @@ export class ProductManagementComponent {
     { field: 'Phone', header: 'phoneNumber' },
     { field: 'Role', header: 'role' }
   ];
+  dressSizesWithMeasurements = [
+    { id: 1, label: 'XS', bust: '30-32', waist: '22-24', hips: '32-34' },
+    { id: 2, label: 'S', bust: '32-34', waist: '25-26', hips: '35-36' },
+    { id: 3, label: 'M', bust: '35-36', waist: '27-28', hips: '37-38' },
+    { id: 4, label: 'L', bust: '37-39', waist: '29-31', hips: '39-41' },
+    { id: 5, label: 'XL', bust: '40-42', waist: '32-34', hips: '42-44' },
+    { id: 6, label: 'XXL', bust: '43-45', waist: '35-37', hips: '45-47' },
+    { id: 7, label: '3XL', bust: '46-48', waist: '38-40', hips: '48-50' }
+  ];
   userForm: FormGroup;
-productForm: FormGroup;
+  productForm: FormGroup;
   productData: any = [];
   categoryList: any[] = [];
   genderList: any[] = [];
@@ -110,14 +127,14 @@ productForm: FormGroup;
     });
 
     this.productForm = this.fb.group({
-      productName: ['batman', Validators.required],
-      productDescription: ['asdas', Validators.required],
-      gender: [0, [Validators.required]],
-      price: ['100', Validators.required],
+      productName: ['', Validators.required],
+      productDescription: ['', Validators.required],
+      gender: ['', [Validators.required]],
+      price: ['', Validators.required],
       discountPrice: [''],
-      sizes: ['0', Validators.required],
-      stock: ['500', Validators.required],
-      tags: ['BATMAN'],
+      sizes: [0, Validators.required],
+      stock: ['', Validators.required],
+      tags: [''],
       category: [0, Validators.required],
     });
   }
@@ -135,7 +152,6 @@ productForm: FormGroup;
     this.category.getCategoriesMasterList().subscribe((res: any) => {
       if (res.code === 200 && res.success === true) {
         this.categoryList = res.result
-        console.log('this.categoryList : ', this.categoryList);
       }
     })
   }
@@ -198,61 +214,11 @@ productForm: FormGroup;
     this.productForm.get('sizes')?.setValue(this.selectedSizes);
   }
 
-  onSubmit(): void {
-    console.log(this.productForm.value);
-    const sizes = ['S', 'M', 'L'];
-    const formData = new FormData();
-    const FormControlValues = this.productForm.value;
-
-    formData.append('productName', FormControlValues.productName);
-    formData.append('productDescription', FormControlValues.productDescription);
-    formData.append('gender', FormControlValues.gender);
-    formData.append('price', FormControlValues.price);
-    formData.append('discountPrice', FormControlValues.discountPrice);
-    sizes.forEach((val) => {
-      formData.append('sizes[]', val)
-    })
-    // formData.append('sizes', FormControlValues.sizes);
-    formData.append('stock', FormControlValues.stock);
-    formData.append('tags', FormControlValues.tags);
-    formData.append('category', FormControlValues.category);
-    if (this.imageFile) {
-      formData.append('images', this.imageFile);
-    }
-
-    this.galleryFiles.forEach(file => {
-      formData.append('gallery', file);
-    });
-    formData.forEach((value, key) => {
-      console.log(key, value);
-    })
-
-    this.product.saveProducts(formData).subscribe((res: any) => {
-      console.log('res: ', res);
-      if (res.code === 200 || res.success === true) {
-        this.toast.success(res.message);
-        this.productList();
-      }
-    }, (error) => {
-      if (error.error.message) {
-        const errMsg = error.error.message;
-        if (Array.isArray(errMsg)) {
-          // Multiple validation messages
-          errMsg.forEach((msg: string) => {
-            this.toast.error(msg);
-          });
-        } else {
-          this.toast.error(errMsg);
-        }
-      }
-    })
-  }
-
   onGlobalFilter(table: Table, event: Event) {
     table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
   }
   openNew() {
-    this.userDialog = true;
+    this.formDialog = true;
     this.mode = 'add'
   }
 
@@ -293,61 +259,123 @@ productForm: FormGroup;
   }
 
   hideDialog() {
-    this.userDialog = false;
-    this.userForm.reset();
+    this.formDialog = false;
+    this.productForm.reset();
+    this.productForm.enable();
   }
 
-
-  editUser(event: any, type: string) {
+  onDialogHide() {
+    if (this.productForm) {
+      this.productForm.reset(); // Reset when dialog is closed using header 'X'
+    }
+  }
+  urlToFile(url: string, filename: string): Promise<File> {
+  return fetch(url)
+    .then(res => res.blob())
+    .then(blob => new File([blob], filename, { type: blob.type }));
+}
+  async editProducts(event: any, type: string) {
     const editTableDatas = event
-    this.userDialog = true;
-
+    this.formDialog = true;
     switch (type) {
       case "Edit":
         this.mode = 'edit';
-        this.currentUserId = editTableDatas._id;
-        this.userForm.patchValue(editTableDatas);
-        this.userForm.patchValue({
-          dateOfBirth: new Date(editTableDatas.dateOfBirth)
+        this.currentId = editTableDatas._id;
+        console.log('editTableDatas: ', editTableDatas);
+        this.productForm.patchValue(editTableDatas);
+        this.productForm.patchValue({
+          gender: editTableDatas.gender._id,
+          category: editTableDatas.category._id
         });
-        this.userForm.get('password')?.setValue('');
-        this.userForm.enable();
+        this.fileInfo = editTableDatas.images;  
+        this.imageFile = await this.urlToFile(editTableDatas.images, 'oldImage.jpg');      
+        this.galleryFiles = [await this.urlToFile(editTableDatas.gallery, 'oldImage.jpg')];  
+        console.log(this.productForm.value);
+        this.productForm.enable();
         break;
       case "View":
         this.mode = 'view';
-        this.userForm.patchValue(editTableDatas);
-        this.userForm.patchValue({
-          dateOfBirth: new Date(editTableDatas.dateOfBirth)
+        this.productForm.patchValue(editTableDatas);
+        this.productForm.patchValue({
+          gender: editTableDatas.gender._id,
+          category: editTableDatas.category._id
         });
-        this.userForm.disable();
+        this.productForm.disable();
         break;
     }
 
   }
-  saveProduct() {
-    if (this.userForm.invalid) {
-      this.userForm.markAllAsTouched();
-    }
-    if (this.userForm.valid) {
-      const user = this.userForm.value;
+  onSubmit(): void {
+    console.log(this.productForm.value);
+    // const sizes = this.productForm.value.sizes;
+    const formData = new FormData();
+    const FormControlValues = this.productForm.value;
 
-      if (this.mode === 'add') {
-        this.userService.addUser(user).subscribe((res: any) => {
-          if (res.code === 200 && res.success === true) {
-            this.toast.success(res.message);
-            this.loadUsers();
-            this.hideDialog();
+    formData.append('productName', FormControlValues.productName);
+    formData.append('productDescription', FormControlValues.productDescription);
+    formData.append('gender', FormControlValues.gender);
+    formData.append('price', FormControlValues.price);
+    formData.append('discountPrice', FormControlValues.discountPrice);
+    FormControlValues.sizes.forEach((val: any) => {
+      formData.append('sizes[]', val)
+    })
+    console.log(FormControlValues.sizes,'FormControlValues.sizes');
+    // formData.append('sizes', FormControlValues.sizes);
+    formData.append('stock', FormControlValues.stock);
+    formData.append('tags', FormControlValues.tags);
+    formData.append('category', FormControlValues.category);
+    if (this.imageFile) {
+      formData.append('images', this.imageFile);
+    }
+
+    this.galleryFiles.forEach(file => {
+      formData.append('gallery', file);
+    });
+    console.log('formData: ', formData);
+    if (this.mode === 'add') {
+      this.product.saveProducts(formData).subscribe((res: any) => {
+        console.log('res: ', res);
+        if (res.code === 200 || res.success === true) {
+          this.toast.success(res.message);
+          this.productList();
+          this.hideDialog();
+        }
+      }, (error) => {
+        if (error.error.message) {
+          const errMsg = error.error.message;
+          if (Array.isArray(errMsg)) {
+            // Multiple validation messages
+            errMsg.forEach((msg: string) => {
+              this.toast.error(msg);
+            });
+          } else {
+            this.toast.error(errMsg);
           }
-        });
-      } else if (this.mode === 'edit' && this.currentUserId) {
-        this.userService.updateUser(this.currentUserId, user).subscribe((res: any) => {
-          if (res.code === 200 && res.success === true) {
-            this.toast.success(res.message);
-            this.loadUsers();
-            this.hideDialog();
+        }
+      })
+      return;
+    }
+    else if (this.mode === 'edit' && this.currentId) {
+      this.product.updateProducts(formData, this.currentId).subscribe((res: any) => {
+        console.log('res: ', res);
+        if (res.code === 200 || res.success === true) {
+          this.toast.success(res.message);
+          this.productList();
+          this.hideDialog();
+        }
+      }, (error) => {
+        if (error.error.message) {
+          const errMsg = error.error.message;
+          if (Array.isArray(errMsg)) {
+            // Multiple validation messages
+            errMsg.forEach((msg: string) => {
+              this.toast.error(msg);
+            });
+          } else {
+            this.toast.error(errMsg);
           }
-        });
-      }
+        }
+      })
     }
   }
 }
