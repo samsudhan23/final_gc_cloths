@@ -73,7 +73,7 @@
     </ng-template>
 </p-table>
 
-<p-dialog [(visible)]="userDialog" class="userModel" header="User Details" [modal]="true">
+<p-dialog [(visible)]="userDialog" class="userModel" header="User Details" [modal]="true"  (onHide)="onDialogHide()">
     <ng-template #content>
         <form [formGroup]="userForm">
             <div class="grid grid-cols-3 gap-4">

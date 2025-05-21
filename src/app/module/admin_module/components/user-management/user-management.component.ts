@@ -166,7 +166,11 @@ export class UserManagementComponent {
     this.userForm.reset();
   }
 
-
+  onDialogHide() {
+    if (this.userForm) {
+      this.userForm.reset(); // Reset when dialog is closed using header 'X'
+    }
+  }
   editUser(event: any, type: string) {
     const editTableDatas = event
     this.userDialog = true;

@@ -41,6 +41,6 @@ export class CategoryService {
     return this.http.delete(`${this.deleteapiUrl}/${id}`);
   }
   getGenderList(): Observable<any[]> {
-    return this.http.get<any[]>(enviornment.url + 'api/genderList');
+    return this.http.get<any[]>(enviornment.url + 'genderList');
   }
 }

@@ -15,6 +15,10 @@ export class AdminProductService {
   }
 
   saveProducts(data: any): Observable<any> {
-    return this.http.post<any>(enviornment.url + "products",data);
+    return this.http.post<any>(enviornment.url + "products", data);
+  }
+
+  updateProducts(data: any, id: number | string): Observable<any> {
+    return this.http.put<any>(enviornment.url + "updateProducts/" + id, data);
   }
 }

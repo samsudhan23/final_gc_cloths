@@ -7,11 +7,11 @@
 
     <!-- <ng-template #end>
         <p-button label="Export" icon="pi pi-upload" severity="secondary" (onClick)="exportCSV()" />
-    </ng-template> -->
+    </ng-template> [columns]="cols"--> 
 </p-toolbar>
 
-<p-table #dt [value]="productData" [rows]="10" [columns]="cols" [paginator]="true" dataKey="_id"
-    [globalFilterFields]="['name', 'email', 'phoneNumber', 'role']" [tableStyle]="{ 'min-width': '75rem' }"
+<p-table #dt [value]="productData" [rows]="10" [paginator]="true" dataKey="_id"
+    [globalFilterFields]="['productName', 'categoryName']" [tableStyle]="{ 'min-width': '75rem' }"
     [(selection)]="selectedUser" [rowHover]="true"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Users" [showCurrentPageReport]="true"
     [rowsPerPageOptions]="[10, 20, 30]">
@@ -75,11 +75,11 @@
             <td style="width: 3rem">
                 <p-tableCheckbox [value]="user" />
             </td>
-            <td style="min-width: 12rem">{{ user.category }}</td>
+            <td style="min-width: 12rem">{{ user?.category?.categoryName }}</td>
             <td style="min-width: 16rem">{{ user.productName }}</td>
             <td class="wraptext">{{ user.productDescription }}</td>
 
-            <td>{{ user.gender }}</td>
+            <td>{{ user.gender?.genderName }}</td>
             <td>{{ user.images }}</td>
             <td>{{ user.gallery }}</td>
             <td>{{ user.price }}</td>
@@ -89,7 +89,7 @@
 
             <td>
                 <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true"
-                    (click)="editUser(user,'Edit')" />
+                    (click)="editProducts(user,'Edit')" />
                 <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true"
                     (click)="deleteProduct(user)" />
             </td>
@@ -97,64 +97,107 @@
     </ng-template>
 </p-table>
 
-<p-dialog [(visible)]="userDialog" class="userModel" header="Products Details" [modal]="true">
+<p-dialog [(visible)]="formDialog" class="userModel" header="Products Details" [modal]="true" (onHide)="onDialogHide()">
     <ng-template #content>
-        <form [formGroup]="userForm">
+        <form [formGroup]="productForm">
             <div class="grid grid-cols-3 gap-4">
 
                 <div>
-                    <label for="role" class="block font-bold mb-3">Role</label>
-                    <p-select inputId="role" formControlName="role" [options]="rolePeremission" optionLabel="label"
-                        optionValue="value" placeholder="Select a Role" fluid />
+                    <label for="category" class="block font-bold mb-3">Category</label>
+                    <p-select inputId="category" formControlName="category" [options]="categoryList"
+                        optionLabel="categoryName" optionValue="_id" placeholder="Select a Category" fluid />
                     <small class="text-red-500"
-                        *ngIf="userForm.get('role')?.invalid && userForm.get('role')?.touched">Role is required.</small>
-                </div>
-                <div>
-                    <label for="name" class="block font-bold mb-3">Name</label>
-                    <input type="text" formControlName="name" pInputText id="name" required autofocus fluid />
-                    <small class="text-red-500"
-                        *ngIf="userForm.get('name')?.invalid && userForm.get('name')?.touched">Role is required.</small>
-                </div>
-                <div>
-                    <label for="name" class="block font-bold mb-3">Phone Number</label>
-                    <input type="number" formControlName="phoneNumber" pInputText id="name" required autofocus fluid />
-                    <small class="text-red-500"
-                        *ngIf="userForm.get('phoneNumber')?.invalid && userForm.get('phoneNumber')?.touched">Role is
+                        *ngIf="productForm.get('category')?.invalid && productForm.get('category')?.touched">Category is
                         required.</small>
                 </div>
                 <div>
-                    <label for="email" class="block font-bold mb-3">Email</label>
-                    <input type="email" formControlName="email" pInputText id="name" required autofocus fluid />
+                    <label for="productName" class="block font-bold mb-3">Product Name</label>
+                    <input type="text" formControlName="productName" pInputText id="productName" required autofocus
+                        fluid />
                     <small class="text-red-500"
-                        *ngIf="userForm.get('email')?.invalid && userForm.get('email')?.touched">Role is
+                        *ngIf="productForm.get('productName')?.invalid && productForm.get('productName')?.touched">Product
+                        Name is required.</small>
+                </div>
+                <div>
+                    <label for="productDescription" class="block font-bold mb-3">Product Description</label>
+                    <input type="text" formControlName="productDescription" pInputText id="productDescription" required
+                        autofocus fluid />
+                    <small class="text-red-500"
+                        *ngIf="productForm.get('productDescription')?.invalid && productForm.get('productDescription')?.touched">Product
+                        Description is required.</small>
+                </div>
+                <div>
+                    <label for="gender" class="block font-bold mb-3">Gender</label>
+                    <p-select inputId="gender" formControlName="gender" [options]="genderList" optionLabel="genderName"
+                        optionValue="_id" placeholder="Select a Gender" fluid />
+                    <small class="text-red-500"
+                        *ngIf="productForm.get('gender')?.invalid && productForm.get('gender')?.touched">Gender is
                         required.</small>
                 </div>
                 <div>
-                    <label for="password" class="block font-bold mb-3">Password</label>
-                    <input type="text" formControlName="password" pInputText id="password" required autofocus fluid />
+                    <label for="price" class="block font-bold mb-3">Price</label>
+                    <!-- <input type="number" formControlName="price" pInputText id="price" required autofocus fluid /> -->
+                    <p-inputgroup>
+                        <p-inputgroup-addon>₹</p-inputgroup-addon>
+                        <p-inputnumber formControlName="price" placeholder="Price" />
+                        <p-inputgroup-addon>.00</p-inputgroup-addon>
+                    </p-inputgroup>
                     <small class="text-red-500"
-                        *ngIf="userForm.get('password')?.invalid && userForm.get('password')?.touched">Role is
-                        required.</small>
+                        *ngIf="productForm.get('price')?.invalid && productForm.get('price')?.touched">Price
+                        is required.</small>
+                </div>
+
+                <div>
+                    <label for="discountPrice" class="block font-bold mb-3">Discount Price</label>
+                    <input type="number" formControlName="discountPrice" pInputText id="discountPrice" required
+                        autofocus fluid />
+                </div>
+
+                <div>
+                    <label for="sizes" class="block font-bold mb-3">Sizes</label>
+                    <p-multiselect formControlName="sizes" [options]="dressSizesWithMeasurements" optionLabel="label"
+                        optionValue="label" display="chip" placeholder="Select Sizes" [maxSelectedLabels]="6"
+                        styleClass="w-full md:w-80" />
+                    <small class="text-red-500"
+                        *ngIf="productForm.get('sizes')?.invalid && productForm.get('sizes')?.touched">Sizes
+                        is required.</small>
                 </div>
                 <div>
-                    <label for="dateOfBirth" class="block font-bold mb-3">Date of Birth</label>
-                    <p-datepicker formControlName="dateOfBirth" class="userDOB" [showIcon]="true" [showButtonBar]="true"
-                        dateFormat="dd/mm/yy"></p-datepicker>
+                    <label for="stock" class="block font-bold mb-3">Stock</label>
+                    <input type="number" formControlName="stock" pInputText id="stock" required autofocus fluid />
                     <small class="text-red-500"
-                        *ngIf="userForm.get('dateOfBirth')?.invalid && userForm.get('dateOfBirth')?.touched">Role is
-                        required.</small>
+                        *ngIf="productForm.get('stock')?.invalid && productForm.get('stock')?.touched">Stock
+                        is required.</small>
                 </div>
-                <div class="flex items-center">
-                    <p-checkbox formControlName="isBlocked" inputId="checkOption1" binary="true" />
-                    <label for="checkOption1" class="ml-2">Is Blocked</label>
+                <div>
+                    <label for="tags" class="block font-bold mb-3">Tags</label>
+                    <input type="text" formControlName="tags" pInputText id="tags" required autofocus fluid />
                 </div>
+                <!-- <div>
+                    <p-fileupload #fu mode="basic" chooseLabel="Choose" chooseIcon="pi pi-upload" name="demo[]"
+                        accept="image/*" maxFileSize="1000000" />
+                </div> -->
+                <div class="">
+                    <button class="file-upload-button">
+                        <input type="file" #fileInput (change)="onFileChange($event, 'images')" />
+                    </button>
+                    <span class="file-info">{{ fileInfo }}</span>
+                </div>
+
+                <div class="">
+                    <button class="file-upload-button">
+                        <input type="file" #galleryInput (change)="onFileChange($event, 'gallery')" multiple />
+                    </button>
+                    <span class="file-info" *ngFor="let file of galleryFiles">{{ file.name ? file.name:file }}</span>
+                </div>
+
             </div>
         </form>
     </ng-template>
 
     <ng-template #footer>
         <p-button label="Cancel" icon="pi pi-times" text (click)="hideDialog()" />
-        <p-button label="Save" icon="pi pi-check" (click)="saveProduct()" />
+        <p-button label="Save" icon="pi pi-check" (click)="onSubmit()" />
     </ng-template>
 </p-dialog>
 
