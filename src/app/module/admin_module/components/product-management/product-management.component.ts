@@ -84,16 +84,14 @@ export class ProductManagementComponent {
   exportColumns!: ExportColumn[];
   mode: 'add' | 'edit' | 'view' = 'add';
   currentId: string | null = null;
-  rolePeremission: any[] = [
-    { label: 'Admin', value: 'admin' },
-    { label: 'User', value: 'user' },
-  ];
-  cols: Column[] = [
-    { field: 'Name', header: 'name' },
-    { field: 'Email', header: 'email' },
-    { field: 'Phone', header: 'phoneNumber' },
-    { field: 'Role', header: 'role' }
-  ];
+  // cols: Column[] = [
+  //   { field: 'Category', header: 'category' },
+  //   { field: 'Email', header: 'productName' },
+  //   { field: 'Phone', header: 'gender' },
+  //   { field: 'Role', header: 'price' },
+  //    { field: 'Role', header: 'sizes' },
+  //     { field: 'Role', header: 'price' }
+  // ];
   dressSizesWithMeasurements = [
     { id: 1, label: 'XS', bust: '30-32', waist: '22-24', hips: '32-34' },
     { id: 2, label: 'S', bust: '32-34', waist: '25-26', hips: '35-36' },
@@ -103,11 +101,14 @@ export class ProductManagementComponent {
     { id: 6, label: 'XXL', bust: '43-45', waist: '35-37', hips: '45-47' },
     { id: 7, label: '3XL', bust: '46-48', waist: '38-40', hips: '48-50' }
   ];
-  userForm: FormGroup;
   productForm: FormGroup;
   productData: any = [];
   categoryList: any[] = [];
   genderList: any[] = [];
+  fileInfo: string | number = '';
+  imageFile!: File;
+  galleryFiles: File[] = [];
+
   constructor(
     private userService: UserService,
     private confirmationService: ConfirmationService,
@@ -116,16 +117,6 @@ export class ProductManagementComponent {
     private fb: FormBuilder,
     private toast: ToastrService,
   ) {
-    this.userForm = this.fb.group({
-      name: ['', Validators.required],
-      phoneNumber: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required],
-      dateOfBirth: [null, Validators.required],
-      role: ['user', Validators.required],
-      isBlocked: [false]
-    });
-
     this.productForm = this.fb.group({
       productName: ['', Validators.required],
       productDescription: ['', Validators.required],
@@ -144,7 +135,7 @@ export class ProductManagementComponent {
     this.getCategoryList()
     this.productList();
     this.genderData();
-    this.exportColumns = this.cols.map((col) => ({ title: col.header, dataKey: col.field }));
+    // this.exportColumns = this.cols.map((col) => ({ title: col.header, dataKey: col.field }));
   }
 
 
@@ -181,11 +172,6 @@ export class ProductManagementComponent {
 
     })
   }
-
-
-  fileInfo: string | number = '';
-  imageFile!: File;
-  galleryFiles: File[] = [];
 
   onFileChange(event: Event, type: 'images' | 'gallery') {
     const target = event.target as HTMLInputElement;
@@ -261,19 +247,26 @@ export class ProductManagementComponent {
   hideDialog() {
     this.formDialog = false;
     this.productForm.reset();
+    this.galleryFiles = []
+    this.fileInfo = '';
+    this.productForm.get('discountPrice')?.setValue('')
     this.productForm.enable();
   }
 
-  onDialogHide() {
+  onDialogHide() {  // Reset when dialog is closed using header 'X'
     if (this.productForm) {
-      this.productForm.reset(); // Reset when dialog is closed using header 'X'
+      this.productForm.reset();
+      this.galleryFiles = []
+      this.fileInfo = '';
+      this.productForm.get('discountPrice')?.setValue('')
+      this.productForm.enable();
     }
   }
   urlToFile(url: string, filename: string): Promise<File> {
-  return fetch(url)
-    .then(res => res.blob())
-    .then(blob => new File([blob], filename, { type: blob.type }));
-}
+    return fetch(url)
+      .then(res => res.blob())
+      .then(blob => new File([blob], filename, { type: blob.type }));
+  }
   async editProducts(event: any, type: string) {
     const editTableDatas = event
     this.formDialog = true;
@@ -287,9 +280,9 @@ export class ProductManagementComponent {
           gender: editTableDatas.gender._id,
           category: editTableDatas.category._id
         });
-        this.fileInfo = editTableDatas.images;  
-        this.imageFile = await this.urlToFile(editTableDatas.images, 'oldImage.jpg');      
-        this.galleryFiles = [await this.urlToFile(editTableDatas.gallery, 'oldImage.jpg')];  
+        this.fileInfo = editTableDatas.images;
+        this.imageFile = await this.urlToFile(editTableDatas.images, 'oldImage.jpg');
+        this.galleryFiles = [await this.urlToFile(editTableDatas.gallery, 'oldImage.jpg')];
         console.log(this.productForm.value);
         this.productForm.enable();
         break;
@@ -315,11 +308,12 @@ export class ProductManagementComponent {
     formData.append('productDescription', FormControlValues.productDescription);
     formData.append('gender', FormControlValues.gender);
     formData.append('price', FormControlValues.price);
-    formData.append('discountPrice', FormControlValues.discountPrice);
-    FormControlValues.sizes.forEach((val: any) => {
+    if (FormControlValues.discountPrice !== null && FormControlValues.discountPrice !== undefined && FormControlValues.discountPrice !== '') {
+      formData.append('discountPrice', FormControlValues.discountPrice.toString());
+    } FormControlValues.sizes.forEach((val: any) => {
       formData.append('sizes[]', val)
     })
-    console.log(FormControlValues.sizes,'FormControlValues.sizes');
+    console.log(FormControlValues.sizes, 'FormControlValues.sizes');
     // formData.append('sizes', FormControlValues.sizes);
     formData.append('stock', FormControlValues.stock);
     formData.append('tags', FormControlValues.tags);

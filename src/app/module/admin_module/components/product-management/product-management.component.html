@@ -7,10 +7,10 @@
 
     <!-- <ng-template #end>
         <p-button label="Export" icon="pi pi-upload" severity="secondary" (onClick)="exportCSV()" />
-    </ng-template> -->
+    </ng-template> [columns]="cols"--> 
 </p-toolbar>
 
-<p-table #dt [value]="productData" [rows]="10" [columns]="cols" [paginator]="true" dataKey="_id"
+<p-table #dt [value]="productData" [rows]="10" [paginator]="true" dataKey="_id"
     [globalFilterFields]="['productName', 'categoryName']" [tableStyle]="{ 'min-width': '75rem' }"
     [(selection)]="selectedUser" [rowHover]="true"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Users" [showCurrentPageReport]="true"
@@ -107,7 +107,7 @@
                     <p-select inputId="category" formControlName="category" [options]="categoryList"
                         optionLabel="categoryName" optionValue="_id" placeholder="Select a Category" fluid />
                     <small class="text-red-500"
-                        *ngIf="userForm.get('category')?.invalid && userForm.get('category')?.touched">Category is
+                        *ngIf="productForm.get('category')?.invalid && productForm.get('category')?.touched">Category is
                         required.</small>
                 </div>
                 <div>
@@ -115,7 +115,7 @@
                     <input type="text" formControlName="productName" pInputText id="productName" required autofocus
                         fluid />
                     <small class="text-red-500"
-                        *ngIf="userForm.get('productName')?.invalid && userForm.get('productName')?.touched">Product
+                        *ngIf="productForm.get('productName')?.invalid && productForm.get('productName')?.touched">Product
                         Name is required.</small>
                 </div>
                 <div>
@@ -123,7 +123,7 @@
                     <input type="text" formControlName="productDescription" pInputText id="productDescription" required
                         autofocus fluid />
                     <small class="text-red-500"
-                        *ngIf="userForm.get('productDescription')?.invalid && userForm.get('productDescription')?.touched">Product
+                        *ngIf="productForm.get('productDescription')?.invalid && productForm.get('productDescription')?.touched">Product
                         Description is required.</small>
                 </div>
                 <div>
@@ -131,7 +131,7 @@
                     <p-select inputId="gender" formControlName="gender" [options]="genderList" optionLabel="genderName"
                         optionValue="_id" placeholder="Select a Gender" fluid />
                     <small class="text-red-500"
-                        *ngIf="userForm.get('gender')?.invalid && userForm.get('gender')?.touched">Gender is
+                        *ngIf="productForm.get('gender')?.invalid && productForm.get('gender')?.touched">Gender is
                         required.</small>
                 </div>
                 <div>
@@ -143,7 +143,7 @@
                         <p-inputgroup-addon>.00</p-inputgroup-addon>
                     </p-inputgroup>
                     <small class="text-red-500"
-                        *ngIf="userForm.get('price')?.invalid && userForm.get('price')?.touched">Price
+                        *ngIf="productForm.get('price')?.invalid && productForm.get('price')?.touched">Price
                         is required.</small>
                 </div>
 
@@ -159,14 +159,14 @@
                         optionValue="label" display="chip" placeholder="Select Sizes" [maxSelectedLabels]="6"
                         styleClass="w-full md:w-80" />
                     <small class="text-red-500"
-                        *ngIf="userForm.get('sizes')?.invalid && userForm.get('sizes')?.touched">Sizes
+                        *ngIf="productForm.get('sizes')?.invalid && productForm.get('sizes')?.touched">Sizes
                         is required.</small>
                 </div>
                 <div>
                     <label for="stock" class="block font-bold mb-3">Stock</label>
                     <input type="number" formControlName="stock" pInputText id="stock" required autofocus fluid />
                     <small class="text-red-500"
-                        *ngIf="userForm.get('stock')?.invalid && userForm.get('stock')?.touched">Stock
+                        *ngIf="productForm.get('stock')?.invalid && productForm.get('stock')?.touched">Stock
                         is required.</small>
                 </div>
                 <div>
