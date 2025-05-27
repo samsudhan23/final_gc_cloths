@@ -25,6 +25,7 @@ export class AppMenu {
                 items: [
                     { label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/'] },
                     { label: 'User Management', icon: 'pi pi-fw pi-user', routerLink: ['uikit/user'] },
+                    { label: 'Category', icon: 'pi pi-fw pi-user', routerLink: ['uikit/category'] },
                     { label: 'Product Management', icon: 'pi pi-cart-minus', routerLink: ['uikit/products'] }
                 ]
             },

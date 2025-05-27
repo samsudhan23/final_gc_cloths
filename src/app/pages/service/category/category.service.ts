@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import {  Observable } from 'rxjs';
-import { enviornment } from '../../../../../environment/environment';
+import { mergeMap, Observable, of } from 'rxjs';
 
 export interface Category {
   id?: number;
@@ -16,12 +15,11 @@ export class CategoryService {
 
   private apiUrl = 'http://localhost:5000/api/categories';
   private getapiUrl = 'http://localhost:5000/api/getCategories';
-  private updateapiUrl = 'http://localhost:5000/api/updateCategory';
   private deleteapiUrl = 'http://localhost:5000/api/deleteCategory';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
-
+  
   getCategoriesMasterList(): Observable<any[]> {
     return this.http.get<any[]>(this.getapiUrl);
   }
@@ -34,14 +32,11 @@ export class CategoryService {
     return this.http.post(this.apiUrl, categoryData);
   }
 
-  updateCategoryMaster(id: any, categoryData: any): Observable<any> {
-    return this.http.put(`${this.updateapiUrl}/${id}`, categoryData);
+  updateCategoryMaster(id: number, categoryData: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/${id}`, categoryData);
   }
 
-  deleteCategoryMaster(id: any): Observable<any> {
+  deleteCategoryMaster(id:any): Observable<any> {
     return this.http.delete(`${this.deleteapiUrl}/${id}`);
-  }
-  getGenderList(): Observable<any[]> {
-    return this.http.get<any[]>(enviornment.url + 'genderList');
   }
 }
