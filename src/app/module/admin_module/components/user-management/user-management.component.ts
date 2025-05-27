@@ -179,11 +179,12 @@ export class UserManagementComponent {
       case "Edit":
         this.mode = 'edit';
         this.currentUserId = editTableDatas._id;
+        console.log('editTableDatas: ', editTableDatas);
         this.userForm.patchValue(editTableDatas);
         this.userForm.patchValue({
           dateOfBirth: new Date(editTableDatas.dateOfBirth)
         });
-        this.userForm.get('password')?.setValue('');
+        // this.userForm.get('password')?.setValue('');
         this.userForm.enable();
         break;
       case "View":
