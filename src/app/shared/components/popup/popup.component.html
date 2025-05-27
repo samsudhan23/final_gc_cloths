@@ -8,7 +8,7 @@
 </p-dialog> -->
 
 
-<p-dialog header="Header" [modal]="true" [(visible)]="visible" [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }">
+<p-dialog class="userModel1" header="Header" [modal]="true" [(visible)]="visible" [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }">
     <div class="grid grid-cols-2 gap-4" *ngIf="galleries.lenth != 0">
         <div *ngFor="let ite of galleries">
             <img class="rounded-md shadow-lg p-2 border border-dotted border-lime-600 h-[381px] w-full mb-6"
