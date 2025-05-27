@@ -7,10 +7,10 @@
 
     <!-- <ng-template #end>
         <p-button label="Export" icon="pi pi-upload" severity="secondary" (onClick)="exportCSV()" />
-    </ng-template> [columns]="cols"--> 
+    </ng-template> [columns]="cols"-->
 </p-toolbar>
 
-<p-table #dt [value]="productData" [rows]="10" [paginator]="true" dataKey="_id"
+<p-table #dt [value]="productData" [rows]="10" [paginator]="true" dataKey="_id" [showGridlines]="true"
     [globalFilterFields]="['productName', 'categoryName']" [tableStyle]="{ 'min-width': '75rem' }"
     [(selection)]="selectedUser" [rowHover]="true"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Users" [showCurrentPageReport]="true"
@@ -33,9 +33,9 @@
                 Category
                 <p-sortIcon field="category" />
             </th>
-            <th pSortableColumn="productName" style="min-width: 8rem">Product Name <p-sortIcon field="productName" />
+            <th pSortableColumn="productName" style="min-width: 16rem">Product Name <p-sortIcon field="productName" />
             </th>
-            <th pSortableColumn="productDescription" style="min-width: 8rem">
+            <th pSortableColumn="productDescription" style="min-width: 16rem">
                 Product Description
                 <p-sortIcon field="productDescription" />
             </th>
@@ -76,12 +76,21 @@
                 <p-tableCheckbox [value]="user" />
             </td>
             <td style="min-width: 12rem">{{ user?.category?.categoryName }}</td>
-            <td style="min-width: 16rem">{{ user.productName }}</td>
+            <td>
+                <div class="flex items-center gap-2">
+                    <img [alt]="user.productName" [src]="user.images" width="32" class="product_img" />
+                    <span class="image-text">{{ user.productName }}</span>
+                </div>
+            </td>
             <td class="wraptext">{{ user.productDescription }}</td>
 
             <td>{{ user.gender?.genderName }}</td>
-            <td>{{ user.images }}</td>
-            <td>{{ user.gallery }}</td>
+            <td>{{ user.images | split: 'Products/':1 }}</td>
+            <td>
+                <div *ngFor="let img of user.gallery" class="truncate-text">
+                    {{ img | split:'Products/':1 }}
+                </div>
+            </td>
             <td>{{ user.price }}</td>
             <td>{{ user.sizes }}</td>
             <td>{{ user.stock }}</td>
@@ -120,11 +129,8 @@
                 </div>
                 <div>
                     <label for="productDescription" class="block font-bold mb-3">Product Description</label>
-                    <input type="text" formControlName="productDescription" pInputText id="productDescription" required
-                        autofocus fluid />
-                    <small class="text-red-500"
-                        *ngIf="productForm.get('productDescription')?.invalid && productForm.get('productDescription')?.touched">Product
-                        Description is required.</small>
+                    <input type="text" formControlName="productDescription" pInputText id="productDescription" autofocus
+                        fluid />
                 </div>
                 <div>
                     <label for="gender" class="block font-bold mb-3">Gender</label>
@@ -149,8 +155,8 @@
 
                 <div>
                     <label for="discountPrice" class="block font-bold mb-3">Discount Price</label>
-                    <input type="number" formControlName="discountPrice" pInputText id="discountPrice" required
-                        autofocus fluid />
+                    <input type="number" formControlName="discountPrice" pInputText id="discountPrice" autofocus
+                        fluid />
                 </div>
 
                 <div>
@@ -171,24 +177,57 @@
                 </div>
                 <div>
                     <label for="tags" class="block font-bold mb-3">Tags</label>
-                    <input type="text" formControlName="tags" pInputText id="tags" required autofocus fluid />
+                    <input type="text" formControlName="tags" pInputText id="tags" autofocus fluid />
                 </div>
-                <!-- <div>
-                    <p-fileupload #fu mode="basic" chooseLabel="Choose" chooseIcon="pi pi-upload" name="demo[]"
-                        accept="image/*" maxFileSize="1000000" />
-                </div> -->
-                <div class="">
+              
+                <div>
+                    <div style="padding-bottom: 10px;">
+                        <button class="container-btn-file">
+                            <i class="pi pi-image" style="font-size: 1.2rem;"></i>
+                            Upload image
+                            <input #fileInput class="file" name="text" type="file"
+                                (change)="onFileChange($event, 'images')" />
+                        </button>
+                    </div>
+                    <!-- <img [src]="fileInfo" alt="" style="width: 40%;">
+                    <span class="file-info">{{ fileInfo | split: '/' }}</span> -->
+                    <app-popup *ngIf="fileInfo" [single]="singleImage"></app-popup>
+                </div>
+
+                <!-- <div class="">
                     <button class="file-upload-button">
                         <input type="file" #fileInput (change)="onFileChange($event, 'images')" />
                     </button>
-                    <span class="file-info">{{ fileInfo }}</span>
-                </div>
+                    <div>Choose</div>
+                    <img [src]="fileInfo" alt="" style="width: 40%;">
+                    <span class="file-info">{{ fileInfo | split: '/' }}</span>
+                </div> -->
 
-                <div class="">
+                <!-- <div class="">
                     <button class="file-upload-button">
                         <input type="file" #galleryInput (change)="onFileChange($event, 'gallery')" multiple />
                     </button>
-                    <span class="file-info" *ngFor="let file of galleryFiles">{{ file.name ? file.name:file }}</span>
+                    <span class="file-info" *ngFor="let file of galleryFiles">{{ file.name ? file.name:file | split:
+                        'Products/':1}}
+                        <img [src]="file.name ? file.name:file" alt="" style="width: 40%;">
+                    </span>
+                </div> -->
+
+                <div>
+                    <div style="padding-bottom: 10px;">
+                        <button class="container-btn-file">
+                            <i class="pi pi-images" style="font-size: 1.2rem;"></i>
+                            Gallery
+                            <input #galleryInput class="file" name="text" type="file"
+                                (change)="onFileChange($event, 'gallery')" multiple />
+                        </button>
+                    </div>
+                    <span class="file-info" >
+                        <!-- *ngFor="let file of galleryFiles" -->
+                        <!-- {{ file.name ? file.name:file | split: 'Products/':1}} -->
+                        <!-- <img src="../../../../../assets/images/preview-icon-8.jpg"  alt="" style="width: 40%;"> -->
+                         <app-popup *ngIf="galleryFiles.length > 0" [galleries]="galleryImages"></app-popup>
+                    </span>
                 </div>
 
             </div>

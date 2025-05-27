@@ -21,4 +21,8 @@ export class AdminProductService {
   updateProducts(data: any, id: number | string): Observable<any> {
     return this.http.put<any>(enviornment.url + "updateProducts/" + id, data);
   }
+
+    deleteProducts(id: string): Observable<any> {
+    return this.http.delete(`${enviornment.url}deleteProducts/${id}`);
+  }
 }
