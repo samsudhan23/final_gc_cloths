@@ -13,7 +13,7 @@
 }
 
 ::ng-deep .userModel .p-dialog-content {
-    // overflow-y: unset;
+    overflow-y: unset;
 }
 
 .wraptext {
@@ -97,9 +97,11 @@
 .container-btn-file>.pi-image {
     margin-right: 1em;
 }
+
 .container-btn-file>.pi-images {
     margin-right: 1em;
 }
+
 .container-btn-file::before {
     content: "";
     position: absolute;
@@ -113,4 +115,18 @@
 
 .container-btn-file:hover::before {
     width: 100%;
+}
+
+/* Sticky checkbox (left) */
+.sticky-left {
+    position: sticky;
+    left: 0;
+    background: white;
+}
+
+/* Sticky action (right) */
+.sticky-right {
+    position: sticky;
+    right: 0;
+    background: white;
 }
