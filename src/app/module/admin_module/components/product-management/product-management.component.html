@@ -10,11 +10,11 @@
     </ng-template> [columns]="cols"-->
 </p-toolbar>
 
-<p-table #dt [value]="productData" [rows]="10" [paginator]="true" dataKey="_id" [showGridlines]="true"
-    [globalFilterFields]="['productName', 'categoryName']" [tableStyle]="{ 'min-width': '75rem' }"
-    [(selection)]="selectedUser" [rowHover]="true"
-    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Users" [showCurrentPageReport]="true"
-    [rowsPerPageOptions]="[10, 20, 30]">
+<p-table #dt [value]="productData" [rows]="10" [paginator]="true" dataKey="_id"
+    [globalFilterFields]="['productName', 'categoryName']" [tableStyle]="{ 'min-width': '120rem' }"
+    [(selection)]="selectedUser" [rowHover]="true" [scrollable]="true" scrollDirection="horizontal"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Users"
+    [showCurrentPageReport]="true" [rowsPerPageOptions]="[10, 20, 30]">
     <ng-template #caption>
         <div class="flex items-center justify-between">
             <h5 class="m-0">Manage Products</h5>
@@ -24,58 +24,32 @@
             </p-iconfield>
         </div>
     </ng-template>
-    <ng-template #header>
+
+    <ng-template pTemplate="header">
         <tr>
-            <th style="width: 3rem">
+            <th class="sticky-left" style="width: 3rem; z-index: 2;">
                 <p-tableHeaderCheckbox />
             </th>
-            <th pSortableColumn="category" style="min-width:16rem">
-                Category
-                <p-sortIcon field="category" />
-            </th>
-            <th pSortableColumn="productName" style="min-width: 16rem">Product Name <p-sortIcon field="productName" />
-            </th>
-            <th pSortableColumn="productDescription" style="min-width: 16rem">
-                Product Description
-                <p-sortIcon field="productDescription" />
-            </th>
-            <th pSortableColumn="gender" style="min-width:10rem">
-                Gender
-                <p-sortIcon field="gender" />
-            </th>
-            <th pSortableColumn="images" style="min-width: 12rem">
-                Images
-                <p-sortIcon field="images" />
-            </th>
-            <th pSortableColumn="gallery" style="min-width: 12rem">
-                Gallery
-                <p-sortIcon field="gallery" />
-            </th>
-            <th pSortableColumn="price" style="min-width: 12rem">
-                Price
-                <p-sortIcon field="price" />
-            </th>
-            <th pSortableColumn="sizes" style="min-width: 12rem">
-                Sizes
-                <p-sortIcon field="sizes" />
-            </th>
-            <th pSortableColumn="stock" style="min-width: 12rem">
-                Stock
-                <p-sortIcon field="stock" />
-            </th>
-            <th pSortableColumn="tags" style="min-width: 12rem">
-                Tags
-                <p-sortIcon field="tags" />
-            </th>
-            <th style="min-width: 12rem">Action</th>
+            <th pSortableColumn="category" style="min-width:16rem">Category <p-sortIcon field="category" /></th>
+            <th pSortableColumn="productName" style="min-width: 16rem">Product Name <p-sortIcon field="productName" /></th>
+            <th pSortableColumn="productDescription" style="min-width: 16rem">Product Description <p-sortIcon field="productDescription" /></th>
+            <th pSortableColumn="gender" style="min-width:10rem">Gender <p-sortIcon field="gender" /></th>
+            <th pSortableColumn="images" style="min-width: 12rem">Images <p-sortIcon field="images" /></th>
+            <th pSortableColumn="gallery" style="min-width: 12rem">Gallery <p-sortIcon field="gallery" /></th>
+            <th pSortableColumn="price" style="min-width: 12rem">Price <p-sortIcon field="price" /></th>
+            <th pSortableColumn="sizes" style="min-width: 12rem">Sizes <p-sortIcon field="sizes" /></th>
+            <th pSortableColumn="stock" style="min-width: 12rem">Stock <p-sortIcon field="stock" /></th>
+            <th pSortableColumn="tags" style="min-width: 12rem">Tags <p-sortIcon field="tags" /></th>
+            <th class="sticky-right" style="min-width: 10rem; z-index: 1;">Action</th>
         </tr>
     </ng-template>
-    <ng-template #body let-user>
+
+    <ng-template pTemplate="body" let-user>
         <tr>
-            <td style="width: 3rem">
+            <td class="sticky-left" style="z-index: 1;">
                 <p-tableCheckbox [value]="user" />
             </td>
-            <td style="min-width: 12rem">{{ user?.category?.categoryName }}</td>
+            <td>{{ user?.category?.categoryName }}</td>
             <td>
                 <div class="flex items-center gap-2">
                     <img [alt]="user.productName" [src]="user.images" width="32" class="product_img" />
@@ -83,7 +57,6 @@
                 </div>
             </td>
             <td class="wraptext">{{ user.productDescription }}</td>
-
             <td>{{ user.gender?.genderName }}</td>
             <td>{{ user.images | split: 'Products/':1 }}</td>
             <td>
@@ -95,8 +68,7 @@
             <td>{{ user.sizes }}</td>
             <td>{{ user.stock }}</td>
             <td>{{ user.tags }}</td>
-
-            <td>
+            <td class="sticky-right">
                 <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true"
                     (click)="editProducts(user,'Edit')" />
                 <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true"
@@ -104,7 +76,9 @@
             </td>
         </tr>
     </ng-template>
+
 </p-table>
+
 
 <p-dialog [(visible)]="formDialog" class="userModel" header="Products Details" [modal]="true" (onHide)="onDialogHide()">
     <ng-template #content>
@@ -189,8 +163,8 @@
                                 (change)="onFileChange($event, 'images')" />
                         </button>
                     </div>
-                    <!-- <img [src]="fileInfo" alt="" style="width: 40%;">
-                    <span class="file-info">{{ fileInfo | split: '/' }}</span> -->
+                    <!-- <img [src]="fileInfo" alt="" style="width: 10%;">  -->
+                    <span class="file-info">{{ fileInfo | split: '/' }}</span>
                     <app-popup *ngIf="fileInfo" [single]="singleImage"></app-popup>
                 </div>
 
@@ -222,12 +196,12 @@
                                 (change)="onFileChange($event, 'gallery')" multiple />
                         </button>
                     </div>
-                    <span class="file-info" >
+                    <span class="file-info"  *ngFor="let file of galleryFiles" >
                         <!-- *ngFor="let file of galleryFiles" -->
-                        <!-- {{ file.name ? file.name:file | split: 'Products/':1}} -->
+                        {{ file.name ? file.name:file | split: 'Products/':1}}
                         <!-- <img src="../../../../../assets/images/preview-icon-8.jpg"  alt="" style="width: 40%;"> -->
-                         <app-popup *ngIf="galleryFiles.length > 0" [galleries]="galleryImages"></app-popup>
                     </span>
+                    <app-popup *ngIf="galleryFiles.length > 0" [galleries]="galleryImages"></app-popup>
                 </div>
 
             </div>
