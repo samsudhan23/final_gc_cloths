@@ -26,7 +26,7 @@
     </ng-template>
     <ng-template #header>
         <tr>
-            <th style="width: 3rem">
+            <th class="sticky-left" style="width: 3rem">
                 <p-tableHeaderCheckbox />
             </th>
             <th pSortableColumn="name" style="min-width:16rem">
@@ -46,12 +46,12 @@
                 Status
                 <p-sortIcon field="isBlocked" />
             </th>
-            <th style="min-width: 12rem">Action</th>
+            <th class="sticky-right" style="min-width: 12rem">Action</th>
         </tr>
     </ng-template>
     <ng-template #body let-user>
         <tr>
-            <td style="width: 3rem">
+            <td class="sticky-left" style="width: 3rem">
                 <p-tableCheckbox [value]="user" />
             </td>
             <td style="min-width: 12rem">{{ user.name }}</td>
@@ -63,7 +63,7 @@
                 <p-tag [value]="user.isBlocked == false ? 'Active':'Inactive'"
                     [ngClass]="{'inactive': user.isBlocked, 'active': !user.isBlocked}" />
             </td>
-            <td>
+            <td class="sticky-right">
                 <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true"
                     (click)="editUser(user,'Edit')" />
                 <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true"
@@ -73,7 +73,7 @@
     </ng-template>
 </p-table>
 
-<p-dialog [(visible)]="userDialog" class="userModel" header="User Details" [modal]="true"  (onHide)="onDialogHide()">
+<p-dialog [(visible)]="userDialog" class="userModel" header="User Details" [modal]="true" (onHide)="onDialogHide()">
     <ng-template #content>
         <form [formGroup]="userForm">
             <div class="grid grid-cols-3 gap-4">
@@ -89,27 +89,28 @@
                     <label for="name" class="block font-bold mb-3">Name</label>
                     <input type="text" formControlName="name" pInputText id="name" required autofocus fluid />
                     <small class="text-red-500"
-                        *ngIf="userForm.get('name')?.invalid && userForm.get('name')?.touched">Role is required.</small>
+                        *ngIf="userForm.get('name')?.invalid && userForm.get('name')?.touched">Name is required.</small>
                 </div>
                 <div>
                     <label for="name" class="block font-bold mb-3">Phone Number</label>
                     <input type="number" formControlName="phoneNumber" pInputText id="name" required autofocus fluid />
                     <small class="text-red-500"
-                        *ngIf="userForm.get('phoneNumber')?.invalid && userForm.get('phoneNumber')?.touched">Role is
+                        *ngIf="userForm.get('phoneNumber')?.invalid && userForm.get('phoneNumber')?.touched">Phone
+                        Number is
                         required.</small>
                 </div>
                 <div>
                     <label for="email" class="block font-bold mb-3">Email</label>
                     <input type="email" formControlName="email" pInputText id="name" required autofocus fluid />
                     <small class="text-red-500"
-                        *ngIf="userForm.get('email')?.invalid && userForm.get('email')?.touched">Role is
+                        *ngIf="userForm.get('email')?.invalid && userForm.get('email')?.touched">Email is
                         required.</small>
                 </div>
-                <div>
+                <div *ngIf="this.mode == 'add'">
                     <label for="password" class="block font-bold mb-3">Password</label>
                     <input type="text" formControlName="password" pInputText id="password" required autofocus fluid />
                     <small class="text-red-500"
-                        *ngIf="userForm.get('password')?.invalid && userForm.get('password')?.touched">Role is
+                        *ngIf="userForm.get('password')?.invalid && userForm.get('password')?.touched">Password is
                         required.</small>
                 </div>
                 <div>
@@ -117,7 +118,8 @@
                     <p-datepicker formControlName="dateOfBirth" class="userDOB" [showIcon]="true" [showButtonBar]="true"
                         dateFormat="dd/mm/yy"></p-datepicker>
                     <small class="text-red-500"
-                        *ngIf="userForm.get('dateOfBirth')?.invalid && userForm.get('dateOfBirth')?.touched">Role is
+                        *ngIf="userForm.get('dateOfBirth')?.invalid && userForm.get('dateOfBirth')?.touched">Date of
+                        Birth is
                         required.</small>
                 </div>
                 <div class="flex items-center">
@@ -129,7 +131,7 @@
     </ng-template>
 
     <ng-template #footer>
-        <p-button label="Cancel" icon="pi pi-times" text (click)="hideDialog()" />
+        <p-button label="Cancel" icon="pi pi-times" variant="text" severity="danger" (click)="hideDialog()" />
         <p-button label="Save" icon="pi pi-check" (click)="saveProduct()" />
     </ng-template>
 </p-dialog>

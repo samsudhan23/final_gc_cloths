@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { IconFieldModule } from 'primeng/iconfield';
 import { SelectModule } from 'primeng/select';
 import { Table, TableModule } from 'primeng/table';
@@ -13,7 +13,6 @@ import { DatePickerModule } from 'primeng/datepicker';
 import { RippleModule } from 'primeng/ripple';
 import { ToastModule } from 'primeng/toast';
 import { CustomerService } from '../../../../pages/service/customer.service';
-import { ProductService } from '../../../../pages/service/product.service';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DialogModule } from 'primeng/dialog';
 import { InputNumberModule } from 'primeng/inputnumber';
@@ -22,7 +21,6 @@ import { TextareaModule } from 'primeng/textarea';
 import { ToolbarModule } from 'primeng/toolbar';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { CheckboxModule } from 'primeng/checkbox';
-import { UserService } from '../../service/user/user.service';
 import { ToastrService } from 'ngx-toastr';
 import { CategoryService } from '../../service/category/category.service';
 import { AdminProductService } from '../../service/productService/admin-product.service';
@@ -31,18 +29,6 @@ import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { SplitPipe } from '../../../../shared/core/pipes/split.pipe';
 import { PopupComponent } from '../../../../shared/components/popup/popup.component';
-// import { FileUpload } from 'primeng/fileupload';
-
-interface Column {
-  field: string;
-  header: string;
-  customExportHeader?: string;
-}
-
-interface ExportColumn {
-  title: string;
-  dataKey: string;
-}
 
 
 @Component({
@@ -84,17 +70,9 @@ export class ProductManagementComponent {
   @ViewChild('dt') dt!: Table;
   formDialog: boolean = false;
   selectedUser!: any | null;
-  exportColumns!: ExportColumn[];
   mode: 'add' | 'edit' | 'view' = 'add';
   currentId: string | null = null;
-  // cols: Column[] = [
-  //   { field: 'Category', header: 'category' },
-  //   { field: 'Email', header: 'productName' },
-  //   { field: 'Phone', header: 'gender' },
-  //   { field: 'Role', header: 'price' },
-  //    { field: 'Role', header: 'sizes' },
-  //     { field: 'Role', header: 'price' }
-  // ];
+  showFileName: boolean = false;
   dressSizesWithMeasurements = [
     { id: 1, label: 'XS', bust: '30-32', waist: '22-24', hips: '32-34' },
     { id: 2, label: 'S', bust: '32-34', waist: '25-26', hips: '35-36' },
@@ -113,9 +91,9 @@ export class ProductManagementComponent {
   galleryFiles: any[] = [];
   galleryImages: any;
   singleImage: any;
+  selectedSizes: any[] = [];
 
   constructor(
-    private userService: UserService,
     private confirmationService: ConfirmationService,
     private category: CategoryService,
     private product: AdminProductService,
@@ -175,15 +153,15 @@ export class ProductManagementComponent {
         this.imageFile = target.files[0]; // single image
         this.fileInfo = this.imageFile.name
         this.singleImage = this.fileInfo
+        this.showFileName = true;
       } else if (type === 'gallery') { //Multiple images
         const newFiles = Array.from(target.files)
         this.galleryFiles = [...this.galleryFiles, ...newFiles]
         this.galleryImages = this.galleryFiles
+        this.showFileName = true;
       }
     }
   }
-
-  selectedSizes: any[] = [];
 
   onSizeChange(event: any): void {
     const sizeId = event.target.value;
@@ -253,6 +231,7 @@ export class ProductManagementComponent {
     this.productForm.get('tags')?.setValue('')
     this.productForm.get('productDescription')?.setValue('')
     this.productForm.enable();
+    this.showFileName = false
   }
 
   onDialogHide() {  // Reset when dialog is closed using header 'X'
@@ -267,6 +246,7 @@ export class ProductManagementComponent {
       this.productForm.get('tags')?.setValue('')
       this.productForm.get('productDescription')?.setValue('')
       this.productForm.enable();
+      this.showFileName = false
     }
   }
   async editProducts(event: any, type: string) {
