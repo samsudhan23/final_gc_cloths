@@ -111,8 +111,8 @@ export class ProductManagementComponent {
   fileInfo: string | number = '';
   imageFile!: File;
   galleryFiles: any[] = [];
-  @Input() galleryImages: any;
-  @Input() singleImage: any;
+  galleryImages: any;
+  singleImage: any;
 
   constructor(
     private userService: UserService,
