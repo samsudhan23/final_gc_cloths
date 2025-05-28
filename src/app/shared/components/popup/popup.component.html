@@ -8,18 +8,19 @@
 </p-dialog> -->
 
 
-<p-dialog class="userModel1" header="Product Images" [modal]="true" [(visible)]="visible" [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }">
+<p-dialog [draggable]="false" class="userModel1" header="Product Images" [modal]="true" [(visible)]="visible"
+    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }">
     <div class="grid grid-cols-2 gap-4" *ngIf="galleries.lenth != 0">
         <div *ngFor="let ite of galleries">
             <img class="rounded-md shadow-lg p-2 border border-dotted border-lime-600 h-[381px] w-full mb-6"
-                src="{{ite.name ? ite.name:ite}}" alt="productImages" style="">
+                src="{{ite ? ite :ite.name ? ite.name:ite}}" alt="productImages">
             <span class="file-info rounded-md shadow-lg p-2 border border-dotted border-lime-600 bg-green-400">{{
                 ite.name ? ite.name:ite | split: '/' }}</span>
         </div>
     </div>
     <div *ngIf="single">
         <img class="rounded-md shadow-lg p-2 border border-dotted border-lime-600 h-[381px] w-full pb-2  mb-6"
-            [src]="single" alt="productImage" style="">
+            [src]="base64Data ? base64Data :single" alt="productImage">
         <span class="file-info rounded-md shadow-lg p-2 border border-dotted border-lime-600 bg-green-400">{{ single |
             split: '/' }}</span>
     </div>
