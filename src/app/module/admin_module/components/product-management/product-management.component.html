@@ -34,8 +34,8 @@
             <th pSortableColumn="productName" style="min-width: 16rem">Product Name <p-sortIcon field="productName" /></th>
             <th pSortableColumn="productDescription" style="min-width: 16rem">Product Description <p-sortIcon field="productDescription" /></th>
             <th pSortableColumn="gender" style="min-width:10rem">Gender <p-sortIcon field="gender" /></th>
-            <th pSortableColumn="images" style="min-width: 12rem">Images <p-sortIcon field="images" /></th>
-            <th pSortableColumn="gallery" style="min-width: 12rem">Gallery <p-sortIcon field="gallery" /></th>
+            <!-- <th pSortableColumn="images" style="min-width: 12rem">Images <p-sortIcon field="images" /></th>
+            <th pSortableColumn="gallery" style="min-width: 12rem">Gallery <p-sortIcon field="gallery" /></th> -->
             <th pSortableColumn="price" style="min-width: 12rem">Price <p-sortIcon field="price" /></th>
             <th pSortableColumn="sizes" style="min-width: 12rem">Sizes <p-sortIcon field="sizes" /></th>
             <th pSortableColumn="stock" style="min-width: 12rem">Stock <p-sortIcon field="stock" /></th>
@@ -58,12 +58,12 @@
             </td>
             <td class="wraptext">{{ user.productDescription }}</td>
             <td>{{ user.gender?.genderName }}</td>
-            <td>{{ user.images | split: 'Products/':1 }}</td>
+            <!-- <td>{{ user.images | split: 'Products/':1 }}</td>
             <td>
                 <div *ngFor="let img of user.gallery" class="truncate-text">
                     {{ img | split:'Products/':1 }}
                 </div>
-            </td>
+            </td> -->
             <td>{{ user.price }}</td>
             <td>{{ user.sizes }}</td>
             <td>{{ user.stock }}</td>
@@ -166,6 +166,9 @@
                     <!-- <img [src]="fileInfo" alt="" style="width: 10%;">  -->
                     <span *ngIf="showFileName" class="file-info">{{ fileInfo | split: '/' }}</span>
                     <app-popup *ngIf="fileInfo" [single]="singleImage"></app-popup>
+                     <small class="text-red-500"
+                        *ngIf="!fileInfo">Image
+                        is required.</small>
                 </div>
 
                 <!-- <div class="">
@@ -202,6 +205,9 @@
                         <!-- <img src="../../../../../assets/images/preview-icon-8.jpg"  alt="" style="width: 40%;"> -->
                     </span>
                     <app-popup *ngIf="galleryFiles.length > 0" [galleries]="galleryImages"></app-popup>
+                      <small class="text-red-500"
+                        *ngIf="galleryFiles.length == 0 && this.productForm.valid">Gallery
+                        is required.</small>
                 </div>
 
             </div>
