@@ -13,8 +13,8 @@
 <p-table #dt [value]="productData" [rows]="10" [paginator]="true" dataKey="_id"
     [globalFilterFields]="['productName', 'categoryName']" [tableStyle]="{ 'min-width': '120rem' }"
     [(selection)]="selectedUser" [rowHover]="true" [scrollable]="true" scrollDirection="horizontal"
-    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Users"
-    [showCurrentPageReport]="true" [rowsPerPageOptions]="[10, 20, 30]">
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Users" [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[10, 20, 30]">
     <ng-template #caption>
         <div class="flex items-center justify-between">
             <h5 class="m-0">Manage Products</h5>
@@ -31,8 +31,10 @@
                 <p-tableHeaderCheckbox />
             </th>
             <th pSortableColumn="category" style="min-width:16rem">Category <p-sortIcon field="category" /></th>
-            <th pSortableColumn="productName" style="min-width: 16rem">Product Name <p-sortIcon field="productName" /></th>
-            <th pSortableColumn="productDescription" style="min-width: 16rem">Product Description <p-sortIcon field="productDescription" /></th>
+            <th pSortableColumn="productName" style="min-width: 16rem">Product Name <p-sortIcon field="productName" />
+            </th>
+            <th pSortableColumn="productDescription" style="min-width: 16rem">Product Description <p-sortIcon
+                    field="productDescription" /></th>
             <th pSortableColumn="gender" style="min-width:10rem">Gender <p-sortIcon field="gender" /></th>
             <!-- <th pSortableColumn="images" style="min-width: 12rem">Images <p-sortIcon field="images" /></th>
             <th pSortableColumn="gallery" style="min-width: 12rem">Gallery <p-sortIcon field="gallery" /></th> -->
@@ -134,10 +136,13 @@
                 </div>
 
                 <div>
-                    <label for="sizes" class="block font-bold mb-3">Sizes</label>
-                    <p-multiselect formControlName="sizes" [options]="dressSizesWithMeasurements" optionLabel="label"
-                        optionValue="label" display="chip" placeholder="Select Sizes" [maxSelectedLabels]="6"
-                        styleClass="w-full md:w-80" />
+                    <div>
+                        <label for="sizes" class="block font-bold mb-3">Sizes</label>
+                        <p-multiselect formControlName="sizes" [options]="dressSizesWithMeasurements"
+                            optionLabel="label" optionValue="label" display="chip" placeholder="Select Sizes"
+                            [maxSelectedLabels]="6" styleClass="w-full md:w-80" />
+                    </div>
+
                     <small class="text-red-500"
                         *ngIf="productForm.get('sizes')?.invalid && productForm.get('sizes')?.touched">Sizes
                         is required.</small>
@@ -153,7 +158,7 @@
                     <label for="tags" class="block font-bold mb-3">Tags</label>
                     <input type="text" formControlName="tags" pInputText id="tags" autofocus fluid />
                 </div>
-              
+
                 <div>
                     <div style="padding-bottom: 10px;">
                         <button class="container-btn-file">
@@ -165,9 +170,8 @@
                     </div>
                     <!-- <img [src]="fileInfo" alt="" style="width: 10%;">  -->
                     <span *ngIf="showFileName" class="file-info">{{ fileInfo | split: '/' }}</span>
-                    <app-popup *ngIf="fileInfo" [single]="singleImage"></app-popup>
-                     <small class="text-red-500"
-                        *ngIf="!fileInfo">Image
+                    <app-popup *ngIf="fileInfo" [single]="singleImage" [added]="addImage"></app-popup>
+                    <small class="text-red-500" *ngIf="!fileInfo">Image
                         is required.</small>
                 </div>
 
@@ -199,14 +203,13 @@
                                 (change)="onFileChange($event, 'gallery')" multiple />
                         </button>
                     </div>
-                    <span class="file-info truncate-text"  *ngFor="let file of galleryFiles" >
+                    <span class="file-info truncate-text" *ngFor="let file of galleryFiles">
                         <!-- *ngFor="let file of galleryFiles" -->
-                      <span *ngIf="showFileName">{{ file.name ? file.name:file | split: 'Products/':1}}</span>  
+                        <span *ngIf="showFileName">{{ file.name ? file.name:file | split: 'Products/':1}}</span>
                         <!-- <img src="../../../../../assets/images/preview-icon-8.jpg"  alt="" style="width: 40%;"> -->
                     </span>
-                    <app-popup *ngIf="galleryFiles.length > 0" [galleries]="galleryImages"></app-popup>
-                      <small class="text-red-500"
-                        *ngIf="galleryFiles.length == 0 && this.productForm.valid">Gallery
+                    <app-popup *ngIf="galleryFiles.length > 0" [galleries]="galleryImages" [addedGallery]="addGalleryImage"></app-popup>
+                    <small class="text-red-500" *ngIf="galleryFiles.length == 0 && this.productForm.invalid">Gallery
                         is required.</small>
                 </div>
 

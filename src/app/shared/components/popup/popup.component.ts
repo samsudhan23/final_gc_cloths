@@ -15,11 +15,33 @@ import { SplitPipe } from "../../core/pipes/split.pipe";
 export class PopupComponent {
   visible: boolean = false;
   @Input() galleries: any = [];
+  @Input() addedGallery: any = [];
   @Input() single: any = '';
+  @Input() added: any = '';
+  base64Data: string | ArrayBuffer | null = '';
 
   constructor() {
   }
   showDialog() {
+    if (this.addedGallery) {
+      this.galleries = this.addedGallery;
+      this.galleries.forEach((element: any, index: number) => {
+        if (element instanceof File) {
+          const reader = new FileReader();
+          reader.readAsDataURL(element);
+          reader.onload = () => {
+            this.galleries[index] = reader.result as string;
+          };
+        }
+      });
+    }
+    if (this.added instanceof File) {
+      const reader = new FileReader();
+      reader.readAsDataURL(this.added);
+      reader.onload = () => {
+        this.base64Data = reader.result;
+      };
+    }
     this.visible = true;
   }
 }
