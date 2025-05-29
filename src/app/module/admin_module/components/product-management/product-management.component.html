@@ -208,7 +208,7 @@
                         <span *ngIf="showFileName">{{ file.name ? file.name:file | split: 'Products/':1}}</span>
                         <!-- <img src="../../../../../assets/images/preview-icon-8.jpg"  alt="" style="width: 40%;"> -->
                     </span>
-                    <app-popup *ngIf="galleryFiles.length > 0" [galleries]="galleryImages" [addedGallery]="addGalleryImage"></app-popup>
+                    <app-popup *ngIf="galleryFiles.length > 0" [galleries]="galleryImages"></app-popup>
                     <small class="text-red-500" *ngIf="galleryFiles.length == 0 && this.productForm.invalid">Gallery
                         is required.</small>
                 </div>

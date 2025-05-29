@@ -131,7 +131,10 @@ export class UserManagementComponent {
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.userService.deleteUser(this.selectedUser[0]._id).subscribe((res: any) => {
+        const dele = {
+          ids: this.selectedUser.map((ite: { _id: any; }) => ite._id)
+        }
+        this.userService.deleteUser(dele).subscribe((res: any) => {
           if (res.code === 200 && res.success === true) {
             this.toast.success(res.message);
             this.loadUsers()
@@ -151,7 +154,10 @@ export class UserManagementComponent {
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.userService.deleteUser(user._id).subscribe((res: any) => {
+        const dele = {
+          ids: user._id
+        }
+        this.userService.deleteUser(dele).subscribe((res: any) => {
           if (res.code === 200 && res.success === true) {
             this.toast.success(res.message);
             this.loadUsers()
