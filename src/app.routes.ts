@@ -6,6 +6,7 @@ import { Landing } from './app/pages/landing/landing';
 import { Notfound } from './app/pages/notfound/notfound';
 import { RoleGuard } from './app/shared/core/role.guard';
 import { SignInComponent } from './app/pages/auth/sign-in/sign-in.component';
+import { ResetpasswordComponent } from './app/pages/auth/resetpassword/resetpassword.component';
 
 export const appRoutes: Routes = [
 
@@ -33,6 +34,9 @@ export const appRoutes: Routes = [
     { path: 'notfound', component: Notfound },
     {
         path: 'login', component: SignInComponent
+    },
+    {
+        path: 'reset-password/:token', component: ResetpasswordComponent
     },
     // { path: 'auth', loadChildren: () => import('./app/pages/auth/auth.routes') },
     { path: '**', redirectTo: '/notfound' }
