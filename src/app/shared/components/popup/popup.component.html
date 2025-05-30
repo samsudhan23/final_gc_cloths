@@ -13,28 +13,30 @@
         </div>
     </div> -->
     <div class="grid grid-cols-2 gap-4">
-        <div *ngFor="let preview of galleryPreviews; let i = index" class="mb-[3rem]">
-            <p-image class="rounded-md p-2 border-dotted border-lime-600 w-full mb-6 popupImg" [src]="preview"
-                [preview]="true" alt="Image" width="500">
+        <div *ngFor="let preview of galleryPreviews; let i = index" class="mb-[3rem] relative group">
+            <div class="relative">
+                <p-image class="rounded-md p-2 border-dotted border-lime-600 w-full mb-6 popupImg" [src]="preview"
+                    [preview]="true" alt="Image" width="500">
 
-                <!-- Optional: Custom indicator icon -->
-                <ng-template #indicator>
-                    <i class="pi pi-search"></i>
-                </ng-template>
+                    <ng-template #indicator>
+                        <i class="pi pi-search"></i>
+                    </ng-template>
 
-                <!-- Thumbnail image -->
-                <ng-template #image>
-                    <img [src]="preview" alt="image" width="500" />
-                </ng-template>
+                    <ng-template #image>
+                        <img [src]="preview" alt="image" width="500" />
+                    </ng-template>
 
-                <!-- Preview popup -->
-                <ng-template #preview let-style="style" let-previewCallback="previewCallback">
-                    <img [src]="preview" alt="image" [style]="style" (click)="previewCallback()" />
-                </ng-template>
-
-            </p-image>
+                    <ng-template #preview let-style="style" let-previewCallback="previewCallback">
+                        <img [src]="preview" alt="image" [style]="style" (click)="previewCallback()" />
+                    </ng-template>
+                </p-image>
+                <!-- Delete Icon shown on hover -->
+                <p-button [rounded]="true" class="absolute top-2 right-3 hidden group-hover:block" icon="pi pi-trash"
+                    aria-label="Save" severity="danger" (click)="deleteImage(i)" />
+            </div>
             <div class="file-info rounded-md shadow-lg mt-4 p-2 border-dotted border-lime-600 bg-green-400">
-                {{ getGalleryDisplayName(galleries[i]) }}</div>
+                {{ getGalleryDisplayName(galleries[i]) }}
+            </div>
         </div>
     </div>
 
