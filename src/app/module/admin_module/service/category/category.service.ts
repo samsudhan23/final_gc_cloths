@@ -14,32 +14,26 @@ export interface Category {
 })
 export class CategoryService {
 
-  private apiUrl = 'http://localhost:5000/api/categories';
-  private getapiUrl = 'http://localhost:5000/api/getCategories';
-  private updateapiUrl = 'http://localhost:5000/api/updateCategory';
-  private deleteapiUrl = 'http://localhost:5000/api/deleteCategory';
-
   constructor(private http: HttpClient) { }
 
-
   getCategoriesMasterList(): Observable<any[]> {
-    return this.http.get<any[]>(this.getapiUrl);
+    return this.http.get<any[]>(enviornment.url +"getCategories");
   }
 
   getCategoryMaterById(id: number): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/${id}`);
+    return this.http.get<any>(`${enviornment.url}categories/${id}`);
   }
 
   postCategoryMaster(categoryData: any): Observable<any> {
-    return this.http.post(this.apiUrl, categoryData);
+    return this.http.post(enviornment.url +"categories", categoryData);
   }
 
   updateCategoryMaster(id: any, categoryData: any): Observable<any> {
-    return this.http.put(`${this.updateapiUrl}/${id}`, categoryData);
+    return this.http.put(`${enviornment.url}updateCategory/${id}`, categoryData);
   }
 
   deleteCategoryMaster(id: any): Observable<any> {
-    return this.http.delete(`${this.deleteapiUrl}/${id}`);
+    return this.http.delete(`${enviornment.url}deleteCategory/${id}`);
   }
   getGenderList(): Observable<any[]> {
     return this.http.get<any[]>(enviornment.url + 'genderList');

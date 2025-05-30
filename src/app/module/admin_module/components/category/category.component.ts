@@ -119,7 +119,6 @@ export class CategoryComponent {
    categoryUsers(): void {
      this.categoryService.getCategoriesMasterList().subscribe((res: any) => {
        this.categoryList = res.result;
-       console.log('this.categoryList: ', this.categoryList);
      }, (error: any) => {
        console.log('error: ', error);
  

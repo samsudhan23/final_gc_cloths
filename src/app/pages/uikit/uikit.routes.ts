@@ -20,7 +20,6 @@ import { CategoryComponent } from '../../module/admin_module/components/category
 
 export default [
     { path: 'user', data: { breadcrumb: 'Form Layout' }, component: UserManagementComponent },
-     { path: 'category', data: { breadcrumb: 'Form Layout' }, component: CategoryComponent },
     { path: 'products', component: ProductManagementComponent },
     { path: 'button', data: { breadcrumb: 'Button' }, component: ButtonDemo },
     { path: 'charts', data: { breadcrumb: 'Charts' }, component: ChartDemo },
