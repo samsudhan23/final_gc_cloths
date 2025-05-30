@@ -190,7 +190,10 @@ export class ProductManagementComponent {
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.product.deleteProducts(this.selectedUser[0]._id).subscribe((res: any) => {
+        const dele = {
+          ids: this.selectedUser.map((ite: { _id: any; }) => ite._id)
+        }
+        this.product.deleteProducts(dele).subscribe((res: any) => {
           if (res.code === 200 && res.success === true) {
             this.toast.success(res.message);
             this.productList()
@@ -210,7 +213,10 @@ export class ProductManagementComponent {
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.product.deleteProducts(data._id).subscribe((res: any) => {
+        const dele = {
+          ids: data._id
+        }
+        this.product.deleteProducts(dele).subscribe((res: any) => {
           if (res.code === 200 && res.success === true) {
             this.toast.success(res.message);
             this.productList()

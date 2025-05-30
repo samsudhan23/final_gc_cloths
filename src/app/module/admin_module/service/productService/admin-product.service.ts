@@ -22,7 +22,7 @@ export class AdminProductService {
     return this.http.put<any>(enviornment.url + "updateProducts/" + id, data);
   }
 
-    deleteProducts(id: string): Observable<any> {
-    return this.http.delete(`${enviornment.url}deleteProducts/${id}`);
+  deleteProducts(id: { ids: string[] | number[] }): Observable<any> {
+    return this.http.post(`${enviornment.url}deleteProducts`, id);  
   }
 }

@@ -9,7 +9,7 @@ import { ImageModule } from 'primeng/image';
 
 @Component({
   selector: 'app-popup',
-  imports: [Dialog, ButtonModule, InputTextModule, AvatarModule, CommonModule, SplitPipe,ImageModule],
+  imports: [Dialog, ButtonModule, InputTextModule, AvatarModule, CommonModule, SplitPipe, ImageModule],
   templateUrl: './popup.component.html',
   styleUrl: './popup.component.scss'
 })
@@ -20,7 +20,7 @@ export class PopupComponent {
   @Input() added: any = '';
   galleryPreviews: any = [];
   base64Data: string | ArrayBuffer | null = '';
-  
+
   constructor() {
   }
 
@@ -72,4 +72,8 @@ export class PopupComponent {
     return '';
   }
 
+  deleteImage(index: number) {
+    this.galleryPreviews.splice(index, 1);
+    this.galleries.splice(index, 1);
+  }
 }
