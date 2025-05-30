@@ -90,7 +90,6 @@ export class ProductManagementComponent {
   imageFile!: File;
   galleryFiles: any[] = [];
   galleryImages: any;
-  addGalleryImage: any;
   singleImage: any;
   addImage: any;
   selectedSizes: any[] = [];
@@ -143,7 +142,6 @@ export class ProductManagementComponent {
     this.product.getProductlist().subscribe((res) => {
       if (res.success === true || res.code === 200) {
         this.productData = res.result
-        console.log('this.productData: ', this.productData);
       }
 
     })
@@ -161,7 +159,6 @@ export class ProductManagementComponent {
         const newFiles = Array.from(target.files)
         this.galleryFiles = [...this.galleryFiles, ...newFiles]
         this.galleryImages = this.galleryFiles
-        this.addGalleryImage = this.galleryFiles;
         this.showFileName = true;
       }
     }
@@ -228,7 +225,6 @@ export class ProductManagementComponent {
     this.productForm.reset();
     this.galleryFiles = []
     this.galleryImages = []
-    this.addGalleryImage = []
     this.singleImage = '';
     this.addImage = '';
     this.fileInfo = '';
@@ -245,7 +241,6 @@ export class ProductManagementComponent {
       this.productForm.reset();
       this.galleryFiles = []
       this.galleryImages = [];
-      this.addGalleryImage = []
       this.singleImage = '';
       this.addImage = '';
       this.fileInfo = '';
@@ -291,7 +286,6 @@ export class ProductManagementComponent {
 
   }
   onSubmit(): void {
-    console.log(this.productForm.value);
     if (this.productForm.invalid) {
       this.productForm.markAllAsTouched();
     }
