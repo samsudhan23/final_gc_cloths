@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Component, Inject, PLATFORM_ID } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
 import { RippleModule } from 'primeng/ripple';
 import { StyleClassModule } from 'primeng/styleclass';
 import { ButtonModule } from 'primeng/button';
@@ -10,6 +10,9 @@ import { FeaturesWidget } from './components/featureswidget';
 import { HighlightsWidget } from './components/highlightswidget';
 import { PricingWidget } from './components/pricingwidget';
 import { FooterWidget } from './components/footerwidget';
+import { isPlatformBrowser } from '@angular/common';
+import { AuthenticationService } from '../service/authentication.service';
+import AOS from 'aos';
 
 @Component({
     selector: 'app-landing',
@@ -28,4 +31,25 @@ import { FooterWidget } from './components/footerwidget';
         </div>
     `
 })
-export class Landing {}
+export class Landing {
+
+    constructor(@Inject(PLATFORM_ID) private platformId: Object,
+        private auth: AuthenticationService,
+        private router: Router
+    ) { }
+
+    ngOnInit() {
+        const user = this.auth.getCurrentUser();
+        if (user?.role === 'admin') {
+            this.router.navigate(['/admin']);
+        } else if (user?.role === 'user') {
+            this.router.navigate(['/user']);
+        }
+        if (isPlatformBrowser(this.platformId)) {
+            AOS.init({ disable: 'mobile', duration: 1200, });
+            AOS.refresh();
+            // this.changeSlide();
+        }
+
+    }
+}

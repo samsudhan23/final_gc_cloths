@@ -1,3 +1,16 @@
 ::ng-deep .userModel1 .p-dialog-content {
     overflow-y: auto;
 }
+
+
+::ng-deep .popupImg .p-image-toolbar {
+    background-color: gray;
+}
+
+::ng-deep .popupImg .p-image-preview {
+    height: 100%;
+    border: 1px solid rgb(196, 189, 189);
+    padding: 2px;
+    // border-radius: 10px;
+    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}

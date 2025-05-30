@@ -91,6 +91,7 @@ export class ProductManagementComponent {
   galleryFiles: any[] = [];
   galleryImages: any;
   singleImage: any;
+  addImage: any;
   selectedSizes: any[] = [];
 
   constructor(
@@ -106,10 +107,10 @@ export class ProductManagementComponent {
       gender: ['', [Validators.required]],
       price: ['', Validators.required],
       discountPrice: [''],
-      sizes: [0, Validators.required],
+      sizes: ['', Validators.required],
       stock: ['', Validators.required],
       tags: [''],
-      category: [0, Validators.required],
+      category: ['', Validators.required],
     });
   }
 
@@ -141,7 +142,6 @@ export class ProductManagementComponent {
     this.product.getProductlist().subscribe((res) => {
       if (res.success === true || res.code === 200) {
         this.productData = res.result
-        console.log('this.productData: ', this.productData);
       }
 
     })
@@ -153,6 +153,7 @@ export class ProductManagementComponent {
         this.imageFile = target.files[0]; // single image
         this.fileInfo = this.imageFile.name
         this.singleImage = this.fileInfo
+        this.addImage = this.imageFile
         this.showFileName = true;
       } else if (type === 'gallery') { //Multiple images
         const newFiles = Array.from(target.files)
@@ -225,6 +226,7 @@ export class ProductManagementComponent {
     this.galleryFiles = []
     this.galleryImages = []
     this.singleImage = '';
+    this.addImage = '';
     this.fileInfo = '';
     this.productForm.get('discountPrice')?.setValue('')
     this.productForm.get('price')?.setValue('')
@@ -240,6 +242,7 @@ export class ProductManagementComponent {
       this.galleryFiles = []
       this.galleryImages = [];
       this.singleImage = '';
+      this.addImage = '';
       this.fileInfo = '';
       this.productForm.get('discountPrice')?.setValue('')
       this.productForm.get('price')?.setValue('')
@@ -283,7 +286,6 @@ export class ProductManagementComponent {
 
   }
   onSubmit(): void {
-    console.log(this.productForm.value);
     if (this.productForm.invalid) {
       this.productForm.markAllAsTouched();
     }

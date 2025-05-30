@@ -1,27 +1,80 @@
-<!-- <p-button (click)="showDialog()" label="Show" /> -->
 <img src="../../../../../assets/images/preview-icon-8.jpg" (click)="showDialog()" alt=""
     style="width: 20%; cursor: pointer;">
-<!-- <p-dialog [(visible)]="visible" [modal]="true" [style]="{ width: '25rem' }">
-    <div *ngFor="let ite of galleries">
-        <img src="{{ite.name ? ite.name:ite}}" alt="" style="">
-    </div>
-</p-dialog> -->
 
-
-<p-dialog class="userModel1" header="Product Images" [modal]="true" [(visible)]="visible" [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }">
-    <div class="grid grid-cols-2 gap-4" *ngIf="galleries.lenth != 0">
-        <div *ngFor="let ite of galleries">
+<p-dialog [draggable]="false" class="userModel1" header="Product Images" [modal]="true" [(visible)]="visible"
+    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }">
+    <!-- <div class="grid grid-cols-2 gap-4" *ngIf="galleryPreviews.lenth != 0">
+        <div *ngFor="let ite of galleryPreviews; let i = index">
             <img class="rounded-md shadow-lg p-2 border border-dotted border-lime-600 h-[381px] w-full mb-6"
-                src="{{ite.name ? ite.name:ite}}" alt="productImages" style="">
-            <span class="file-info rounded-md shadow-lg p-2 border border-dotted border-lime-600 bg-green-400">{{
-                ite.name ? ite.name:ite | split: '/' }}</span>
+                src="{{ite ? ite :ite.name ? ite.name:ite}}" alt="productImages">
+
+            <span class="file-info rounded-md shadow-lg p-2 border border-dotted border-lime-600 bg-green-400">
+                {{ getGalleryDisplayName(galleries[i]) }}</span>
+        </div>
+    </div> -->
+    <div class="grid grid-cols-2 gap-4">
+        <div *ngFor="let preview of galleryPreviews; let i = index" class="mb-[3rem]">
+            <p-image class="rounded-md p-2 border-dotted border-lime-600 w-full mb-6 popupImg" [src]="preview"
+                [preview]="true" alt="Image" width="500">
+
+                <!-- Optional: Custom indicator icon -->
+                <ng-template #indicator>
+                    <i class="pi pi-search"></i>
+                </ng-template>
+
+                <!-- Thumbnail image -->
+                <ng-template #image>
+                    <img [src]="preview" alt="image" width="500" />
+                </ng-template>
+
+                <!-- Preview popup -->
+                <ng-template #preview let-style="style" let-previewCallback="previewCallback">
+                    <img [src]="preview" alt="image" [style]="style" (click)="previewCallback()" />
+                </ng-template>
+
+            </p-image>
+            <div class="file-info rounded-md shadow-lg mt-4 p-2 border-dotted border-lime-600 bg-green-400">
+                {{ getGalleryDisplayName(galleries[i]) }}</div>
         </div>
     </div>
+
+    <!-- <div class="grid grid-cols-2 gap-4" *ngIf="galleryPreviews.length != 0">
+        <div *ngFor="let preview of galleryPreviews; let i = index">
+            <img class="rounded-md shadow-lg p-2 border border-dotted border-lime-600 h-[381px] w-full mb-6"
+                [src]="preview" alt="productImages" />
+
+            <span class="file-info rounded-md shadow-lg p-2 border border-dotted border-lime-600 bg-green-400">
+                {{ getGalleryDisplayName(galleries[i]) }}
+            </span>
+        </div>
+    </div> -->
     <div *ngIf="single">
-        <img class="rounded-md shadow-lg p-2 border border-dotted border-lime-600 h-[381px] w-full pb-2  mb-6"
-            [src]="single" alt="productImage" style="">
+        <!-- <img class="rounded-md shadow-lg p-2 border border-dotted border-lime-600 h-[381px] w-full pb-2  mb-6"
+            [src]="base64Data ? base64Data :single" alt="productImage">
         <span class="file-info rounded-md shadow-lg p-2 border border-dotted border-lime-600 bg-green-400">{{ single |
-            split: '/' }}</span>
+            split: '/' }}</span> -->
+
+        <p-image class="rounded-md p-2 border-dotted border-lime-600 w-full mb-6 popupImg"
+            [src]="base64Data ? base64Data :single" [preview]="true" alt="Image" width="800">
+
+            <!-- Optional: Custom indicator icon -->
+            <ng-template #indicator>
+                <i class="pi pi-search"></i>
+            </ng-template>
+
+            <!-- Thumbnail image -->
+            <ng-template #image>
+                <img [src]="base64Data ? base64Data :single" alt="image" width="800" />
+            </ng-template>
+
+            <!-- Preview popup -->
+            <ng-template #preview let-style="style" let-previewCallback="previewCallback">
+                <img [src]="base64Data ? base64Data :single" alt="image" [style]="style" (click)="previewCallback()" />
+            </ng-template>
+
+        </p-image>
+        <div class="file-info rounded-md shadow-lg mt-4 p-2 border-dotted border-lime-600 bg-green-400">
+            {{ single | split: '/' }}</div>
     </div>
 
 </p-dialog>
