@@ -1,0 +1,952 @@
+<div class="page">
+    <!-- Banner Slider -->
+    <p-carousel [value]="images" [numVisible]="1" [numScroll]="1" [circular]="true" [autoplayInterval]="3000"
+        [responsiveOptions]="responsiveOptions">
+        <ng-template pTemplate="item" let-image>
+            <div class="border rounded m-2 text-center">
+                <img [src]="image" class="w-full rounded" style=" object-fit: cover;" />
+            </div>
+        </ng-template>
+    </p-carousel>
+
+    <!-- marquee -->
+    <section class="marquee-section">
+        <div class="w-layout-blockcontainer container-fluid padding-zero w-container">
+            <div class="marquee-block">
+                <div class="marquee-content"
+                    style="will-change: transform; transform: translate3d(-41.875%, 0px, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); transform-style: preserve-3d;">
+                    <div class="marquee-item"><img
+                            src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/672c4cb442c9d8b8113fa06b_icon1.avif"
+                            loading="lazy" alt="icon" class="marquee-image">
+                        <div class="marquee-text">Men</div><img
+                            src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/672c4cb442c9d8b8113fa06b_icon1.avif"
+                            loading="lazy" alt="icon" class="marquee-image">
+                        <div class="marquee-text">Women<br></div><img
+                            src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/672c4cb442c9d8b8113fa06b_icon1.avif"
+                            loading="lazy" alt="icon" class="marquee-image">
+                        <div class="marquee-text">Kids</div><img
+                            src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/672c4cb442c9d8b8113fa06b_icon1.avif"
+                            loading="lazy" alt="icon" class="marquee-image">
+                        <div class="marquee-text">Accessories<br></div><img
+                            src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/672c4cb442c9d8b8113fa06b_icon1.avif"
+                            loading="lazy" alt="icon" class="marquee-image">
+                        <div class="marquee-text">Footware<br></div><img
+                            src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/672c4cb442c9d8b8113fa06b_icon1.avif"
+                            loading="lazy" alt="icon" class="marquee-image">
+                        <div class="marquee-text">Big sale</div><img
+                            src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/672c4cb442c9d8b8113fa06b_icon1.avif"
+                            loading="lazy" alt="icon" class="marquee-image">
+                        <div class="marquee-text">New collection<br></div><img
+                            src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/672c4cb442c9d8b8113fa06b_icon1.avif"
+                            loading="lazy" alt="icon" class="marquee-image">
+                        <div class="marquee-text">30% discount</div>
+                    </div>
+                </div>
+                <div class="marquee-content"
+                    style="will-change: transform; transform: translate3d(-41.875%, 0px, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); transform-style: preserve-3d;">
+                    <div class="marquee-item"><img
+                            src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/672c4cb442c9d8b8113fa06b_icon1.avif"
+                            loading="lazy" alt="icon" class="marquee-image">
+                        <div class="marquee-text">Men</div><img
+                            src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/672c4cb442c9d8b8113fa06b_icon1.avif"
+                            loading="lazy" alt="icon" class="marquee-image">
+                        <div class="marquee-text">Women<br></div><img
+                            src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/672c4cb442c9d8b8113fa06b_icon1.avif"
+                            loading="lazy" alt="icon" class="marquee-image">
+                        <div class="marquee-text">Kids</div><img
+                            src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/672c4cb442c9d8b8113fa06b_icon1.avif"
+                            loading="lazy" alt="icon" class="marquee-image">
+                        <div class="marquee-text">Accessories<br></div><img
+                            src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/672c4cb442c9d8b8113fa06b_icon1.avif"
+                            loading="lazy" alt="icon" class="marquee-image">
+                        <div class="marquee-text">Footware<br></div><img
+                            src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/672c4cb442c9d8b8113fa06b_icon1.avif"
+                            loading="lazy" alt="icon" class="marquee-image">
+                        <div class="marquee-text">Big sale</div><img
+                            src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/672c4cb442c9d8b8113fa06b_icon1.avif"
+                            loading="lazy" alt="icon" class="marquee-image">
+                        <div class="marquee-text">New collection<br></div><img
+                            src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/672c4cb442c9d8b8113fa06b_icon1.avif"
+                            loading="lazy" alt="icon" class="marquee-image">
+                        <div class="marquee-text">30% discount</div>
+                    </div>
+                </div>
+                <div class="marquee-content"
+                    style="will-change: transform; transform: translate3d(-41.875%, 0px, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); transform-style: preserve-3d;">
+                    <div class="marquee-item"><img
+                            src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/672c4cb442c9d8b8113fa06b_icon1.avif"
+                            loading="lazy" alt="icon" class="marquee-image">
+                        <div class="marquee-text">Men</div><img
+                            src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/672c4cb442c9d8b8113fa06b_icon1.avif"
+                            loading="lazy" alt="icon" class="marquee-image">
+                        <div class="marquee-text">Women<br></div><img
+                            src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/672c4cb442c9d8b8113fa06b_icon1.avif"
+                            loading="lazy" alt="icon" class="marquee-image">
+                        <div class="marquee-text">Kids</div><img
+                            src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/672c4cb442c9d8b8113fa06b_icon1.avif"
+                            loading="lazy" alt="icon" class="marquee-image">
+                        <div class="marquee-text">Accessories<br></div><img
+                            src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/672c4cb442c9d8b8113fa06b_icon1.avif"
+                            loading="lazy" alt="icon" class="marquee-image">
+                        <div class="marquee-text">Footware<br></div><img
+                            src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/672c4cb442c9d8b8113fa06b_icon1.avif"
+                            loading="lazy" alt="icon" class="marquee-image">
+                        <div class="marquee-text">Big sale</div><img
+                            src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/672c4cb442c9d8b8113fa06b_icon1.avif"
+                            loading="lazy" alt="icon" class="marquee-image">
+                        <div class="marquee-text">New collection<br></div><img
+                            src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/672c4cb442c9d8b8113fa06b_icon1.avif"
+                            loading="lazy" alt="icon" class="marquee-image">
+                        <div class="marquee-text">30% discount</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Product Section -->
+    <section class="product-section">
+        <div class="w-layout-blockcontainer container-fluid w-container">
+            <div class="product-section-wrapper">
+                <div class="product-heading-wrapper">
+                    <!-- Product Heading -->
+                    <div class="w-layout-grid section-title-grid">
+                        <div class="section-title">
+                            <h2 class="section-heading">Our latest products</h2>
+                        </div>
+                    </div>
+                    <!-- Product Body -->
+                    <div class="product-section-inner-1">
+                        <div class="products-tab w-tabs">
+                            <div class="products-tab-menu w-tab-menu" role="tablist">
+                                <a data-w-tab="Tab 1" class="products-tab-link w-inline-block w-tab-link w--current"
+                                    id="w-tabs-0-data-w-tab-0" href="#w-tabs-0-data-w-pane-0" role="tab"
+                                    aria-controls="w-tabs-0-data-w-pane-0" aria-selected="true">
+                                    <div class="products-tab-nav">All</div>
+                                </a><a data-w-tab="Tab 2" class="products-tab-link w-inline-block w-tab-link"
+                                    id="w-tabs-0-data-w-tab-1" href="#w-tabs-0-data-w-pane-1" role="tab"
+                                    aria-controls="w-tabs-0-data-w-pane-1" aria-selected="false" tabindex="-1">
+                                    <div class="products-tab-nav">T-Shirt<br></div>
+                                </a><a data-w-tab="Tab 3" class="products-tab-link w-inline-block w-tab-link"
+                                    tabindex="-1" id="w-tabs-0-data-w-tab-2" href="#w-tabs-0-data-w-pane-2" role="tab"
+                                    aria-controls="w-tabs-0-data-w-pane-2" aria-selected="false">
+                                    <div class="products-tab-nav">Shirt<br></div>
+                                </a><a data-w-tab="Tab 4" class="products-tab-link w-inline-block w-tab-link"
+                                    tabindex="-1" id="w-tabs-0-data-w-tab-3" href="#w-tabs-0-data-w-pane-3" role="tab"
+                                    aria-controls="w-tabs-0-data-w-pane-3" aria-selected="false">
+                                    <div class="products-tab-nav">Accessories</div>
+                                </a><a data-w-tab="Tab 5" class="product-tab-link w-inline-block w-tab-link"
+                                    tabindex="-1" id="w-tabs-0-data-w-tab-4" href="#w-tabs-0-data-w-pane-4" role="tab"
+                                    aria-controls="w-tabs-0-data-w-pane-4" aria-selected="false">
+                                    <div class="products-tab-nav">Footwear</div>
+                                </a>
+                            </div>
+                            <div class="products-tab-content w-tab-content">
+                                <div class="products-tab-pane w-tab-pane w--tab-active"
+                                    style="opacity: 1; transition: all, opacity 300ms;">
+                                    <div class="product-list-wrapper w-dyn-list">
+                                        <div class="product-cms-list w-dyn-items">
+                                            <!-- Product CARD -->
+                                            <div role="listitem" data-aos="fade-up"
+                                                class="product-list-item w-dyn-item">
+                                                <div data-aos="fade-up"
+                                                    style="opacity: 1; transform: translate3d(0px, 0px, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); transform-style: preserve-3d;"
+                                                    class="product-list-box">
+                                                    <!-- Card Content -->
+                                                    <div class="product-thumbnail">
+                                                        <img loading="lazy" alt="Product Image"
+                                                            src="../../../assets/images/Products/t-shirt.avif"
+                                                            sizes="(max-width: 479px) 100vw, (max-width: 767px) 41vw, (max-width: 991px) 43vw, (max-width: 1279px) 28vw, (max-width: 1439px) 20vw, (max-width: 1919px) 19vw, 24vw"
+                                                            srcset="../../../assets/images/Products/t-shirt.avif 500w, ../../../assets/images/Products/t-shirt.avif 707w"
+                                                            class="product-image"
+                                                            style="transform: translate3d(0px, 0px, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); transform-style: preserve-3d;">
+                                                        <!-- Product Marquee -->
+                                                        <div class="product-marquee-block" style="opacity: 0;">
+                                                            <div class="product-marquee-item"
+                                                                style="transform: translate3d(-82.082%, 0px, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); transform-style: preserve-3d; will-change: transform;">
+                                                                <a href="/product/kids-footwear"
+                                                                    class="product-marquee-flex w-inline-block">
+                                                                    <div class="product-marquee-text">buy now</div><img
+                                                                        loading="lazy"
+                                                                        src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/6746a168123d9aecedc54fde_cart-img.webp"
+                                                                        alt="cart-img" class="product-marquee-image">
+                                                                </a><a href="/product/kids-footwear"
+                                                                    class="product-marquee-flex w-inline-block">
+                                                                    <div class="product-marquee-text">buy now</div><img
+                                                                        loading="lazy"
+                                                                        src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/6746a168123d9aecedc54fde_cart-img.webp"
+                                                                        alt="cart-img
+                                                " class="product-marquee-image">
+                                                                </a><a href="/product/kids-footwear"
+                                                                    class="product-marquee-flex w-inline-block">
+                                                                    <div class="product-marquee-text">buy now</div><img
+                                                                        loading="lazy"
+                                                                        src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/6746a168123d9aecedc54fde_cart-img.webp"
+                                                                        alt="cart-img
+                                                " class="product-marquee-image">
+                                                                </a><a href="/product/kids-footwear"
+                                                                    class="product-marquee-flex w-inline-block">
+                                                                    <div class="product-marquee-text">buy now</div><img
+                                                                        loading="lazy"
+                                                                        src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/6746a168123d9aecedc54fde_cart-img.webp"
+                                                                        alt="cart-img
+                                                " class="product-marquee-image">
+                                                                </a><a href="/product/kids-footwear"
+                                                                    class="product-marquee-flex w-inline-block">
+                                                                    <div class="product-marquee-text">buy now</div><img
+                                                                        loading="lazy"
+                                                                        src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/6746a168123d9aecedc54fde_cart-img.webp"
+                                                                        alt="cart-img
+                                                " class="product-marquee-image">
+                                                                </a>
+                                                            </div>
+                                                            <div class="product-marquee-item"
+                                                                style="transform: translate3d(-82.082%, 0px, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); transform-style: preserve-3d; will-change: transform;">
+                                                                <a href="/product/kids-footwear"
+                                                                    class="product-marquee-flex w-inline-block">
+                                                                    <div class="product-marquee-text">buy now</div><img
+                                                                        loading="lazy"
+                                                                        src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/6746a168123d9aecedc54fde_cart-img.webp"
+                                                                        alt="cart-img
+                                                " class="product-marquee-image">
+                                                                </a><a href="/product/kids-footwear"
+                                                                    class="product-marquee-flex w-inline-block">
+                                                                    <div class="product-marquee-text">buy now</div><img
+                                                                        loading="lazy"
+                                                                        src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/6746a168123d9aecedc54fde_cart-img.webp"
+                                                                        alt="cart-img
+                                                " class="product-marquee-image">
+                                                                </a><a href="/product/kids-footwear"
+                                                                    class="product-marquee-flex w-inline-block">
+                                                                    <div class="product-marquee-text">buy now</div><img
+                                                                        loading="lazy"
+                                                                        src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/6746a168123d9aecedc54fde_cart-img.webp"
+                                                                        alt="cart-img
+                                                " class="product-marquee-image">
+                                                                </a><a href="/product/kids-footwear"
+                                                                    class="product-marquee-flex w-inline-block">
+                                                                    <div class="product-marquee-text">buy now</div><img
+                                                                        loading="lazy"
+                                                                        src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/6746a168123d9aecedc54fde_cart-img.webp"
+                                                                        alt="cart-img
+                                                " class="product-marquee-image">
+                                                                </a><a href="/product/kids-footwear"
+                                                                    class="product-marquee-flex w-inline-block">
+                                                                    <div class="product-marquee-text">buy now</div><img
+                                                                        loading="lazy"
+                                                                        src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/6746a168123d9aecedc54fde_cart-img.webp"
+                                                                        alt="cart-img
+                                                " class="product-marquee-image">
+                                                                </a>
+                                                            </div>
+                                                            <div class="product-marquee-item"
+                                                                style="transform: translate3d(-82.082%, 0px, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); transform-style: preserve-3d; will-change: transform;">
+                                                                <a href="/product/kids-footwear"
+                                                                    class="product-marquee-flex w-inline-block">
+                                                                    <div class="product-marquee-text">buy now</div><img
+                                                                        loading="lazy"
+                                                                        src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/6746a168123d9aecedc54fde_cart-img.webp"
+                                                                        alt="cart-img
+                                                " class="product-marquee-image">
+                                                                </a><a href="/product/kids-footwear"
+                                                                    class="product-marquee-flex w-inline-block">
+                                                                    <div class="product-marquee-text">buy now</div><img
+                                                                        loading="lazy"
+                                                                        src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/6746a168123d9aecedc54fde_cart-img.webp"
+                                                                        alt="cart-img
+                                                " class="product-marquee-image">
+                                                                </a><a href="/product/kids-footwear"
+                                                                    class="product-marquee-flex w-inline-block">
+                                                                    <div class="product-marquee-text">buy now</div><img
+                                                                        loading="lazy"
+                                                                        src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/6746a168123d9aecedc54fde_cart-img.webp"
+                                                                        alt="cart-img
+                                                " class="product-marquee-image">
+                                                                </a><a href="/product/kids-footwear"
+                                                                    class="product-marquee-flex w-inline-block">
+                                                                    <div class="product-marquee-text">buy now</div><img
+                                                                        loading="lazy"
+                                                                        src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/6746a168123d9aecedc54fde_cart-img.webp"
+                                                                        alt="cart-img
+                                                " class="product-marquee-image">
+                                                                </a><a href="/product/kids-footwear"
+                                                                    class="product-marquee-flex w-inline-block">
+                                                                    <div class="product-marquee-text">buy now</div><img
+                                                                        loading="lazy"
+                                                                        src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/6746a168123d9aecedc54fde_cart-img.webp"
+                                                                        alt="cart-img
+                                                " class="product-marquee-image">
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- Card Footer -->
+                                                    <div class="product-content">
+                                                        <div class="product-title-box"><a class="product-link">Kids
+                                                                footwear</a>
+                                                            <div class="product-price">₹&nbsp;550.00&nbsp;INR</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Effortless style for everyday wear -->
+    <section class="about-section">
+        <div class="w-layout-blockcontainer container-fluid padding-zero w-container">
+            <div class="about-section-grid">
+                <div class="left-span-box"><img src="../../../assets/images/effort.avif" loading="lazy"
+                        sizes="(max-width: 991px) 100vw, 50vw"
+                        srcset="../../../assets/images/effort.avif 500w, ../../../assets/images/effort.avif"
+                        alt="single-img" class="left-cta-image"
+                        style="will-change: transform; transform: translate3d(0px, -35.779px, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); transform-style: preserve-3d;">
+                </div>
+                <div class="right-span-box">
+                    <div class="background-overly"></div>
+                    <div class="right-overly-content">
+                        <div class="right-content-inner">
+                            <div class="product-section-title" data-aos="fade-up">
+                                <div class="section-title">
+                                    <h2 data-w-id="1b918afb-4095-eae3-7bfd-dc95470a2ea6"
+                                        style="opacity: 1; transform: translate3d(0px, 0px, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); transform-style: preserve-3d;"
+                                        class="title-heading">Effortless style for everyday wear</h2>
+                                    <p data-w-id="2aa3ce4c-3f7b-6545-5ae0-351b311ffda4"
+                                        style="opacity: 1; transform: translate3d(0px, 0px, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); transform-style: preserve-3d;"
+                                        class="title-description">Fashion is not something that exists in dresses only.
+                                        Fashion is in the sky, in the street, fashion has to do with ideas, the way we
+                                        live, what is happening.</p>
+                                </div>
+                                <div style="opacity: 1; transform: translate3d(0px, 0px, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); transform-style: preserve-3d;"
+                                    class="button-block"><a class="button w-inline-block">
+                                        <div class="button-hover"
+                                            style="transform: translate3d(0%, 0%, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); transform-style: preserve-3d;">
+                                        </div>
+                                        <div class="button-text">Shop now</div>
+                                    </a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Check our collection -->
+    <section class="collection-section">
+        <div class="w-layout-blockcontainer container-fluid w-container">
+            <div class="section-title">
+                <h2 class="title-header">Check our collection</h2>
+            </div>
+            <div class="collection-section-wrapper">
+                <div class="collection-items">
+                    <div class="collection-list-wrapper w-dyn-list">
+                        <div role="list" class="collection-cms-list w-dyn-items">
+                            <div role="listitem" class="collection-list-item w-dyn-item">
+                                <div class="collection-list-box">
+                                    <div class="collection-list-inner">
+                                        <div class="collection-thumbnail">
+                                            <div class="collection-list-image-box">
+                                                <div class="collection-image-box"><a
+                                                        class="collection-link w-inline-block"><img loading="lazy"
+                                                            src="../../../assets/images/Products/1 (1).avif"
+                                                            alt="category-img1" class="collection-image"></a></div>
+                                            </div>
+                                            <div class="collection-list-image-box">
+                                                <div class="collection-image-box"><a
+                                                        class="collection-link w-inline-block"><img loading="lazy"
+                                                            src="../../../assets/images/Products/1 (2).avif"
+                                                            alt="category-img2" class="collection-image"></a></div>
+                                            </div>
+                                            <div class="collection-list-image-box">
+                                                <div class="collection-image-box"><a
+                                                        class="collection-link w-inline-block"><img loading="lazy"
+                                                            src="../../../assets/images/Products/1 (3).avif"
+                                                            alt="category-img3" class="collection-image"></a></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="collection-content"><a class="collection-title">Shirt</a>
+                                        <div class="collection-text">( Men / Women / Kids )</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div role="listitem" class="collection-list-item w-dyn-item">
+                                <div class="collection-list-box">
+                                    <div class="collection-list-inner">
+                                        <div class="collection-thumbnail">
+                                            <div class="collection-list-image-box">
+                                                <div class="collection-image-box"><a
+                                                        class="collection-link w-inline-block"><img loading="lazy"
+                                                            src="../../../assets/images/Products/2 (1).avif"
+                                                            alt="category-img1" class="collection-image"></a></div>
+                                            </div>
+                                            <div class="collection-list-image-box">
+                                                <div class="collection-image-box"><a
+                                                        class="collection-link w-inline-block"><img loading="lazy"
+                                                            src="../../../assets/images/Products/2 (2).avif"
+                                                            alt="category-img2" class="collection-image"></a></div>
+                                            </div>
+                                            <div class="collection-list-image-box">
+                                                <div class="collection-image-box"><a
+                                                        class="collection-link w-inline-block"><img loading="lazy"
+                                                            src="../../../assets/images/Products/2 (3).avif"
+                                                            alt="category-img3" class="collection-image"></a></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="collection-content"><a class="collection-title">T-shirt</a>
+                                        <div class="collection-text">( Men / Women / Kids )</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Offer -->
+    <section class="cta-section">
+        <div class="w-layout-blockcontainer container-fluid padding-zero w-container">
+            <div class="cta-section-grid">
+                <div class="cta-left-span-box">
+                    <div class="cta-left-overly-color"></div>
+                    <div data-w-id="0de780de-56b4-531f-6f67-c88d5bf69823"
+                        style="opacity: 1; transform: translate3d(0px, 0px, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); transform-style: preserve-3d;"
+                        class="cta-left-overly-content">
+                        <div class="cta-left-content-inner" data-aos="fade-up">
+                            <div class="cta-section-title">
+                                <div class="section-title">
+                                    <div class="cta-subtitle">Limited Offer<br></div>
+                                    <h2 class="title-heading">Be cute be fashionable</h2>
+                                    <p class="title-decs">Fashion is about dressing according to what’s fashionable.
+                                        Style is more about being yourself. Fashion is the armor to survive the reality
+                                        of everyday life.</p>
+                                </div>
+                                <div class="cta-time-box">
+                                    <div class="day-box">
+                                        <div class="day-number">10<br></div>
+                                        <div class="day-text">Days<br></div>
+                                    </div>
+                                    <div class="day-box">
+                                        <div class="day-number">09</div>
+                                        <div class="day-text">Hrs</div>
+                                    </div>
+                                    <div class="day-box">
+                                        <div class="day-number">30<br></div>
+                                        <div class="day-text">Min</div>
+                                    </div>
+                                    <div class="day-box">
+                                        <div class="day-number">50<br></div>
+                                        <div class="day-text">Sec<br></div>
+                                    </div>
+                                </div>
+                                <div class="button-block"><a class="button w-inline-block">
+                                        <div class="button-hover"
+                                            style="transform: translate3d(0%, 0%, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); transform-style: preserve-3d;">
+                                        </div>
+                                        <div class="button-text">Shop now</div>
+                                    </a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="cta-right-span-box">
+                    <div class="cta-overly-right-box"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Product 2 -->
+    <section class="product-section-2">
+        <div class="w-layout-blockcontainer container-fluid w-container">
+            <div class="product-section-two-wrapper">
+                <div class="product-heading-wrapper">
+                    <div class="section-title">
+                        <h2 class="section-heading">Products with exciting price</h2>
+                    </div>
+                </div>
+                <div class="card-container">
+                    <div *ngFor="let product of products" class="card">
+                        <img [src]="product.image" alt="Product Image">
+                        <div class="card-content">
+                            <p class="heading">{{ product.name }}</p>
+                            <div style="display: flex; justify-content: space-between;">
+                                <p>₹ {{ product.price }} {{ product.currency }}</p>
+                                <p>Buy Now</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--Testimonials  -->
+    <!-- <section class="testimonial-section"> -->
+    <!-- <div class="w-layout-blockcontainer container w-container">
+            <div class="testimonial-section-title">
+                <div class="section-title">
+                    <h2 class="title-header">What our client say</h2>
+                </div>
+            </div>
+            <div class="testimonial-section-wrapper">
+                <div class="testimonial-section-content">
+                    <div class="testimonial-icon-box">
+                        <div class="testimonial-slider w-slider" role="region" aria-label="carousel">
+                            <div class="testimonial-mask w-slider-mask" id="w-slider-mask-2">
+                                <div class="testimonial-slide w-slide"
+                                    style="transition: all, transform 500ms; transform: translateX(-1759.5px); opacity: 1;"
+                                    aria-hidden="true">
+                                    <div class="testimonial-item" aria-hidden="true">
+                                        <div class="testimonial-item-inner" aria-hidden="true">
+                                            <div class="testimonial-content" aria-hidden="true">
+                                                <div class="testimonial-icon-box" aria-hidden="true">
+                                                    <div class="testimonial-icon" aria-hidden="true"><img
+                                                            src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/672ee104f73995494b6aa650_icon3.avif"
+                                                            loading="lazy" alt="icon3" class="testimonial-icon-image"
+                                                            aria-hidden="true"></div>
+                                                </div>
+                                                <div class="testimonial-quote-box" aria-hidden="true">
+                                                    <blockquote class="testimonial-quote" aria-hidden="true">I had the
+                                                        pleasure of shopping with GSCloths, and they exceeded all my
+                                                        expectations. From the moment I placed my order, everything was
+                                                        seamless and stylish.</blockquote>
+                                                </div>
+                                                <div class="testimonial-author-box" aria-hidden="true">
+                                                    <h3 class="testimonial-author-name" aria-hidden="true">James
+                                                        Pendragon</h3>
+                                                    <div class="testimonial-author-position" aria-hidden="true">-
+                                                        Operations Manager</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="testimonial-slide w-slide"
+                                    style="transition: all, transform 500ms; transform: translateX(-1759.5px); opacity: 1;">
+                                    <div class="testimonial-item">
+                                        <div class="testimonial-item-inner">
+                                            <div class="testimonial-content">
+                                                <div class="testimonial-icon-box">
+                                                    <div class="testimonial-icon"><img
+                                                            src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/672ee104f73995494b6aa650_icon3.avif"
+                                                            loading="lazy" alt="icon3" class="testimonial-icon-image">
+                                                    </div>
+                                                </div>
+                                                <div class="testimonial-quote-box">
+                                                    <blockquote class="testimonial-quote">I had the
+                                                        pleasure of working with the exceptional team at Regal Realty,
+                                                        they exceeded all my expectations. From the moment I stepped
+                                                        into their office, </blockquote>
+                                                </div>
+                                                <div class="testimonial-author-box">
+                                                    <h3 class="testimonial-author-name">Christian
+                                                        Cooper</h3>
+                                                    <div class="testimonial-author-position">-
+                                                        &nbsp;Designer Manager</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+    <!-- </section> -->
+
+    <section>
+        <div class="container py-5">
+            <h2 class="text-center mb-5">What our client say</h2>
+            <div class="row g-4">
+                <!-- Testimonial 1 -->
+                <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3">
+                    <div class="testimonial-card text-center">
+                        <div class="testimonial-icon">❝</div>
+                        <p class="testimonial">
+                            I had the pleasure of shopping with <strong>GSCloths</strong>, and they exceeded all my
+                            expectations. Everything was seamless and stylish.
+                        </p>
+                        <div class="testimonial-name">James Pendragon</div>
+                        <div class="testimonial-role">Operations Manager</div>
+                    </div>
+                </div>
+
+                <!-- Testimonial 2 -->
+                <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3">
+                    <div class="testimonial-card text-center">
+                        <div class="testimonial-icon">❝</div>
+                        <p class="testimonial">
+                            Working with the team at <strong>Regal Realty</strong> was amazing. From the moment I
+                            stepped into their office, they exceeded all expectations.
+                        </p>
+                        <div class="testimonial-name">Christian Cooper</div>
+                        <div class="testimonial-role">Designer Manager</div>
+                    </div>
+                </div>
+
+                <!-- Testimonial 3 -->
+                <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3">
+                    <div class="testimonial-card text-center">
+                        <div class="testimonial-icon">❝</div>
+                        <p class="testimonial">
+                            <strong>XYZ Corp</strong> delivered fantastic service and results. They understood our needs
+                            and went above and beyond.
+                        </p>
+                        <div class="testimonial-name">Linda Howard</div>
+                        <div class="testimonial-role">Marketing Lead</div>
+                    </div>
+                </div>
+
+                <!-- Testimonial 4 -->
+                <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3">
+                    <div class="testimonial-card text-center">
+                        <div class="testimonial-icon">❝</div>
+                        <p class="testimonial">
+                            I'm incredibly satisfied with <strong>Creative Designs</strong>. Their attention to detail
+                            and dedication made a huge impact.
+                        </p>
+                        <div class="testimonial-name">Mark Robinson</div>
+                        <div class="testimonial-role">Project Manager</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- marquee 2 section -->
+    <section class="marquee-2-section">
+        <div class="w-layout-blockcontainer container-fluid w-container">
+            <div class="marquee-block">
+                <div class="gallery-marquee-content"
+                    style="transform: translate3d(29.796%, 0px, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); transform-style: preserve-3d; will-change: transform;">
+                    <div class="marquee-2-wrapper">
+                        <div class="marquee-2-item">
+                            <div class="marquee-insta-box"><img
+                                    src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/672f011685cedb86cf8f28fd_gallery-image1.avif"
+                                    loading="lazy" alt="gallery1" class="marquee-2-image">
+                                <div class="gallery-overly" style="opacity: 0;"></div><a
+                                    href="https://www.instagram.com" target="_blank"
+                                    class="gallery-item w-inline-block">
+                                    <div class="gallery-icon-box"
+                                        style="opacity: 0; transform: translate3d(0px, 0px, 0px) scale3d(0, 0, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); transform-style: preserve-3d;">
+                                        <img src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/67443ccd94f09562c7828b8b_instagram.svg"
+                                            loading="lazy" width="Auto" alt="instagram" class="gallery-icon">
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="marquee-2-item style2">
+                            <div class="marquee-insta-box"><img
+                                    src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/672ef338c234a64d783b2ccc_gallery-image2.avif"
+                                    loading="lazy" alt="gallery2" class="marquee-2-image">
+                                <div class="gallery-overly" style="opacity: 0;"></div><a
+                                    href="https://www.instagram.com" target="_blank"
+                                    class="gallery-item w-inline-block">
+                                    <div class="gallery-icon-box"
+                                        style="opacity: 0; transform: translate3d(0px, 0px, 0px) scale3d(0, 0, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); transform-style: preserve-3d;">
+                                        <img src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/67443ccd94f09562c7828b8b_instagram.svg"
+                                            loading="lazy" alt="instagram" class="gallery-icon">
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="marquee-insta-box"><img
+                                    src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/672efe7cb2eea1e221722691_gallery-image3.png"
+                                    loading="lazy" alt="gallery3" class="marquee-2-image">
+                                <div class="gallery-overly" style="opacity: 0;"></div><a
+                                    href="https://www.instagram.com" class="gallery-item w-inline-block">
+                                    <div class="gallery-icon-box"
+                                        style="opacity: 0; transform: translate3d(0px, 0px, 0px) scale3d(0, 0, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); transform-style: preserve-3d;">
+                                        <img src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/67443ccd94f09562c7828b8b_instagram.svg"
+                                            loading="lazy" alt="instagram" class="gallery-icon">
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="marquee-2-item">
+                            <div class="marquee-insta-box"><img
+                                    src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/672f0273a9bcfa70337269c9_gallery-image4.avif"
+                                    loading="lazy" alt="gallery4" class="marquee-2-image">
+                                <div class="gallery-overly" style="opacity: 0;"></div><a
+                                    href="https://www.instagram.com" target="_blank"
+                                    class="gallery-item w-inline-block">
+                                    <div class="gallery-icon-box"
+                                        style="opacity: 0; transform: translate3d(0px, 0px, 0px) scale3d(0, 0, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); transform-style: preserve-3d;">
+                                        <img src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/67443ccd94f09562c7828b8b_instagram.svg"
+                                            loading="lazy" alt="instagram" class="gallery-icon">
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="marquee-2-item style2">
+                            <div class="marquee-insta-box"><img
+                                    src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/672f0272c234a64d7843175b_gallery-image5.avif"
+                                    loading="lazy" alt="gallery5" class="marquee-2-image">
+                                <div class="gallery-overly" style="opacity: 0;"></div><a
+                                    href="https://www.instagram.com" target="_blank"
+                                    class="gallery-item w-inline-block">
+                                    <div class="gallery-icon-box"
+                                        style="opacity: 0; transform: translate3d(0px, 0px, 0px) scale3d(0, 0, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); transform-style: preserve-3d;">
+                                        <img src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/67443ccd94f09562c7828b8b_instagram.svg"
+                                            loading="lazy" alt="instagram" class="gallery-icon">
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="marquee-insta-box"><img
+                                    src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/672f02738a0104824f89de54_gallery-image6.avif"
+                                    loading="lazy" alt="gallery6" class="marquee-2-image">
+                                <div class="gallery-overly" style="opacity: 0;"></div><a
+                                    href="https://www.instagram.com" target="_blank"
+                                    class="gallery-item w-inline-block">
+                                    <div class="gallery-icon-box"
+                                        style="opacity: 0; transform: translate3d(0px, 0px, 0px) scale3d(0, 0, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); transform-style: preserve-3d;">
+                                        <img src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/67443ccd94f09562c7828b8b_instagram.svg"
+                                            loading="lazy" alt="instagram" class="gallery-icon">
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="marquee-2-item">
+                            <div class="marquee-insta-box"><img
+                                    src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/672f0274d6a57ed106691b3c_gallery-image7.avif"
+                                    loading="lazy" alt="gallery7" class="marquee-2-image">
+                                <div class="gallery-overly" style="opacity: 0;"></div><a
+                                    href="https://www.instagram.com" target="_blank"
+                                    class="gallery-item w-inline-block">
+                                    <div class="gallery-icon-box"
+                                        style="opacity: 0; transform: translate3d(0px, 0px, 0px) scale3d(0, 0, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); transform-style: preserve-3d;">
+                                        <img src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/67443ccd94f09562c7828b8b_instagram.svg"
+                                            loading="lazy" alt="instagram" class="gallery-icon">
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="gallery-marquee-content"
+                    style="transform: translate3d(29.796%, 0px, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); transform-style: preserve-3d; will-change: transform;">
+                    <div class="marquee-2-wrapper">
+                        <div class="marquee-2-item">
+                            <div class="marquee-insta-box"><img
+                                    src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/672f011685cedb86cf8f28fd_gallery-image1.avif"
+                                    loading="lazy" alt="gallery1" class="marquee-2-image">
+                                <div class="gallery-overly" style="opacity: 0;"></div><a
+                                    href="https://www.instagram.com" target="_blank"
+                                    class="gallery-item w-inline-block">
+                                    <div class="gallery-icon-box"
+                                        style="opacity: 0; transform: translate3d(0px, 0px, 0px) scale3d(0, 0, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); transform-style: preserve-3d;">
+                                        <img src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/67443ccd94f09562c7828b8b_instagram.svg"
+                                            loading="lazy" width="Auto" alt="instagram" class="gallery-icon">
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="marquee-2-item style2">
+                            <div class="marquee-insta-box"><img
+                                    src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/672ef338c234a64d783b2ccc_gallery-image2.avif"
+                                    loading="lazy" alt="gallery2" class="marquee-2-image">
+                                <div class="gallery-overly" style="opacity: 0;"></div><a
+                                    href="https://www.instagram.com" target="_blank"
+                                    class="gallery-item w-inline-block">
+                                    <div class="gallery-icon-box"
+                                        style="opacity: 0; transform: translate3d(0px, 0px, 0px) scale3d(0, 0, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); transform-style: preserve-3d;">
+                                        <img src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/67443ccd94f09562c7828b8b_instagram.svg"
+                                            loading="lazy" alt="instagram" class="gallery-icon">
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="marquee-insta-box"><img
+                                    src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/672efe7cb2eea1e221722691_gallery-image3.png"
+                                    loading="lazy" alt="gallery3" class="marquee-2-image">
+                                <div class="gallery-overly" style="opacity: 0;"></div><a
+                                    href="https://www.instagram.com" class="gallery-item w-inline-block">
+                                    <div class="gallery-icon-box"
+                                        style="opacity: 0; transform: translate3d(0px, 0px, 0px) scale3d(0, 0, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); transform-style: preserve-3d;">
+                                        <img src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/67443ccd94f09562c7828b8b_instagram.svg"
+                                            loading="lazy" alt="instagram" class="gallery-icon">
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="marquee-2-item">
+                            <div class="marquee-insta-box"><img
+                                    src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/672f0273a9bcfa70337269c9_gallery-image4.avif"
+                                    loading="lazy" alt="gallery4" class="marquee-2-image">
+                                <div class="gallery-overly" style="opacity: 0;"></div><a
+                                    href="https://www.instagram.com" target="_blank"
+                                    class="gallery-item w-inline-block">
+                                    <div class="gallery-icon-box"
+                                        style="opacity: 0; transform: translate3d(0px, 0px, 0px) scale3d(0, 0, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); transform-style: preserve-3d;">
+                                        <img src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/67443ccd94f09562c7828b8b_instagram.svg"
+                                            loading="lazy" alt="instagram" class="gallery-icon">
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="marquee-2-item style2">
+                            <div class="marquee-insta-box"><img
+                                    src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/672f0272c234a64d7843175b_gallery-image5.avif"
+                                    loading="lazy" alt="gallery5" class="marquee-2-image">
+                                <div class="gallery-overly" style="opacity: 0;"></div><a
+                                    href="https://www.instagram.com" target="_blank"
+                                    class="gallery-item w-inline-block">
+                                    <div class="gallery-icon-box"
+                                        style="opacity: 0; transform: translate3d(0px, 0px, 0px) scale3d(0, 0, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); transform-style: preserve-3d;">
+                                        <img src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/67443ccd94f09562c7828b8b_instagram.svg"
+                                            loading="lazy" alt="instagram" class="gallery-icon">
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="marquee-insta-box"><img
+                                    src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/672f02738a0104824f89de54_gallery-image6.avif"
+                                    loading="lazy" alt="gallery6" class="marquee-2-image">
+                                <div class="gallery-overly" style="opacity: 0;"></div><a
+                                    href="https://www.instagram.com" target="_blank"
+                                    class="gallery-item w-inline-block">
+                                    <div class="gallery-icon-box"
+                                        style="opacity: 0; transform: translate3d(0px, 0px, 0px) scale3d(0, 0, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); transform-style: preserve-3d;">
+                                        <img src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/67443ccd94f09562c7828b8b_instagram.svg"
+                                            loading="lazy" alt="instagram" class="gallery-icon">
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="marquee-2-item">
+                            <div class="marquee-insta-box"><img
+                                    src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/672f0274d6a57ed106691b3c_gallery-image7.avif"
+                                    loading="lazy" alt="gallery7" class="marquee-2-image">
+                                <div class="gallery-overly" style="opacity: 0;"></div><a
+                                    href="https://www.instagram.com" target="_blank"
+                                    class="gallery-item w-inline-block">
+                                    <div class="gallery-icon-box"
+                                        style="opacity: 0; transform: translate3d(0px, 0px, 0px) scale3d(0, 0, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); transform-style: preserve-3d;">
+                                        <img src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/67443ccd94f09562c7828b8b_instagram.svg"
+                                            loading="lazy" alt="instagram" class="gallery-icon">
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="gallery-marquee-content"
+                    style="transform: translate3d(29.796%, 0px, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); transform-style: preserve-3d; will-change: transform;">
+                    <div class="marquee-2-wrapper">
+                        <div class="marquee-2-item">
+                            <div class="marquee-insta-box"><img
+                                    src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/672f011685cedb86cf8f28fd_gallery-image1.avif"
+                                    loading="lazy" alt="gallery1" class="marquee-2-image">
+                                <div class="gallery-overly" style="opacity: 0;"></div><a
+                                    href="https://www.instagram.com" target="_blank"
+                                    class="gallery-item w-inline-block">
+                                    <div class="gallery-icon-box"
+                                        style="opacity: 0; transform: translate3d(0px, 0px, 0px) scale3d(0, 0, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); transform-style: preserve-3d;">
+                                        <img src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/67443ccd94f09562c7828b8b_instagram.svg"
+                                            loading="lazy" width="Auto" alt="instagram" class="gallery-icon">
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="marquee-2-item style2">
+                            <div class="marquee-insta-box"><img
+                                    src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/672ef338c234a64d783b2ccc_gallery-image2.avif"
+                                    loading="lazy" alt="gallery2" class="marquee-2-image">
+                                <div class="gallery-overly" style="opacity: 0;"></div><a
+                                    href="https://www.instagram.com" target="_blank"
+                                    class="gallery-item w-inline-block">
+                                    <div class="gallery-icon-box"
+                                        style="opacity: 0; transform: translate3d(0px, 0px, 0px) scale3d(0, 0, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); transform-style: preserve-3d;">
+                                        <img src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/67443ccd94f09562c7828b8b_instagram.svg"
+                                            loading="lazy" alt="instagram" class="gallery-icon">
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="marquee-insta-box"><img
+                                    src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/672efe7cb2eea1e221722691_gallery-image3.png"
+                                    loading="lazy" alt="gallery3" class="marquee-2-image">
+                                <div class="gallery-overly" style="opacity: 0;"></div><a
+                                    href="https://www.instagram.com" class="gallery-item w-inline-block">
+                                    <div class="gallery-icon-box"
+                                        style="opacity: 0; transform: translate3d(0px, 0px, 0px) scale3d(0, 0, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); transform-style: preserve-3d;">
+                                        <img src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/67443ccd94f09562c7828b8b_instagram.svg"
+                                            loading="lazy" alt="instagram" class="gallery-icon">
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="marquee-2-item">
+                            <div class="marquee-insta-box"><img
+                                    src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/672f0273a9bcfa70337269c9_gallery-image4.avif"
+                                    loading="lazy" alt="gallery4" class="marquee-2-image">
+                                <div class="gallery-overly" style="opacity: 0;"></div><a
+                                    href="https://www.instagram.com" target="_blank"
+                                    class="gallery-item w-inline-block">
+                                    <div class="gallery-icon-box"
+                                        style="opacity: 0; transform: translate3d(0px, 0px, 0px) scale3d(0, 0, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); transform-style: preserve-3d;">
+                                        <img src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/67443ccd94f09562c7828b8b_instagram.svg"
+                                            loading="lazy" alt="instagram" class="gallery-icon">
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="marquee-2-item style2">
+                            <div class="marquee-insta-box"><img
+                                    src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/672f0272c234a64d7843175b_gallery-image5.avif"
+                                    loading="lazy" alt="gallery5" class="marquee-2-image">
+                                <div class="gallery-overly" style="opacity: 0;"></div><a
+                                    href="https://www.instagram.com" target="_blank"
+                                    class="gallery-item w-inline-block">
+                                    <div class="gallery-icon-box"
+                                        style="opacity: 0; transform: translate3d(0px, 0px, 0px) scale3d(0, 0, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); transform-style: preserve-3d;">
+                                        <img src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/67443ccd94f09562c7828b8b_instagram.svg"
+                                            loading="lazy" alt="instagram" class="gallery-icon">
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="marquee-insta-box"><img
+                                    src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/672f02738a0104824f89de54_gallery-image6.avif"
+                                    loading="lazy" alt="gallery6" class="marquee-2-image">
+                                <div class="gallery-overly" style="opacity: 0;"></div><a
+                                    href="https://www.instagram.com" target="_blank"
+                                    class="gallery-item w-inline-block">
+                                    <div class="gallery-icon-box"
+                                        style="opacity: 0; transform: translate3d(0px, 0px, 0px) scale3d(0, 0, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); transform-style: preserve-3d;">
+                                        <img src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/67443ccd94f09562c7828b8b_instagram.svg"
+                                            loading="lazy" alt="instagram" class="gallery-icon">
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="marquee-2-item">
+                            <div class="marquee-insta-box"><img
+                                    src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/672f0274d6a57ed106691b3c_gallery-image7.avif"
+                                    loading="lazy" alt="gallery7" class="marquee-2-image">
+                                <div class="gallery-overly" style="opacity: 0;"></div><a
+                                    href="https://www.instagram.com" target="_blank"
+                                    class="gallery-item w-inline-block">
+                                    <div class="gallery-icon-box"
+                                        style="opacity: 0; transform: translate3d(0px, 0px, 0px) scale3d(0, 0, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); transform-style: preserve-3d;">
+                                        <img src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/67443ccd94f09562c7828b8b_instagram.svg"
+                                            loading="lazy" alt="instagram" class="gallery-icon">
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+  
+</div>

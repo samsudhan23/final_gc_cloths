@@ -1,15 +1,12 @@
 import { Routes } from '@angular/router';
-import { AppLayout } from './app/layout/component/app.layout';
-import { Dashboard } from './app/pages/dashboard/dashboard';
-import { Documentation } from './app/pages/documentation/documentation';
-import { Landing } from './app/pages/landing/landing';
 import { Notfound } from './app/pages/notfound/notfound';
 import { RoleGuard } from './app/shared/core/role.guard';
 import { SignInComponent } from './app/pages/auth/sign-in/sign-in.component';
+import { HomeComponent } from './app/module/user_module/home/home.component';
 
 export const appRoutes: Routes = [
 
-    { path: '', component: Landing },
+    { path: '', component: HomeComponent },
     {
         path: 'admin',
         // component: AppLayout,

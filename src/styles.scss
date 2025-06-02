@@ -5,3 +5,27 @@
 @use './assets/demo/demo.scss';
 @import '../node_modules/ngx-toastr/toastr.css';
 
+:root {
+    --heading-font: Manrope, sans-serif;
+    --dark-color: black;
+    --body-font: Opensans, Arial, sans-serif;
+    --black\<deleted\|variable-fbd1820a\>: black;
+    --skin-color: #dd2d65;
+    --heading-font-color: #0b0b0b;
+    --border-radius-10: 10px;
+    --white: white;
+    --transparent: transparent;
+    --border-color-dark\<deleted\|variable-26f5a533-dd21-1add-395e-c85914ade307\>: #e2e2e2;
+    --border-color-1: #e6e6e6;
+    --grey-color: #f6f6f6;
+    --body-font-color: #111;
+    --grey-light: #ffe8f3;
+    --grey-color-two\<deleted\|variable-a3436144-40d7-c5a8-63c4-b4edb8bf3cde\>: #efefef;
+    --font-family-two: Caveat, sans-serif;
+    --border-color: #908d8d3d;
+    --border-radius-50: 50px;
+    --text-light: #fff9;
+    --grey-color-three\<deleted\|variable-f3e027f2-1119-584d-09fb-35f942b04b5f\>: #424141;
+    --border-radius-15: 15px;
+    --border-radius-0: 0px
+}
