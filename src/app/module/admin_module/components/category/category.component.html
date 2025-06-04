@@ -13,7 +13,7 @@
 <p-table #dt [value]="categoryList" [rows]="10" [columns]="cols" [paginator]="true" dataKey="_id"
     [globalFilterFields]="['categoryName', 'categoryDescription', 'createdAt', 'role']" [tableStyle]="{ 'min-width': '75rem' }"
     [(selection)]="selectedUser" [rowHover]="true"
-    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Users" [showCurrentPageReport]="true"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Categories" [showCurrentPageReport]="true"
     [rowsPerPageOptions]="[10, 20, 30]">
     <ng-template #caption>
         <div class="flex items-center justify-between">

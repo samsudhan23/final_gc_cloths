@@ -1,6 +1,6 @@
 <section>
     <div class="">
-        <p-menubar [model]="items">
+        <p-menubar class="menubar" [model]="items">
             <ng-template #start>
                 <svg width="33" height="35" viewBox="0 0 33 35" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path
@@ -55,7 +55,10 @@
             </ng-template>
             <ng-template #end>
                 <div class="flex items-center gap-2">
-                    <input type="text" pInputText placeholder="Search" class="w-36" />
+                    <div class="search-box">
+                        <input class="search-input" type="text" name="" placeholder="Search">
+                      <i class="pi pi-search text-white search-btn" style="font-size: 20px"></i>
+                    </div>
                     <p-avatar image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png"
                         shape="circle" />
                 </div>

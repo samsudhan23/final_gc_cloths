@@ -20,6 +20,10 @@ export const routes: Routes = [
             {
                 path: 'category',
                 loadComponent: () => import('./components/category/category.component').then(m => m.CategoryComponent)
+            },
+            {
+                path: 'wishlist',
+                loadComponent: () => import('./components/wishlist/wishlist.component').then(m => m.WishlistComponent)
             }
         ]
     },

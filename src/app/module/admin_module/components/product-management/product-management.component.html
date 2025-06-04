@@ -13,7 +13,7 @@
 <p-table #dt [value]="productData" [rows]="10" [paginator]="true" dataKey="_id"
     [globalFilterFields]="['productName', 'categoryName']" [tableStyle]="{ 'min-width': '120rem' }"
     [(selection)]="selectedUser" [rowHover]="true" [scrollable]="true" scrollDirection="horizontal"
-    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Users" [showCurrentPageReport]="true"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Products" [showCurrentPageReport]="true"
     [rowsPerPageOptions]="[10, 20, 30]">
     <ng-template #caption>
         <div class="flex items-center justify-between">

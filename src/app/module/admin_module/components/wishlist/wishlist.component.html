@@ -1,0 +1,97 @@
+<p-toolbar styleClass="mb-6">
+    <ng-template #start>
+        <p-button label="New" icon="pi pi-plus" severity="secondary" class="mr-2" (onClick)="openNew()" />
+        <p-button severity="secondary" label="Delete" icon="pi pi-trash" outlined (onClick)="deleteSelectedWishlist()"
+            [disabled]="!selectedUser || !selectedUser.length" />
+    </ng-template>
+</p-toolbar>
+
+<p-table #dt [value]="wishList" [rows]="10" [paginator]="true" dataKey="_id"
+    [globalFilterFields]="['userId.name', 'productId.productName', 'createdAt', 'updatedAt']"
+    [tableStyle]="{ 'min-width': '75rem' }" [(selection)]="selectedUser" [rowHover]="true"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Wishlist" [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[10, 20, 30]">
+    <ng-template #caption>
+        <div class="flex items-center justify-between">
+            <h5 class="m-0">Manage Wishlist</h5>
+            <p-iconfield>
+                <p-inputicon styleClass="pi pi-search" />
+                <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search..." />
+            </p-iconfield>
+        </div>
+    </ng-template>
+    <ng-template #header>
+        <tr>
+            <th class="sticky-left" style="width: 3rem">
+                <p-tableHeaderCheckbox />
+            </th>
+            <th pSortableColumn="userId.name" style="min-width: 8rem">
+                User
+                <p-sortIcon field="userId.name" />
+            </th>
+            <th pSortableColumn="productId.productName" style="min-width:10rem">
+                Product Name
+                <p-sortIcon field="productId.productName" />
+            </th>
+            <th pSortableColumn="createdAt" style="min-width:10rem">
+                Created Date
+                <p-sortIcon field="createdAt" />
+            </th>
+            <th pSortableColumn="updatedAt" style="min-width:10rem">
+                Updated Date
+                <p-sortIcon field="updatedAt" />
+            </th>
+            <th class="sticky-right" style="min-width: 12rem">Action</th>
+        </tr>
+    </ng-template>
+    <ng-template #body let-datas>
+        <tr>
+            <td class="sticky-left" style="width: 3rem">
+                <p-tableCheckbox [value]="datas" />
+            </td>
+            <td style="min-width: 12rem">{{ datas.userId.name}}</td>
+            <td style="min-width: 16rem">{{ datas.productId.productName }}</td>
+            <td>{{ datas.createdAt | date:'yyyy-MM-dd HH:MM:SS' }}</td>
+            <td>{{ datas.updatedAt | date:'yyyy-MM-dd HH:MM:SS' }}</td>
+            <td class="sticky-right">
+                <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true"
+                    (click)="edit(datas,'Edit')" />
+                <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true"
+                    (click)="delete(datas)" />
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
+
+<p-dialog [(visible)]="openDialog" class="userModel" header="Wishlist Details" [modal]="true" (onHide)="onDialogHide()">
+    <ng-template #content>
+        <form [formGroup]="wishlistForm">
+            <div class="grid grid-cols-3 gap-4">
+
+                <div>
+                    <label class="block font-bold mb-3">User</label>
+                    <p-select inputId="userId" formControlName="userId" [options]="usersList" optionLabel="name"
+                        optionValue="_id" placeholder="Select a User" fluid />
+                    <small class="text-red-500"
+                        *ngIf="wishlistForm.get('userId')?.invalid && wishlistForm.get('userId')?.touched">User is
+                        required.</small>
+                </div>
+                <div>
+                    <label class="block font-bold mb-3">Product</label>
+                    <p-select inputId="productId" formControlName="productId" [options]="productData"
+                        optionLabel="productName" optionValue="_id" placeholder="Select a Product" fluid />
+                    <small class="text-red-500"
+                        *ngIf="wishlistForm.get('productId')?.invalid && wishlistForm.get('productId')?.touched">Product
+                        is required.</small>
+                </div>
+            </div>
+        </form>
+    </ng-template>
+
+    <ng-template #footer>
+        <p-button label="Cancel" variant="text" severity="danger" icon="pi pi-times" text (click)="hideDialog()" />
+        <p-button label="Save" icon="pi pi-check" (click)="save()" />
+    </ng-template>
+</p-dialog>
+
+<p-confirmdialog [style]="{ width: '450px' }" />

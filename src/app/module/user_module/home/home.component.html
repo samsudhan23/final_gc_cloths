@@ -3,7 +3,7 @@
     <p-carousel [value]="images" [numVisible]="1" [numScroll]="1" [circular]="true" [autoplayInterval]="3000"
         [responsiveOptions]="responsiveOptions">
         <ng-template pTemplate="item" let-image>
-            <div class="border rounded m-2 text-center">
+            <div class="border rounded text-center">
                 <img [src]="image" class="w-full rounded" style=" object-fit: cover;" />
             </div>
         </ng-template>
