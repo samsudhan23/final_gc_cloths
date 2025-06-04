@@ -1,18 +1,21 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import * as AOS from 'aos';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { AuthenticationService } from '../../../pages/service/authentication.service';
 import { AvatarModule } from 'primeng/avatar';
 import { BadgeModule } from 'primeng/badge';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { Carousel } from 'primeng/carousel';
+import { AdminProductService } from '../../admin_module/service/productService/admin-product.service';
+import { ToastrService } from 'ngx-toastr';
+import { TabsModule } from 'primeng/tabs';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, BadgeModule, AvatarModule, InputTextModule, Carousel, ButtonModule],
+  imports: [CommonModule, BadgeModule, AvatarModule, InputTextModule, Carousel,TabsModule, ButtonModule, RouterModule],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
@@ -21,6 +24,7 @@ export class HomeComponent implements OnInit {
   isCartOpen: boolean = false
   cartCount = 0;
   products: any | undefined;
+  productList: any;
 
   responsiveOptions: any[] | undefined;
 
@@ -30,9 +34,21 @@ export class HomeComponent implements OnInit {
     'assets/images/basic/home3.webp'
   ];
 
+  categories = [
+  { name: 'All', id: 'Tab 1' },
+  { name: 'T-Shirt', id: 'Tab 2' },
+  { name: 'Shirt', id: 'Tab 3' },
+  { name: 'Accessories', id: 'Tab 4' },
+  { name: 'Footwear', id: 'Tab 5' },
+];
+  selectedCategory: string = 'All';
+  filteredProducts: any[] = [];
+
   constructor(@Inject(PLATFORM_ID) private platformId: Object,
     private auth: AuthenticationService,
-    private router: Router
+    private router: Router,
+    private productService: AdminProductService,
+    private toast: ToastrService,
   ) { }
 
   ngOnInit() {
@@ -45,6 +61,7 @@ export class HomeComponent implements OnInit {
     if (isPlatformBrowser(this.platformId)) {
       AOS.init({ disable: 'mobile', duration: 1200, });
       AOS.refresh();
+      this.getProduct();
       // this.changeSlide();
     }
 
@@ -97,37 +114,26 @@ export class HomeComponent implements OnInit {
     this.isCartOpen = !this.isCartOpen;
   }
 
-  // products = [
-  //   {
-  //     name: 'Kids T-shirts',
-  //     price: 450,
-  //     image: '../../../../assets/images/Products/t-shirt.avif',
-  //     currency: 'INR'
-  //   },
+  getProduct() {
+    this.productService.getProductlist().subscribe((res: any) => {
+      this.productList = res.result;
+      this.filterProducts();
+    }, (error: any) => {
+      this.toast.warning(error.error.message);
+    })
+  }
 
-  //   {
-  //     name: 'Baby Shirt',
-  //     price: 599,
-  //     image: '../../../../assets/images/Products/1 (2).avif',
-  //     currency: 'INR'
-  //   },
-  //   {
-  //     name: 'Shirt',
-  //     price: 999,
-  //     image: '../../../../assets/images/Products/1 (1).avif',
-  //     currency: 'INR'
-  //   },
-  //   {
-  //     name: 'T-Shirt',
-  //     price: 399,
-  //     image: '../../../../assets/images/Products/2 (1).avif',
-  //     currency: 'INR'
-  //   },
-  //   {
-  //     name: 'Baby T-Shirt',
-  //     price: 599,
-  //     image: '../../../../assets/images/Products/2 (2).avif',
-  //     currency: 'INR'
-  //   }
-  // ];
+  filterProducts(): void {
+    if (this.selectedCategory === 'All') {
+      this.filteredProducts = this.productList;
+    } else {
+      this.filteredProducts = this.productList.filter((product:any) => product.category.categoryName === this.selectedCategory
+      );
+    }
+  }
+
+  selectCategory(category: string): void {
+    this.selectedCategory = category;
+    this.filterProducts();
+  }
 }

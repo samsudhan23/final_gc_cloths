@@ -167,6 +167,11 @@
                             <input #fileInput class="file" name="text" type="file"
                                 (change)="onFileChange($event, 'images')" />
                         </button>
+                        <small
+                            style="display: flex; align-items: center; margin-top: 7px; color: #666; font-size: 0.85rem;">
+                            <i class="pi pi-info-circle" style="margin-right: 5px;"></i>
+                            Recommended upload resolution : <b>245 x 272 px</b>
+                        </small>
                     </div>
                     <!-- <img [src]="fileInfo" alt="" style="width: 10%;">  -->
                     <span *ngIf="showFileName" class="file-info">{{ fileInfo | split: '/' }}</span>
