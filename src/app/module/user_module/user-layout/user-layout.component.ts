@@ -7,10 +7,11 @@ import { Menubar } from 'primeng/menubar';
 import { AuthenticationService } from '../../../pages/service/authentication.service';
 import * as AOS from 'aos';
 import { UserFooterComponent } from '../user-footer/user-footer.component';
+import { CategoryService } from '../../admin_module/service/category/category.service';
 
 @Component({
   selector: 'app-user-layout',
-  imports: [CommonModule, Menubar, BadgeModule, AvatarModule, RouterModule,UserFooterComponent],
+  imports: [CommonModule, Menubar, BadgeModule, AvatarModule, RouterModule, UserFooterComponent],
   templateUrl: './user-layout.component.html',
   styleUrl: './user-layout.component.scss'
 })
@@ -18,7 +19,7 @@ export class UserLayoutComponent {
 
   responsiveOptions: any[] | undefined;
 
-  items = [
+  items: any = [
     {
       label: 'Home',
       icon: 'pi pi-home',
@@ -30,32 +31,36 @@ export class UserLayoutComponent {
     {
       label: 'Category',
       icon: 'pi pi-search',
+      items: []
       // badge: '3',
-      items: [
-        {
-          label: 'Shirt',
-          icon: 'pi pi-bolt',
-          // shortcut: '⌘+S',
-        },
-        {
-          label: 'T-Shirt',
-          icon: 'pi pi-server',
-          // shortcut: '⌘+B',
-        },
-        {
-          separator: true,
-        },
-        {
-          label: 'Jeans',
-          icon: 'pi pi-pencil',
-          // shortcut: '⌘+U',
-        },
-      ],
+      // items: [
+      //   {
+      //     label: 'Shirt',
+      //     icon: 'pi pi-bolt',
+      //     // shortcut: '⌘+S',
+      //   },
+      //   {
+      //     label: 'T-Shirt',
+      //     icon: 'pi pi-server',
+      //     // shortcut: '⌘+B',
+      //   },
+      //   {
+      //     separator: true,
+      //   },
+      //   {
+      //     label: 'Jeans',
+      //     icon: 'pi pi-pencil',
+      //     // shortcut: '⌘+U',
+      //   },
+      // ],
     },
   ];
 
+
+  categoryList: any[] = [];
   constructor(@Inject(PLATFORM_ID) private platformId: Object,
     private auth: AuthenticationService,
+    private category: CategoryService,
     private router: Router
   ) { }
 
@@ -70,6 +75,7 @@ export class UserLayoutComponent {
       AOS.init({ disable: 'mobile', duration: 1200, });
       AOS.refresh();
       // this.changeSlide();
+      this.getCategoryList();
     }
 
     this.responsiveOptions = [
@@ -91,6 +97,38 @@ export class UserLayoutComponent {
     ]
   }
 
+  getCategoryList() {
+    this.category.getCategoriesMasterList().subscribe((res: any) => {
+      if (res.code === 200 && res.success === true) {
+        this.categoryList = res.result;
+
+        const dynamicCategories = this.categoryList.map((cat: any) => ({
+          label: cat.categoryName,
+          icon: 'pi pi-tag', // Change icon if needed
+          command: () => this.gotoPages(cat._id) // Assuming _id is the unique identifier
+        }));
+
+        // Rebuild the items with dynamic categories
+        this.items = [
+          {
+            label: 'Home',
+            icon: 'pi pi-home',
+          },
+          {
+            label: 'Shop',
+            icon: 'pi pi-shopping-cart',
+          },
+          {
+            label: 'Category',
+            icon: 'pi pi-th-large',
+            items: dynamicCategories
+          }
+        ];
+      }
+    });
+  }
+
+
   gotoPages(label: string) {
     console.log('label: ', label);
     if (label == 'Shop') {
@@ -99,5 +137,10 @@ export class UserLayoutComponent {
     else if (label == 'Home') {
       this.router.navigate(['/user/home']);
     }
+    // else if (label == 'Category') {
+    //   this.router.navigate(['/user/shop']);
+    // }
   }
+
+
 }
