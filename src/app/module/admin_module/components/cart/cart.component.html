@@ -69,7 +69,7 @@
     </ng-template>
 </p-table>
 
-<p-dialog [(visible)]="openDialog" class="userModel" header="Wishlist Details" [modal]="true" (onHide)="onDialogHide()">
+<p-dialog [(visible)]="openDialog" class="userModel" header="Cart Details" [modal]="true" (onHide)="onDialogHide()">
     <ng-template #content>
         <form [formGroup]="cartForm">
             <div class="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4">
@@ -93,7 +93,7 @@
                 <div>
                     <label class="block font-bold mb-3">Size</label>
                     <p-select inputId="selectedSize" formControlName="selectedSize" [options]="dressSizesWithMeasurements"
-                        optionLabel="" optionValue="" placeholder="Select a Product" fluid />
+                        optionLabel="label" optionValue="label" placeholder="Select a Product" fluid />
                     <small class="text-red-500"
                         *ngIf="cartForm.get('selectedSize')?.invalid && cartForm.get('selectedSize')?.touched">Size
                         is required.</small>

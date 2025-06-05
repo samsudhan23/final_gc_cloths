@@ -115,7 +115,6 @@ export class CartComponent {
     this.cartService.getCartList().subscribe((res: any) => {
       if (res.success === true || res.code === 200) {
         this.CartList = res.result;
-        console.log('this.CartList: ', this.CartList);
       }
     }, (error: any) => {
       this.toast.error(error.message)
@@ -123,16 +122,8 @@ export class CartComponent {
   }
 
   selectProduct(event: any) {
-    const obj: any = {}
     const data = event.value
-    console.log('data: ', this.productData);
-    this.dressSizesWithMeasurements = this.productData.filter((item: any) => item._id == data)[0].sizes
-    this.dressSizesWithMeasurements.forEach((ite: any) => {
-      obj['label'] = ite
-      console.log('obj: ', obj);
-      return obj;
-    })
-    console.log('this.dressSizesWithMeasurements: ', this.dressSizesWithMeasurements);
+    this.dressSizesWithMeasurements = this.productData.find((item: any) => item._id === data)?.sizes.map((ite: string) => ({ label: ite })) || [];
   }
 
   onGlobalFilter(table: Table, event: Event) {
@@ -145,14 +136,14 @@ export class CartComponent {
 
   deleteSelectedWishlist() {
     this.confirmationService.confirm({
-      message: 'Are you sure you want to delete the selected Wishlist?',
+      message: 'Are you sure you want to delete the selected Cart?',
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         const dele = {
           ids: this.selectedUser.map((ite: { _id: any; }) => ite._id)
         }
-        this.wishservice.deleteWishList(dele).subscribe((res: any) => {
+        this.cartService.deleteCartItem(dele).subscribe((res: any) => {
           if (res.code === 200 && res.success === true) {
             this.toast.success(res.message);
             this.getCartlist();
@@ -179,7 +170,7 @@ export class CartComponent {
         const dele = {
           ids: data._id
         }
-        this.wishservice.deleteWishList(dele).subscribe((res: any) => {
+        this.cartService.deleteCartItem(dele).subscribe((res: any) => {
           if (res.code === 200 && res.success === true) {
             this.toast.success(res.message);
             this.getCartlist();
@@ -196,17 +187,20 @@ export class CartComponent {
   hideDialog() {
     this.openDialog = false;
     this.cartForm.reset();
+    this.cartForm.get('quantity')?.setValue(1)
   }
 
   onDialogHide() {
     if (this.cartForm) {
       this.cartForm.reset(); // Reset when dialog is closed using header 'X'
+      this.cartForm.get('quantity')?.setValue(1)
     }
   }
   edit(event: any, type: string) {
     const editTableDatas = event
     this.openDialog = true;
-
+    this.dressSizesWithMeasurements = this.productData.find((item: any) => item._id === editTableDatas.productId._id)
+      ?.sizes.map((ite: string) => ({ label: ite })) || [];
     switch (type) {
       case "Edit":
         this.mode = 'edit';
@@ -214,6 +208,8 @@ export class CartComponent {
         this.cartForm.patchValue({
           userId: editTableDatas.userId._id,
           productId: editTableDatas.productId._id,
+          selectedSize: editTableDatas.selectedSize,
+          quantity: editTableDatas.quantity,
         });
         this.cartForm.enable();
         break;
@@ -222,6 +218,8 @@ export class CartComponent {
         this.cartForm.patchValue({
           userId: editTableDatas?.userId._id,
           productId: editTableDatas?.productId._id,
+          selectedSize: editTableDatas.selectedSize,
+          quantity: editTableDatas.quantity,
         });
         this.cartForm.disable();
         break;
@@ -236,7 +234,7 @@ export class CartComponent {
       const data = this.cartForm.value;
 
       if (this.mode === 'add') {
-        this.wishservice.postWishlist(data).subscribe((res: any) => {
+        this.cartService.postCart(data).subscribe((res: any) => {
           if (res.code === 200 && res.success === true) {
             this.toast.success(res.message);
             this.getCartlist();
@@ -249,7 +247,7 @@ export class CartComponent {
           this.toast.error(error.error.message);
         });
       } else if (this.mode === 'edit' && this.currentId) {
-        this.wishservice.updateWishList(this.currentId, data).subscribe((res: any) => {
+        this.cartService.updateCartItem(this.currentId, data).subscribe((res: any) => {
           if (res.code === 200 && res.success === true) {
             this.toast.success(res.message);
             this.getCartlist();
