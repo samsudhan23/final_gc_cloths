@@ -117,7 +117,7 @@
                     <!-- Product Body -->
                     <div class="product-section-inner-1">
                         <div class="products-tab w-tabs">
-                            <div class="products-tab-menu w-tab-menu" role="tablist">
+                            <!-- <div class="products-tab-menu w-tab-menu" role="tablist">
                                 <a data-w-tab="Tab 1" class="products-tab-link w-inline-block w-tab-link w--current"
                                     id="w-tabs-0-data-w-tab-0" href="#w-tabs-0-data-w-pane-0" role="tab"
                                     aria-controls="w-tabs-0-data-w-pane-0" aria-selected="true">
@@ -139,155 +139,66 @@
                                     aria-controls="w-tabs-0-data-w-pane-4" aria-selected="false">
                                     <div class="products-tab-nav">Footwear</div>
                                 </a>
+                            </div> -->
+                            <div class="products-tab-menu w-tab-menu" role="tablist">
+                                <a *ngFor="let category of categories; let i = index" [attr.data-w-tab]="category.id"
+                                    class="products-tab-link w-inline-block w-tab-link"
+                                    [ngClass]="{ 'w--current': selectedCategory === category.name }"
+                                    [id]="'w-tabs-0-data-w-tab-' + i" href="javascript:void(0)" role="tab"
+                                    (click)="selectCategory(category.name)"
+                                    [attr.aria-controls]="'w-tabs-0-data-w-pane-' + i"
+                                    [attr.aria-selected]="selectedCategory === category.name ? 'true' : 'false'"
+                                    [attr.tabindex]="selectedCategory === category.name ? null : '-1'">
+                                    <div class="products-tab-nav">{{ category.name }}</div>
+                                </a>
                             </div>
+
                             <div class="products-tab-content w-tab-content">
                                 <div class="products-tab-pane w-tab-pane w--tab-active"
                                     style="opacity: 1; transition: all, opacity 300ms;">
                                     <div class="product-list-wrapper w-dyn-list">
                                         <div class="product-cms-list w-dyn-items">
                                             <!-- Product CARD -->
-                                            <div role="listitem" data-aos="fade-up"
-                                                class="product-list-item w-dyn-item">
+                                            <div *ngFor="let product of filteredProducts" role="listitem"
+                                                data-aos="fade-up" class="product-list-item w-dyn-item">
                                                 <div data-aos="fade-up"
                                                     style="opacity: 1; transform: translate3d(0px, 0px, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); transform-style: preserve-3d;"
                                                     class="product-list-box">
                                                     <!-- Card Content -->
                                                     <div class="product-thumbnail">
-                                                        <img loading="lazy" alt="Product Image"
-                                                            src="../../../assets/images/Products/t-shirt.avif"
+                                                        <img loading="lazy" [alt]="product.name" [src]="product.images"
                                                             sizes="(max-width: 479px) 100vw, (max-width: 767px) 41vw, (max-width: 991px) 43vw, (max-width: 1279px) 28vw, (max-width: 1439px) 20vw, (max-width: 1919px) 19vw, 24vw"
-                                                            srcset="../../../assets/images/Products/t-shirt.avif 500w, ../../../assets/images/Products/t-shirt.avif 707w"
+                                                            [srcset]="product.images + ' 500w, ' + product.images + ' 707w'"
                                                             class="product-image"
                                                             style="transform: translate3d(0px, 0px, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); transform-style: preserve-3d;">
                                                         <!-- Product Marquee -->
                                                         <div class="product-marquee-block" style="opacity: 0;">
                                                             <div class="product-marquee-item"
-                                                                style="transform: translate3d(-82.082%, 0px, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); transform-style: preserve-3d; will-change: transform;">
-                                                                <a href="/product/kids-footwear"
-                                                                    class="product-marquee-flex w-inline-block">
-                                                                    <div class="product-marquee-text">buy now</div><img
-                                                                        loading="lazy"
+                                                                style="transform: translate3d(-82.082%, 0px, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); transform-style: preserve-3d; will-change: transform;"
+                                                                *ngFor="let i of [1, 2, 3]">
+                                                                <a [href]="'/product/' + product.slug"
+                                                                    class="product-marquee-flex w-inline-block"
+                                                                    *ngFor="let j of [1, 2, 3, 4, 5]">
+                                                                    <div class="product-marquee-text">buy now</div>
+                                                                    <img loading="lazy"
                                                                         src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/6746a168123d9aecedc54fde_cart-img.webp"
                                                                         alt="cart-img" class="product-marquee-image">
-                                                                </a><a href="/product/kids-footwear"
-                                                                    class="product-marquee-flex w-inline-block">
-                                                                    <div class="product-marquee-text">buy now</div><img
-                                                                        loading="lazy"
-                                                                        src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/6746a168123d9aecedc54fde_cart-img.webp"
-                                                                        alt="cart-img
-                                                " class="product-marquee-image">
-                                                                </a><a href="/product/kids-footwear"
-                                                                    class="product-marquee-flex w-inline-block">
-                                                                    <div class="product-marquee-text">buy now</div><img
-                                                                        loading="lazy"
-                                                                        src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/6746a168123d9aecedc54fde_cart-img.webp"
-                                                                        alt="cart-img
-                                                " class="product-marquee-image">
-                                                                </a><a href="/product/kids-footwear"
-                                                                    class="product-marquee-flex w-inline-block">
-                                                                    <div class="product-marquee-text">buy now</div><img
-                                                                        loading="lazy"
-                                                                        src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/6746a168123d9aecedc54fde_cart-img.webp"
-                                                                        alt="cart-img
-                                                " class="product-marquee-image">
-                                                                </a><a href="/product/kids-footwear"
-                                                                    class="product-marquee-flex w-inline-block">
-                                                                    <div class="product-marquee-text">buy now</div><img
-                                                                        loading="lazy"
-                                                                        src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/6746a168123d9aecedc54fde_cart-img.webp"
-                                                                        alt="cart-img
-                                                " class="product-marquee-image">
-                                                                </a>
-                                                            </div>
-                                                            <div class="product-marquee-item"
-                                                                style="transform: translate3d(-82.082%, 0px, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); transform-style: preserve-3d; will-change: transform;">
-                                                                <a href="/product/kids-footwear"
-                                                                    class="product-marquee-flex w-inline-block">
-                                                                    <div class="product-marquee-text">buy now</div><img
-                                                                        loading="lazy"
-                                                                        src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/6746a168123d9aecedc54fde_cart-img.webp"
-                                                                        alt="cart-img
-                                                " class="product-marquee-image">
-                                                                </a><a href="/product/kids-footwear"
-                                                                    class="product-marquee-flex w-inline-block">
-                                                                    <div class="product-marquee-text">buy now</div><img
-                                                                        loading="lazy"
-                                                                        src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/6746a168123d9aecedc54fde_cart-img.webp"
-                                                                        alt="cart-img
-                                                " class="product-marquee-image">
-                                                                </a><a href="/product/kids-footwear"
-                                                                    class="product-marquee-flex w-inline-block">
-                                                                    <div class="product-marquee-text">buy now</div><img
-                                                                        loading="lazy"
-                                                                        src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/6746a168123d9aecedc54fde_cart-img.webp"
-                                                                        alt="cart-img
-                                                " class="product-marquee-image">
-                                                                </a><a href="/product/kids-footwear"
-                                                                    class="product-marquee-flex w-inline-block">
-                                                                    <div class="product-marquee-text">buy now</div><img
-                                                                        loading="lazy"
-                                                                        src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/6746a168123d9aecedc54fde_cart-img.webp"
-                                                                        alt="cart-img
-                                                " class="product-marquee-image">
-                                                                </a><a href="/product/kids-footwear"
-                                                                    class="product-marquee-flex w-inline-block">
-                                                                    <div class="product-marquee-text">buy now</div><img
-                                                                        loading="lazy"
-                                                                        src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/6746a168123d9aecedc54fde_cart-img.webp"
-                                                                        alt="cart-img
-                                                " class="product-marquee-image">
-                                                                </a>
-                                                            </div>
-                                                            <div class="product-marquee-item"
-                                                                style="transform: translate3d(-82.082%, 0px, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); transform-style: preserve-3d; will-change: transform;">
-                                                                <a href="/product/kids-footwear"
-                                                                    class="product-marquee-flex w-inline-block">
-                                                                    <div class="product-marquee-text">buy now</div><img
-                                                                        loading="lazy"
-                                                                        src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/6746a168123d9aecedc54fde_cart-img.webp"
-                                                                        alt="cart-img
-                                                " class="product-marquee-image">
-                                                                </a><a href="/product/kids-footwear"
-                                                                    class="product-marquee-flex w-inline-block">
-                                                                    <div class="product-marquee-text">buy now</div><img
-                                                                        loading="lazy"
-                                                                        src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/6746a168123d9aecedc54fde_cart-img.webp"
-                                                                        alt="cart-img
-                                                " class="product-marquee-image">
-                                                                </a><a href="/product/kids-footwear"
-                                                                    class="product-marquee-flex w-inline-block">
-                                                                    <div class="product-marquee-text">buy now</div><img
-                                                                        loading="lazy"
-                                                                        src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/6746a168123d9aecedc54fde_cart-img.webp"
-                                                                        alt="cart-img
-                                                " class="product-marquee-image">
-                                                                </a><a href="/product/kids-footwear"
-                                                                    class="product-marquee-flex w-inline-block">
-                                                                    <div class="product-marquee-text">buy now</div><img
-                                                                        loading="lazy"
-                                                                        src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/6746a168123d9aecedc54fde_cart-img.webp"
-                                                                        alt="cart-img
-                                                " class="product-marquee-image">
-                                                                </a><a href="/product/kids-footwear"
-                                                                    class="product-marquee-flex w-inline-block">
-                                                                    <div class="product-marquee-text">buy now</div><img
-                                                                        loading="lazy"
-                                                                        src="https://cdn.prod.website-files.com/66bf11df879adcab99a88dbf/6746a168123d9aecedc54fde_cart-img.webp"
-                                                                        alt="cart-img
-                                                " class="product-marquee-image">
                                                                 </a>
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <!-- Card Footer -->
                                                     <div class="product-content">
-                                                        <div class="product-title-box"><a class="product-link">Kids
-                                                                footwear</a>
-                                                            <div class="product-price">₹&nbsp;550.00&nbsp;INR</div>
+                                                        <div class="product-title-box">
+                                                            <a class="product-link">{{ product.productName}}</a>
+                                                            <div class="product-price">₹&nbsp;{{ product.price
+                                                                }}.00&nbsp;INR</div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
+
+
                                         </div>
                                     </div>
                                 </div>
@@ -568,57 +479,49 @@
     <section>
         <div class="container py-5">
             <h2 class="text-center mb-5">What our client say</h2>
-            <div class="row g-4">
+            <div class="testimonial-grid">
                 <!-- Testimonial 1 -->
-                <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3">
-                    <div class="testimonial-card text-center">
-                        <div class="testimonial-icon">❝</div>
-                        <p class="testimonial">
-                            I had the pleasure of shopping with <strong>GSCloths</strong>, and they exceeded all my
-                            expectations. Everything was seamless and stylish.
-                        </p>
-                        <div class="testimonial-name">James Pendragon</div>
-                        <div class="testimonial-role">Operations Manager</div>
-                    </div>
+                <div class="testimonial-card text-center">
+                    <div class="testimonial-icon">❝</div>
+                    <p class="testimonial">
+                        I had the pleasure of shopping with <strong>GSCloths</strong>, and they exceeded all my
+                        expectations. Everything was seamless and stylish.
+                    </p>
+                    <div class="testimonial-name">James Pendragon</div>
+                    <div class="testimonial-role">Operations Manager</div>
                 </div>
 
                 <!-- Testimonial 2 -->
-                <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3">
-                    <div class="testimonial-card text-center">
-                        <div class="testimonial-icon">❝</div>
-                        <p class="testimonial">
-                            Working with the team at <strong>Regal Realty</strong> was amazing. From the moment I
-                            stepped into their office, they exceeded all expectations.
-                        </p>
-                        <div class="testimonial-name">Christian Cooper</div>
-                        <div class="testimonial-role">Designer Manager</div>
-                    </div>
+                <div class="testimonial-card text-center">
+                    <div class="testimonial-icon">❝</div>
+                    <p class="testimonial">
+                        Working with the team at <strong>Regal Realty</strong> was amazing. From the moment I
+                        stepped into their office, they exceeded all expectations.
+                    </p>
+                    <div class="testimonial-name">Christian Cooper</div>
+                    <div class="testimonial-role">Designer Manager</div>
                 </div>
 
                 <!-- Testimonial 3 -->
-                <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3">
-                    <div class="testimonial-card text-center">
-                        <div class="testimonial-icon">❝</div>
-                        <p class="testimonial">
-                            <strong>XYZ Corp</strong> delivered fantastic service and results. They understood our needs
-                            and went above and beyond.
-                        </p>
-                        <div class="testimonial-name">Linda Howard</div>
-                        <div class="testimonial-role">Marketing Lead</div>
-                    </div>
+                <div class="testimonial-card text-center">
+                    <div class="testimonial-icon">❝</div>
+                    <p class="testimonial">
+                        <strong>XYZ Corp</strong> delivered fantastic service and results. They understood our needs
+                        and went above and beyond.
+                    </p>
+                    <div class="testimonial-name">Linda Howard</div>
+                    <div class="testimonial-role">Marketing Lead</div>
                 </div>
 
                 <!-- Testimonial 4 -->
-                <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3">
-                    <div class="testimonial-card text-center">
-                        <div class="testimonial-icon">❝</div>
-                        <p class="testimonial">
-                            I'm incredibly satisfied with <strong>Creative Designs</strong>. Their attention to detail
-                            and dedication made a huge impact.
-                        </p>
-                        <div class="testimonial-name">Mark Robinson</div>
-                        <div class="testimonial-role">Project Manager</div>
-                    </div>
+                <div class="testimonial-card text-center">
+                    <div class="testimonial-icon">❝</div>
+                    <p class="testimonial">
+                        I'm incredibly satisfied with <strong>Creative Designs</strong>. Their attention to detail
+                        and dedication made a huge impact.
+                    </p>
+                    <div class="testimonial-name">Mark Robinson</div>
+                    <div class="testimonial-role">Project Manager</div>
                 </div>
             </div>
         </div>
@@ -948,5 +851,5 @@
     </section>
 
     <!-- Footer -->
-  
+
 </div>

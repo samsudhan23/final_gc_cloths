@@ -8726,3 +8726,54 @@ blockquote {
     max-width: 1500px;
     margin: auto;
 }
+
+
+.testimonial-grid {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  margin-top: 1rem;
+}
+
+
+// .testimonial-card {
+//   border: 1px solid #f36;
+//   padding: 20px;
+//   border-radius: 10px;
+//   box-shadow: 0 4px 15px rgba(255, 0, 90, 0.15);
+//   background: #fff;
+//   transition: transform 0.3s ease-in-out;
+// }
+
+// .testimonial-card:hover {
+//   transform: translateY(-5px);
+// }
+
+// .testimonial-icon {
+//   width: 60px;
+//   height: 60px;
+//   background-color: #e91e63;
+//   color: #fff;
+//   font-size: 32px;
+//   border-radius: 50%;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   margin: 0 auto 20px;
+// }
+
+// .testimonial {
+//   font-style: italic;
+//   margin-bottom: 15px;
+// }
+
+// .testimonial-name {
+//   font-weight: bold;
+//   margin-bottom: 4px;
+// }
+
+// .testimonial-role {
+//   font-size: 0.9rem;
+//   color: #666;
+// }
+
