@@ -33,14 +33,11 @@
                                     <div class="products-tab-nav">Footwear</div>
                                 </a>
                             </div> -->
-                    <div class="products-tab-menu w-tab-menu" role="tablist">
-                        <a *ngFor="let category of categories; let i = index" [attr.data-w-tab]="category.id"
+                    <div class="products-tab-menu w-tab-menu">
+                        <a *ngFor="let category of categories; let i = index"
                             class="products-tab-link w-inline-block w-tab-link"
                             [ngClass]="{ 'w--current': selectedCategory === category.name }"
-                            [id]="'w-tabs-0-data-w-tab-' + i" href="javascript:void(0)" role="tab"
-                            (click)="selectCategory(category.name)" [attr.aria-controls]="'w-tabs-0-data-w-pane-' + i"
-                            [attr.aria-selected]="selectedCategory === category.name ? 'true' : 'false'"
-                            [attr.tabindex]="selectedCategory === category.name ? null : '-1'">
+                            (click)="selectCategory(category.name)">
                             <div class="products-tab-nav">{{ category.name }}</div>
                         </a>
                     </div>

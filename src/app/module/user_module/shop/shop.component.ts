@@ -24,9 +24,6 @@ export class ShopComponent {
   cartCount = 0;
   products: any | undefined;
   productList: any;
-
-  responsiveOptions: any[] | undefined;
-
   images: string[] = [
     'assets/images/basic/home1.webp',
     'assets/images/basic/home2.webp',
@@ -44,7 +41,6 @@ export class ShopComponent {
   filteredProducts: any[] = [];
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object,
-    private auth: AuthenticationService,
     private router: Router,
     private productService: AdminProductService,
     private toast: ToastrService,
@@ -63,24 +59,6 @@ export class ShopComponent {
       this.getProduct();
       // this.changeSlide();
     }
-
-    this.responsiveOptions = [
-      {
-        breakpoint: '1024px',
-        numVisible: 1,
-        numScroll: 1
-      },
-      {
-        breakpoint: '768px',
-        numVisible: 1,
-        numScroll: 1
-      },
-      {
-        breakpoint: '560px',
-        numVisible: 1,
-        numScroll: 1
-      }
-    ]
   }
 
   getProduct() {

@@ -68,7 +68,7 @@
             </td> -->
             <td>{{ user.price }}</td>
             <td>{{ user.sizes }}</td>
-            <td>{{ user.stock }}</td>
+            <td>{{ user.totalStock }}</td>
             <td>{{ user.tags }}</td>
             <td class="sticky-right">
                 <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true"
@@ -138,27 +138,46 @@
                 <div>
                     <div>
                         <label for="sizes" class="block font-bold mb-3">Sizes</label>
-                        <p-multiselect formControlName="sizes" [options]="dressSizesWithMeasurements"
-                            optionLabel="label" optionValue="label" display="chip" placeholder="Select Sizes"
-                            [maxSelectedLabels]="6" styleClass="w-full md:w-80" />
+                        <p-multiselect formControlName="sizes" class="multiselect"
+                            [options]="dressSizesWithMeasurements" (onChange)="onSizeChange($event)" optionLabel="label"
+                            optionValue="label" display="chip" placeholder="Select Sizes" [maxSelectedLabels]="6"
+                            styleClass="w-full md:w-80" />
                     </div>
 
                     <small class="text-red-500"
                         *ngIf="productForm.get('sizes')?.invalid && productForm.get('sizes')?.touched">Sizes
                         is required.</small>
                 </div>
+
+                <div formArrayName="sizeStock" *ngFor="let item of sizeStockControls.controls; let i = index">
+                    <div [formGroupName]="i">
+                        <label for="stock" class="block font-bold mb-3">{{item.get('size')?.value}}</label>
+                        <p-inputgroup>
+                            <p-inputnumber (keyup)="calculateTotalStock($event)" formControlName="stock" placeholder="stock" />
+                        </p-inputgroup>
+                        <small class="text-red-500"
+                            *ngIf="productForm.get('stock')?.invalid && productForm.get('stock')?.touched">
+                            Stock
+                            is required.</small>
+                    </div>
+                </div>
+
                 <div>
-                    <label for="stock" class="block font-bold mb-3">Stock</label>
-                    <input type="number" formControlName="stock" pInputText id="stock" required autofocus fluid />
+                    <label for="totalStock" class="block font-bold mb-3">Total Stock</label>
+                    <input type="number" formControlName="totalStock" pInputText id="totalStock" required autofocus
+                        fluid />
                     <small class="text-red-500"
-                        *ngIf="productForm.get('stock')?.invalid && productForm.get('stock')?.touched">Stock
+                        *ngIf="productForm.get('totalStock')?.invalid && productForm.get('totalStock')?.touched">Total
+                        Stock
                         is required.</small>
                 </div>
                 <div>
                     <label for="tags" class="block font-bold mb-3">Tags</label>
                     <input type="text" formControlName="tags" pInputText id="tags" autofocus fluid />
                 </div>
-
+            </div>
+            <!-- Image Upload -->
+            <div class="grid grid-cols-3 gap-4 mt-4">
                 <div>
                     <div style="padding-bottom: 10px;">
                         <button class="container-btn-file">
@@ -180,25 +199,6 @@
                         is required.</small>
                 </div>
 
-                <!-- <div class="">
-                    <button class="file-upload-button">
-                        <input type="file" #fileInput (change)="onFileChange($event, 'images')" />
-                    </button>
-                    <div>Choose</div>
-                    <img [src]="fileInfo" alt="" style="width: 40%;">
-                    <span class="file-info">{{ fileInfo | split: '/' }}</span>
-                </div> -->
-
-                <!-- <div class="">
-                    <button class="file-upload-button">
-                        <input type="file" #galleryInput (change)="onFileChange($event, 'gallery')" multiple />
-                    </button>
-                    <span class="file-info" *ngFor="let file of galleryFiles">{{ file.name ? file.name:file | split:
-                        'Products/':1}}
-                        <img [src]="file.name ? file.name:file" alt="" style="width: 40%;">
-                    </span>
-                </div> -->
-
                 <div>
                     <div style="padding-bottom: 10px;">
                         <button class="container-btn-file">
@@ -217,7 +217,6 @@
                     <small class="text-red-500" *ngIf="galleryFiles.length == 0 || this.productForm.invalid">Gallery
                         is required.</small>
                 </div>
-
             </div>
         </form>
     </ng-template>

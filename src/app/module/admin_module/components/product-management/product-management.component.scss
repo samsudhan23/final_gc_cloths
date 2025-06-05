@@ -15,7 +15,9 @@
 ::ng-deep .userModel .p-dialog-content {
     overflow-y: unset;
 }
-
+::ng-deep .p-multiselect {
+    width: 100%;
+}
 .wraptext {
     white-space: nowrap;
     width: 20px;
