@@ -351,9 +351,10 @@ export class ProductManagementComponent {
       formData.append('price', FormControlValues.price);
       if (FormControlValues.discountPrice !== null && FormControlValues.discountPrice !== undefined && FormControlValues.discountPrice !== '') {
         formData.append('discountPrice', FormControlValues.discountPrice.toString());
-      } FormControlValues.sizes.forEach((val: any) => {
-        formData.append('sizes[]', val)
-      })
+      }
+      //  FormControlValues.sizes.forEach((val: any) => {
+      //   formData.append('sizes[]', val)
+      // })
       FormControlValues.sizeStock.forEach((size: any, index: number) => {
         formData.append(`sizeStock[${index}][size]`, size.size.toString());
         formData.append(`sizeStock[${index}][stock]`, size.stock);

@@ -163,8 +163,8 @@
                 </div>
 
                 <div>
-                    <label for="totalStock" class="block font-bold mb-3">Total Stock</label>
-                    <input type="number" formControlName="totalStock" pInputText id="totalStock" required autofocus
+                    <label for="totalStock" class="block font-bold mb-3 text-green-700">Total Stock</label>
+                    <input type="number" formControlName="totalStock" pInputText id="totalStock" required autofocus readonly class="cursor-not-allowed"
                         fluid />
                     <small class="text-red-500"
                         *ngIf="productForm.get('totalStock')?.invalid && productForm.get('totalStock')?.touched">Total
