@@ -31,4 +31,12 @@ export class UserService {
   deleteUser(id: any): Observable<any> {
     return this.http.post(`${enviornment.url}deleteUser`, id);
   }
+
+  getUserFromLocalStorage(): any {
+    const data = localStorage.getItem('role');
+    if (data) {
+      return JSON.parse(data);
+    }
+    return null;
+  }
 }
