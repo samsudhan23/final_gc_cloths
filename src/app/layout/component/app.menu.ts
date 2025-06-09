@@ -27,7 +27,8 @@ export class AppMenu {
                     { label: 'Category', icon: 'pi pi-fw pi-bars', routerLink: ['/admin/category'] },
                     { label: 'User Management', icon: 'pi pi-fw pi-user', routerLink: ['/admin/users'] },
                     { label: 'Product Management', icon: 'pi pi-cart-minus', routerLink: ['/admin/products'] },
-                    { label: 'Wishlists', icon: 'pi pi-heart', routerLink: ['/admin/wishlist'] }
+                    { label: 'Wishlists', icon: 'pi pi-heart', routerLink: ['/admin/wishlist'] },
+                    { label: 'Cart', icon: 'pi pi-cart-minus', routerLink: ['/admin/Cart'] }
                 ]
             },
             {

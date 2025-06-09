@@ -4,7 +4,7 @@ import { SelectModule } from 'primeng/select';
 import { Table, TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { InputIconModule } from 'primeng/inputicon';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
@@ -82,7 +82,7 @@ export class ProductManagementComponent {
     { id: 6, label: 'XXL', bust: '43-45', waist: '35-37', hips: '45-47' },
     { id: 7, label: '3XL', bust: '46-48', waist: '38-40', hips: '48-50' }
   ];
-  productForm: FormGroup;
+  productForm!: FormGroup;
   productData: any = [];
   categoryList: any[] = [];
   genderList: any[] = [];
@@ -108,12 +108,15 @@ export class ProductManagementComponent {
       price: ['', Validators.required],
       discountPrice: [''],
       sizes: ['', Validators.required],
-      stock: ['', Validators.required],
+      sizeStock: this.fb.array([]),
+      totalStock: ['', Validators.required],
       tags: [''],
       category: ['', Validators.required],
     });
   }
-
+  get sizeStockControls(): FormArray {
+    return this.productForm.get('sizeStock') as FormArray;
+  }
   ngOnInit() {
     this.getCategoryList()
     this.productList();
@@ -164,16 +167,46 @@ export class ProductManagementComponent {
     }
   }
 
-  onSizeChange(event: any): void {
-    const sizeId = event.target.value;
-    if (event.target.checked) {
-      this.selectedSizes.push(sizeId);
-    } else {
-      this.selectedSizes = this.selectedSizes.filter(id => id !== sizeId);
-    }
+  // onSizeChange(event: any): void {
+  //   this.selectedSizes = event.value;
+  //   const sizeStockArray: FormArray = this.fb.array([]);
+  //   this.selectedSizes.forEach(size => {
+  //     sizeStockArray.push(this.fb.group({
+  //       size: [size],
+  //       stock: [0, [Validators.required, Validators.min(0)]]
+  //     }));
+  //   });
+  //   this.productForm.setControl('sizeStock', sizeStockArray);
 
-    // Optional: If you're using reactive form to bind sizes
-    this.productForm.get('sizes')?.setValue(this.selectedSizes);
+  // }
+  onSizeChange(event: any): void {
+    this.selectedSizes = event.value;
+    const currentArray = this.productForm.get('sizeStock') as FormArray;
+
+    // 1. Preserve existing values
+    const existingControls = currentArray.controls;
+    const existingSizeMap = new Map<string, number>();
+
+    existingControls.forEach(control => {
+      const size = control.get('size')?.value;
+      const stock = control.get('stock')?.value;
+      existingSizeMap.set(size, stock);
+    });
+
+    // 2. Rebuild FormArray with preserved values
+    const updatedArray: FormArray = this.fb.array([]);
+
+    this.selectedSizes.forEach(size => {
+      updatedArray.push(this.fb.group({
+        size: [size],
+        stock: [
+          existingSizeMap.has(size) ? existingSizeMap.get(size) : 0,
+          [Validators.required, Validators.min(0)]
+        ]
+      }));
+    });
+
+    this.productForm.setControl('sizeStock', updatedArray);
   }
 
   onGlobalFilter(table: Table, event: Event) {
@@ -182,6 +215,16 @@ export class ProductManagementComponent {
   openNew() {
     this.formDialog = true;
     this.mode = 'add'
+  }
+
+  // Calculate Total Stock
+  calculateTotalStock(stock: any) {
+    const sizeStockArray = this.productForm.get('sizeStock')?.value || [];
+    const total = sizeStockArray.reduce((acc: number, curr: any) => {
+      const stock = Number(curr.stock) || 0;
+      return acc + stock;
+    }, 0);
+    this.productForm.get('totalStock')?.setValue(total);
   }
 
   deleteSelectedProducts() {
@@ -240,6 +283,7 @@ export class ProductManagementComponent {
     this.productForm.get('productDescription')?.setValue('')
     this.productForm.enable();
     this.showFileName = false
+    this.sizeStockControls.clear();
   }
 
   onDialogHide() {  // Reset when dialog is closed using header 'X'
@@ -256,41 +300,42 @@ export class ProductManagementComponent {
       this.productForm.get('productDescription')?.setValue('')
       this.productForm.enable();
       this.showFileName = false
+      this.sizeStockControls.clear();
     }
   }
   async editProducts(event: any, type: string) {
-    const editTableDatas = event
+    const editTableDatas = event;
     this.formDialog = true;
-    switch (type) {
-      case "Edit":
-        this.mode = 'edit';
-        this.currentId = editTableDatas._id;
-        this.productForm.patchValue(editTableDatas);
-        this.productForm.patchValue({
-          gender: editTableDatas.gender._id,
-          category: editTableDatas.category._id
-        });
-        this.fileInfo = editTableDatas.images;
-        this.singleImage = this.fileInfo
-        // this.galleryFiles = editTableDatas.gallery;
-        this.galleryFiles = [...this.galleryFiles, ...editTableDatas.gallery]
-        this.galleryImages = this.galleryFiles
-        // this.imageFile = await this.urlToFile(editTableDatas.images, 'oldImage.jpg');
-        // this.galleryFiles = [await this.urlToFile(editTableDatas.gallery, 'oldImage.jpg')];
-        this.productForm.enable();
-        break;
-      case "View":
-        this.mode = 'view';
-        this.productForm.patchValue(editTableDatas);
-        this.productForm.patchValue({
-          gender: editTableDatas.gender._id,
-          category: editTableDatas.category._id
-        });
-        this.productForm.disable();
-        break;
-    }
 
+    if (type === 'Edit') {
+      this.mode = 'edit';
+      this.currentId = editTableDatas._id;
+      this.productForm.patchValue({
+        ...editTableDatas,
+        gender: editTableDatas.gender._id,
+        category: editTableDatas.category._id,
+      });
+
+      const sizesArray = editTableDatas.sizeStock?.map((s: any) => s.size) || [];
+      this.productForm.get('sizes')?.setValue(sizesArray);
+      const sizeStockArray = this.productForm.get('sizeStock') as FormArray;
+      sizeStockArray.clear(); // Clear existing controls
+      sizesArray.forEach((size: string) => {
+        const stockObj = editTableDatas.sizeStock.find((item: any) => item.size === size);
+        const stockValue = stockObj ? stockObj.stock : 0;
+        sizeStockArray.push(this.fb.group({
+          size: [size],
+          stock: [stockValue, [Validators.required, Validators.min(0)]]
+        }));
+      });
+      this.fileInfo = editTableDatas.images;
+      this.singleImage = this.fileInfo;
+      this.galleryFiles = [...this.galleryFiles, ...editTableDatas.gallery];
+      this.galleryImages = this.galleryFiles;
+      this.productForm.enable();
+    }
   }
+
   onSubmit(): void {
     if (this.productForm.invalid) {
       this.productForm.markAllAsTouched();
@@ -298,6 +343,7 @@ export class ProductManagementComponent {
     if (this.productForm.valid) {
       const formData = new FormData();
       const FormControlValues = this.productForm.value;
+      console.log('FormControlValues: ', FormControlValues);
 
       formData.append('productName', FormControlValues.productName);
       formData.append('productDescription', FormControlValues.productDescription);
@@ -305,11 +351,16 @@ export class ProductManagementComponent {
       formData.append('price', FormControlValues.price);
       if (FormControlValues.discountPrice !== null && FormControlValues.discountPrice !== undefined && FormControlValues.discountPrice !== '') {
         formData.append('discountPrice', FormControlValues.discountPrice.toString());
-      } FormControlValues.sizes.forEach((val: any) => {
-        formData.append('sizes[]', val)
-      })
-      // formData.append('sizes', FormControlValues.sizes);
-      formData.append('stock', FormControlValues.stock);
+      }
+      //  FormControlValues.sizes.forEach((val: any) => {
+      //   formData.append('sizes[]', val)
+      // })
+      FormControlValues.sizeStock.forEach((size: any, index: number) => {
+        formData.append(`sizeStock[${index}][size]`, size.size.toString());
+        formData.append(`sizeStock[${index}][stock]`, size.stock);
+      });
+
+      formData.append('totalStock', FormControlValues.totalStock);
       formData.append('tags', FormControlValues.tags);
       formData.append('category', FormControlValues.category);
       if (this.imageFile) {
