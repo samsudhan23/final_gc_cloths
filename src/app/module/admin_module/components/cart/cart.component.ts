@@ -23,7 +23,6 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { CheckboxModule } from 'primeng/checkbox';
 import { UserService } from '../../service/user/user.service';
 import { ToastrService } from 'ngx-toastr';
-import { WishlistService } from '../../service/wishlistService/wishlist.service';
 import { AdminProductService } from '../../service/productService/admin-product.service';
 import { CartService } from '../../service/cartService/cart.service';
 
@@ -70,7 +69,6 @@ export class CartComponent {
   dressSizesWithMeasurements = [];
   constructor(
     private userService: UserService,
-    private wishservice: WishlistService,
     private cartService: CartService,
     private product: AdminProductService,
     private confirmationService: ConfirmationService,
@@ -123,7 +121,8 @@ export class CartComponent {
 
   selectProduct(event: any) {
     const data = event.value
-    this.dressSizesWithMeasurements = this.productData.find((item: any) => item._id === data)?.sizes.map((ite: string) => ({ label: ite })) || [];
+    const filtered = this.productData.find((item: any) => item._id === data)?.sizeStock.map((ite: any) => (ite));
+    this.dressSizesWithMeasurements = filtered.map((e: any) => ({ label: e.size })) || [];
   }
 
   onGlobalFilter(table: Table, event: Event) {

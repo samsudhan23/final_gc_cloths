@@ -76,7 +76,7 @@
 <p-dialog [(visible)]="userDialog" class="userModel" header="User Details" [modal]="true" (onHide)="onDialogHide()">
     <ng-template #content>
         <form [formGroup]="userForm">
-            <div class="grid grid-cols-3 gap-4">
+            <div class="grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 grid-cols-1 gap-4">
 
                 <div>
                     <label for="role" class="block font-bold mb-3">Role</label>
@@ -122,10 +122,11 @@
                         Birth is
                         required.</small>
                 </div>
-                <div class="flex items-center">
-                    <p-checkbox formControlName="isBlocked" inputId="checkOption1" binary="true" />
-                    <label for="checkOption1" class="ml-2">Is Blocked</label>
-                </div>
+
+            </div>
+            <div class="flex items-center mt-4">
+                <p-checkbox formControlName="isBlocked" inputId="checkOption1" binary="true" />
+                <label for="checkOption1" class="ml-2">Is Blocked</label>
             </div>
         </form>
     </ng-template>

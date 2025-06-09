@@ -170,11 +170,15 @@ export class UserManagementComponent {
   hideDialog() {
     this.userDialog = false;
     this.userForm.reset();
+    this.userForm.get('isBlocked')?.setValue(false);
+    this.userForm.get('role')?.setValue('user')
   }
 
   onDialogHide() {
     if (this.userForm) {
       this.userForm.reset(); // Reset when dialog is closed using header 'X'
+      this.userForm.get('isBlocked')?.setValue(false)
+      this.userForm.get('role')?.setValue('user')
     }
   }
   editUser(event: any, type: string) {
