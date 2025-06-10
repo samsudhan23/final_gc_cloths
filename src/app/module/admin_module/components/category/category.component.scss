@@ -1,4 +1,4 @@
-.icon{
+.icon {
     margin-left: 7px;
 }
 
@@ -18,18 +18,4 @@
 
 ::ng-deep .userModel .p-dialog-content {
     overflow-y: unset;
-}
-
-/* Sticky checkbox (left) */
-.sticky-left {
-    position: sticky;
-    left: 0;
-    background: white;
-}
-
-/* Sticky action (right) */
-.sticky-right {
-    position: sticky;
-    right: 0;
-    background: white;
 }

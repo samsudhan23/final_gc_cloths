@@ -6,14 +6,14 @@
     </ng-template>
 </p-toolbar>
 
-<p-table #dt [value]="CartList" [rows]="10" [paginator]="true" dataKey="_id"
+<p-table #dt [value]="orderList" [rows]="10" [paginator]="true" dataKey="_id"
     [globalFilterFields]="['userId.name', 'productId.productName', 'quantity', 'selectedSize','addedAt']"
     [tableStyle]="{ 'min-width': '75rem' }" [(selection)]="selectedUser" [rowHover]="true"
-    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Cartlist" [showCurrentPageReport]="true"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} orderList" [showCurrentPageReport]="true"
     [rowsPerPageOptions]="[10, 20, 30]">
     <ng-template #caption>
         <div class="flex items-center justify-between">
-            <h5 class="m-0">Manage Cart</h5>
+            <h5 class="m-0">Manage Orders</h5>
             <p-iconfield>
                 <p-inputicon styleClass="pi pi-search" />
                 <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search..." />
@@ -69,9 +69,9 @@
     </ng-template>
 </p-table>
 
-<p-dialog [(visible)]="openDialog" class="userModel" header="Cart Details" [modal]="true" (onHide)="onDialogHide()">
+<p-dialog [(visible)]="openDialog" class="userModel" header="Orders Details" [modal]="true" (onHide)="onDialogHide()">
     <ng-template #content>
-        <form [formGroup]="cartForm">
+        <form [formGroup]="orderForm">
             <div class="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4">
 
                 <div>
@@ -79,31 +79,50 @@
                     <p-select inputId="userId" formControlName="userId" [options]="usersList" optionLabel="name"
                         optionValue="_id" placeholder="Select a User" fluid />
                     <small class="text-red-500"
-                        *ngIf="cartForm.get('userId')?.invalid && cartForm.get('userId')?.touched">User is
+                        *ngIf="orderForm.get('userId')?.invalid && orderForm.get('userId')?.touched">User is
                         required.</small>
                 </div>
                 <div>
-                    <label class="block font-bold mb-3">Product</label>
-                    <p-select inputId="productId" formControlName="productId" [options]="productData" (onChange)="selectProduct($event)"
-                        optionLabel="productName" optionValue="_id" placeholder="Select a Product" fluid />
+                    <!-- <label class="block font-bold mb-3">Product</label> -->
+                    <div>
+                        <label for="productId" class="block font-bold mb-3">Product</label>
+                        <p-multiselect formControlName="productId" class="multiselect" [options]="productData"
+                            (onChange)="selectProduct($event)" optionLabel="productName" optionValue="_id"
+                            display="chip" placeholder="Select Product" [maxSelectedLabels]="6"
+                            styleClass="w-full md:w-80" />
+                    </div>
                     <small class="text-red-500"
-                        *ngIf="cartForm.get('productId')?.invalid && cartForm.get('productId')?.touched">Product
+                        *ngIf="orderForm.get('productId')?.invalid && orderForm.get('productId')?.touched">Product
                         is required.</small>
                 </div>
                 <div>
                     <label class="block font-bold mb-3">Size</label>
-                    <p-select inputId="selectedSize" formControlName="selectedSize" [options]="dressSizesWithMeasurements"
-                        optionLabel="label" optionValue="label" placeholder="Select a Product" fluid />
+                    <p-multiselect [options]="dressSizesWithMeasurements" optionLabel="label" optionValue="value"
+                        [group]="true" placeholder="Select Cities" scrollHeight="250px" display="chip" (onChange)="selectSizes($event)"
+                        styleClass="w-full md:w-80">
+                        <ng-template let-group #group>
+                            <div class="flex items-center">
+                                <!-- <img src="https://primefaces.org/cdn/primeng/images/demo/flag/flag_placeholder.png"
+                                    [class]="'mr-2 flag flag-' + group.label" style="width: 20px" /> -->
+                                <i class="pi pi-cart-plus mr-2 text-md"
+                                    style="font-size: 1.5rem; color: rgb(90, 205, 119)"></i>
+                                <span>{{ group.label }}</span>
+                            </div>
+                        </ng-template>
+                    </p-multiselect>
                     <small class="text-red-500"
-                        *ngIf="cartForm.get('selectedSize')?.invalid && cartForm.get('selectedSize')?.touched">Size
+                        *ngIf="orderForm.get('selectedSize')?.invalid && orderForm.get('selectedSize')?.touched">Size
                         is required.</small>
                 </div>
-                <div>
-                    <label class="block font-bold mb-3">Quantity</label>
-                    <input type="number" formControlName="quantity" pInputText id="quantity" required autofocus fluid />
-                    <small class="text-red-500"
-                        *ngIf="cartForm.get('quantity')?.invalid && cartForm.get('quantity')?.touched">Quantity is
-                        required.</small>
+                <div formArrayName="totalQuantity" *ngFor="let item of quantityControls.controls; let i = index">
+                    <div [formGroupName]="i">
+                        <label class="block font-bold mb-3">{{item.get('quantity')?.value}}</label>
+                        <input type="number" formControlName="quantity" pInputText id="quantity" required autofocus
+                            fluid />
+                        <small class="text-red-500"
+                            *ngIf="item.get('quantity')?.invalid && item.get('quantity')?.touched">Quantity is
+                            required.</small>
+                    </div>
                 </div>
             </div>
         </form>

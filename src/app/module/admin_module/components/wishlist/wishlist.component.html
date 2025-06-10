@@ -49,14 +49,14 @@
             <td class="sticky-left" style="width: 3rem">
                 <p-tableCheckbox [value]="datas" />
             </td>
-            <td style="min-width: 12rem">{{ datas.userId.name}}</td>
-            <td style="min-width: 16rem">{{ datas.productId.productName }}</td>
-            <td>{{ datas.createdAt | date:'yyyy-MM-dd HH:MM:SS' }}</td>
-            <td>{{ datas.updatedAt | date:'yyyy-MM-dd HH:MM:SS' }}</td>
+            <td style="min-width: 12rem">{{ datas?.userId?.name}}</td>
+            <td style="min-width: 16rem">{{ datas?.productId?.productName }}</td>
+            <td>{{ datas?.createdAt | date:'yyyy-MM-dd HH:MM:SS' }}</td>
+            <td>{{ datas?.updatedAt | date:'yyyy-MM-dd HH:MM:SS' }}</td>
             <td class="sticky-right">
                 <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true"
                     (click)="edit(datas,'Edit')" />
-                <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true"
+                <p-button icon="pi pi-tra   sh" severity="danger" [rounded]="true" [outlined]="true"
                     (click)="delete(datas)" />
             </td>
         </tr>

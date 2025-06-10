@@ -1,7 +1,7 @@
 <div class="profile-card">
-  <img [src]="filterUsers.avatar || defaultAvatar" alt="User Avatar" class="profile-avatar" />
-  <h2>{{ filterUsers.name }}</h2>
-  <p><strong>Email:</strong> {{ filterUsers.email }}</p>
-  <p><strong>Phone:</strong> {{ filterUsers.phoneNumber }}</p>
-  <p><strong>Address:</strong> {{ filterUsers.address || 'Chennai' }}</p>
+  <img [src]="filterUsers?.avatar || defaultAvatar" alt="User Avatar" class="profile-avatar" />
+  <h2>{{ filterUsers?.name }}</h2>
+  <p><strong>Email:</strong> {{ filterUsers?.email }}</p>
+  <p><strong>Phone:</strong> {{ filterUsers?.phoneNumber }}</p>
+  <p><strong>Address:</strong> {{ filterUsers?.address || 'Chennai' }}</p>
 </div>

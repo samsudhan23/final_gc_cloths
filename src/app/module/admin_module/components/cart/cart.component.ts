@@ -102,6 +102,7 @@ export class CartComponent {
     this.product.getProductlist().subscribe((res) => {
       if (res.success === true || res.code === 200) {
         this.productData = res.result
+        console.log('this.productData : ', this.productData );
       }
     }, (error: any) => {
       this.toast.error(error.message)

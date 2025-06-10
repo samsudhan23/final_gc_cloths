@@ -7,6 +7,7 @@ import { AppConfigurator } from './app.configurator';
 import { LayoutService } from '../service/layout.service';
 import { ButtonModule } from 'primeng/button';
 import { OverlayPanel, OverlayPanelModule } from 'primeng/overlaypanel';
+import { AuthenticationService } from '../../pages/service/authentication.service';
 @Component({
     selector: 'app-topbar',
     standalone: true,
@@ -65,14 +66,14 @@ import { OverlayPanel, OverlayPanelModule } from 'primeng/overlaypanel';
 
             <div class="layout-topbar-menu hidden lg:block">
                 <div class="layout-topbar-menu-content">
-                    <button type="button" class="layout-topbar-action">
+                    <!-- <button type="button" class="layout-topbar-action">
                         <i class="pi pi-calendar"></i>
                         <span>Calendar</span>
                     </button>
                     <button type="button" class="layout-topbar-action">
                         <i class="pi pi-inbox"></i>
                         <span>Messages</span>
-                    </button>
+                    </button> -->
                     <button type="button" class="layout-topbar-action" (click)="profilePanel.toggle($event)">
                         <i class="pi pi-user"></i>
                         <span>Profile</span>
@@ -151,7 +152,7 @@ import { OverlayPanel, OverlayPanelModule } from 'primeng/overlaypanel';
   gap: 0.75rem;
   padding: 0.75rem 1rem;
   font-size: 1rem;
-  color: #425466;
+  color: var(--p-datatable-header-cell-color);
   cursor: pointer;
   transition: background-color 0.2s ease;
 }
@@ -163,13 +164,14 @@ import { OverlayPanel, OverlayPanelModule } from 'primeng/overlaypanel';
 
 .profile-menu li:hover {
   background-color: #f0f4f8;
+  color: #6b7280;
 }
 
 `]
 })
 export class AppTopbar {
     items!: MenuItem[];
-    constructor(public layoutService: LayoutService, private router: Router) { }
+    constructor(public layoutService: LayoutService, private router: Router, private auth: AuthenticationService) { }
 
     toggleDarkMode() {
         this.layoutService.layoutConfig.update((state) => ({ ...state, darkTheme: !state.darkTheme }));
@@ -185,6 +187,8 @@ export class AppTopbar {
         this.overlayPanel.hide();
     }
     onLogout() {
-        this.router.navigate(['/login']);
+        localStorage.removeItem('role');
+        localStorage.removeItem('user');
+        this.router.navigate(['/login'], { replaceUrl: true });
     }
 }

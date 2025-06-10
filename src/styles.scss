@@ -29,3 +29,17 @@
     --border-radius-15: 15px;
     --border-radius-0: 0px
 }
+
+/* Sticky checkbox (left) */
+.sticky-left {
+    position: sticky;
+    left: 0;
+    background: var(--p-datatable-header-background);
+}
+
+/* Sticky action (right) */
+.sticky-right {
+    position: sticky;
+    right: 0;
+    background: var(--p-datatable-header-background);
+}

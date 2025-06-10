@@ -2,13 +2,14 @@ import { RouterModule, Routes } from "@angular/router";
 import { NgModule } from "@angular/core";
 import { AppLayout } from "../../layout/component/app.layout";
 import { Dashboard } from "../../pages/dashboard/dashboard";
+import { DashboardComponent } from "./components/dashboard/dashboard.component";
 
 export const routes: Routes = [
     {
         path: '', component: AppLayout,
         children: [
             { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-            { path: 'dashboard', component: Dashboard },
+            { path: 'dashboard', component: DashboardComponent },
             {
                 path: 'users',
                 loadComponent: () => import('./components/user-management/user-management.component').then(m => m.UserManagementComponent)
@@ -36,6 +37,10 @@ export const routes: Routes = [
             {
                 path: 'settings',
                 loadComponent: () => import('./components/setting/setting.component').then(m => m.SettingComponent)
+            },
+              {
+                path: 'orders',
+                loadComponent: () => import('./components/order-management/order-management.component').then(m => m.OrderManagementComponent)
             }
         ]
     },

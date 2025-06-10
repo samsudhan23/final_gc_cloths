@@ -3,7 +3,7 @@ import { Notfound } from './app/pages/notfound/notfound';
 import { RoleGuard } from './app/shared/core/role.guard';
 import { SignInComponent } from './app/pages/auth/sign-in/sign-in.component';
 import { ResetpasswordComponent } from './app/pages/auth/resetpassword/resetpassword.component';
-import { UserLayoutComponent } from './app/module/user_module/user-layout/user-layout.component';
+import { LoginGuard } from './app/shared/core/login.guard';
 
 export const appRoutes: Routes = [
 
@@ -17,12 +17,12 @@ export const appRoutes: Routes = [
     {
         path: 'user',
         loadChildren: () => import('./app/module/user_module/user.module').then(m => m.UserModule),
-        // canActivate: [RoleGuard],
-        // data: { roles: ['user'] }
+        canActivate: [RoleGuard],
+        data: { roles: ['user'] }
     },
     { path: 'notfound', component: Notfound },
     {
-        path: 'login', component: SignInComponent
+        path: 'login', component: SignInComponent, canActivate: [LoginGuard]
     },
     {
         path: 'reset-password/:token', component: ResetpasswordComponent

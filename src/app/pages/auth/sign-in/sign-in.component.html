@@ -1,145 +1,152 @@
 <div class="auth-container">
-    <div class="auth-card">
+  <div class="auth-card">
+    @if (isLogin && !isForgotPassword && !showOtpScreen) {
+    <div class="auth-image">
+      <img src="../../../../assets/images/basic/log.jpg" alt="Signup" />
+    </div>
+    } @else if (!isLogin && !isForgotPassword && !showOtpScreen) {
+    <div class="auth-image">
+      <img src="../../../../assets/images/basic/log1.jpg" alt="Login" />
+    </div>
+    } @else if (isForgotPassword && !showOtpScreen) {
+    <div class="auth-image">
+      <img src="../../../../assets/images/basic/password.jpg" alt="Password" />
+    </div>
+    } @else if (showOtpScreen) {
+    <div class="auth-image">
+      <img src="../../../../assets/images/basic/otp.jpg" alt="OTP" />
+    </div>
+    }
+
+    <div class="auth-form">
+      <!-- Login Form -->
       @if (isLogin && !isForgotPassword && !showOtpScreen) {
-        <div class="auth-image">
-          <img src="../../../../assets/images/basic/log.jpg" alt="Signup" />
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmitLogin()" class="fade-in">
+        <h2>Login</h2>
+        <input type="email" formControlName="email" placeholder="Email" autocomplete="off" required />
+        @if (loginForm.get('email')?.invalid && loginForm.get('email')?.touched) {
+        <small class="error" *ngIf="l['email'].errors?.['required']">Email is required.</small>
+        <small class="error" *ngIf="l['email'].errors?.['email']">Enter a valid email</small>
+        }
+
+        <div class="password-container">
+          <input formControlName="password" [type]="isPasswordVisible ? 'text' : 'password'" id="password"
+            placeholder="Password" required />
+          <span class="eye-icon" (click)="togglePasswordVisibility()">
+            {{ isPasswordVisible ? '🙈' : '👁️' }}
+          </span>
         </div>
-      } @else if (!isLogin && !isForgotPassword && !showOtpScreen) {
-        <div class="auth-image">
-          <img src="../../../../assets/images/basic/log1.jpg" alt="Login" />
-        </div>
-      } @else if (isForgotPassword && !showOtpScreen) {
-        <div class="auth-image">
-          <img src="../../../../assets/images/basic/password.jpg" alt="Password" />
-        </div>
-      } @else if (showOtpScreen) {
-        <div class="auth-image">
-          <img src="../../../../assets/images/basic/otp.jpg" alt="OTP" />
-        </div>
+
+        @if (loginForm.get('password')?.invalid && loginForm.get('password')?.touched) {
+        <small class="error">Password must be at least 6 characters</small>
+        }
+
+        <button type="submit">Login</button>
+        <p class="mt-3 mb-0">Forgot your password? <span (click)="showForgotPasswordForm()">Click here</span></p>
+        <p class="mt-1 mb-0">Don't have an account? <span (click)="toggleForm(false)">Sign Up</span></p>
+      </form>
       }
-  
-      <div class="auth-form">
-        <!-- Login Form -->
-        @if (isLogin && !isForgotPassword && !showOtpScreen) {
-          <form [formGroup]="loginForm" (ngSubmit)="onSubmitLogin()" class="fade-in">
-            <h2>Login</h2>
-            <input type="email" formControlName="email" placeholder="Email" autocomplete="off" required />
-            @if (loginForm.get('email')?.invalid && loginForm.get('email')?.touched) {
-              <small class="error" *ngIf="l['email'].errors?.['required']">Email is required.</small>
-              <small class="error" *ngIf="l['email'].errors?.['email']">Enter a valid email</small>
-            }
-  
-            <div class="password-container">
-              <input formControlName="password" [type]="isPasswordVisible ? 'text' : 'password'" id="password"
-                placeholder="Password" required />
-              <span class="eye-icon" (click)="togglePasswordVisibility()">
-                {{ isPasswordVisible ? '🙈' : '👁️' }}
-              </span>
-            </div>
-  
-            @if (loginForm.get('password')?.invalid && loginForm.get('password')?.touched) {
-              <small class="error">Password must be at least 6 characters</small>
-            }
-  
-            <button type="submit">Login</button>
-            <p class="mt-3 mb-0">Forgot your password? <span (click)="showForgotPasswordForm()">Click here</span></p>
-            <p class="mt-1 mb-0">Don't have an account? <span (click)="toggleForm(false)">Sign Up</span></p>
-          </form>
+
+      <!-- Signup Form -->
+      @if (!isLogin && !isForgotPassword && !showOtpScreen) {
+      <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="fade-in">
+        <h2>Sign Up</h2>
+        <input type="text" formControlName="name" placeholder="Full Name" required />
+        @if (s['name'].touched && s['name'].invalid) {
+        <small *ngIf="s['name'].errors?.['required']">Name is required.</small>
+        <small *ngIf="s['name'].errors?.['minlength']">Name must be at least 3 characters long.</small>
         }
-  
-        <!-- Signup Form -->
-        @if (!isLogin && !isForgotPassword && !showOtpScreen) {
-          <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="fade-in">
-            <h2>Sign Up</h2>
-            <input type="text" formControlName="name" placeholder="Full Name" required />
-            @if (s['name'].touched && s['name'].invalid) {
-              <small *ngIf="s['name'].errors?.['required']">Name is required.</small>
-              <small *ngIf="s['name'].errors?.['minlength']">Name must be at least 3 characters long.</small>
-            }
-  
-            <input type="email" formControlName="email" placeholder="Email" autocomplete="off" required />
-            @if (signupForm.get('email')?.invalid && signupForm.get('email')?.touched) {
-              <small class="error" *ngIf="s['email'].errors?.['required']">Email is required.</small>
-              <small class="error" *ngIf="s['email'].errors?.['email']">Enter a valid email</small>
-            }
-  
-            <div class="password-container">
-              <input formControlName="password" [type]="isPasswordVisible ? 'text' : 'password'" id="password"
-                placeholder="Password" required />
-              <span class="eye-icon" (click)="togglePasswordVisibility()">
-                {{ isPasswordVisible ? '🙈' : '👁️' }}
-              </span>
-            </div>
-            @if (signupForm.get('password')?.invalid && signupForm.get('password')?.touched) {
-              <small class="error">Password must be at least 6 characters</small>
-            }
-  
-            <input type="tel" formControlName="phoneNumber" placeholder="Phone Number" required />
-            @if (signupForm.get('phoneNumber')?.invalid && signupForm.get('phoneNumber')?.touched) {
-              <small class="error" *ngIf="s['phoneNumber'].errors?.['required']">Phone Number is required.</small>
-              <small class="error" *ngIf="s['phoneNumber'].errors?.['pattern']">Enter a valid 10-digit phone number</small>
-            }
-  
-            <input type="date" formControlName="dob" placeholder="Date of Birth" required />
-            @if (signupForm.get('dob')?.invalid && signupForm.get('dob')?.touched) {
-              <small class="error">Date of Birth is required</small>
-            }
-  
-            <button type="submit">Sign Up</button>
-            <p>Already have an account? <span (click)="toggleForm(true)">Login</span></p>
-          </form>
+
+        <input type="email" formControlName="email" placeholder="Email" autocomplete="off" required />
+        @if (signupForm.get('email')?.invalid && signupForm.get('email')?.touched) {
+        <small class="error" *ngIf="s['email'].errors?.['required']">Email is required.</small>
+        <small class="error" *ngIf="s['email'].errors?.['email']">Enter a valid email</small>
         }
-  
-        <!-- Forgot Password Form -->
-        @if (isForgotPassword && !showOtpScreen) {
-          <form [formGroup]="forgotPasswordForm" (ngSubmit)="onSubmitForgotPassword()" class="fade-in">
-            <h2>Reset Password</h2>
-            <input type="email" formControlName="femail" placeholder="Email" autocomplete="off" required />
-            @if (forgotPasswordForm.get('femail')?.invalid && forgotPasswordForm.get('femail')?.touched) {
-              <small class="error" *ngIf="p['femail'].errors?.['required']">Email is required.</small>
-              <small class="error" *ngIf="p['femail'].errors?.['email']">Enter a valid email</small>
-            }
-            <button type="submit">Send Reset Link</button>
-            <p>Remembered your password? <span (click)="backToLogin()">Back to Login</span></p>
-          </form>
+
+        <div class="password-container">
+          <input formControlName="password" [type]="isPasswordVisible ? 'text' : 'password'" id="password"
+            placeholder="Password" required />
+          <span class="eye-icon" (click)="togglePasswordVisibility()">
+            {{ isPasswordVisible ? '🙈' : '👁️' }}
+          </span>
+        </div>
+        @if (signupForm.get('password')?.invalid && signupForm.get('password')?.touched) {
+        <small class="error">Password must be at least 6 characters</small>
         }
-  
-        <!-- OTP Form -->
-        @if (showOtpScreen) {
-          <form [formGroup]="otpForm" (ngSubmit)="onSubmitOtp()" class="otp-form">
-            <div class="otp-top-box">
-              <h2>OTP Verification</h2>
-              <p>Please enter the 6-digit OTP sent to your registered mobile/email.</p>
-            </div>
-  
-            <div class="otp-boxes">
-              <input type="text" maxlength="1" formControlName="otp1" (input)="autoFocusNext($event, 1)"
-                (paste)="preventCopyPaste($event)" #otp1 />
-              <input type="text" maxlength="1" formControlName="otp2" (input)="autoFocusNext($event, 2)"
-                (paste)="preventCopyPaste($event)" #otp2 />
-              <input type="text" maxlength="1" formControlName="otp3" (input)="autoFocusNext($event, 3)"
-                (paste)="preventCopyPaste($event)" #otp3 />
-              <input type="text" maxlength="1" formControlName="otp4" (input)="autoFocusNext($event, 4)"
-                (paste)="preventCopyPaste($event)" #otp4 />
-              <input type="text" maxlength="1" formControlName="otp5" (input)="autoFocusNext($event, 5)"
-                (paste)="preventCopyPaste($event)" #otp5 />
-              <input type="text" maxlength="1" formControlName="otp6" (input)="autoFocusNext($event, 6)"
-                (paste)="preventCopyPaste($event)" #otp6 />
-            </div>
-  
-            <button type="submit">Verify OTP</button>
-  
-            <div class="resend-wrap">
-              @if (!resendAvailable) {
-                <p class="mb-0">Resend OTP in <span>{{ resendCountdown }}s</span></p>
-              } @else {
-                <p class="mb-0">Didn't get the OTP? <span (click)="resendOtp()">Resend</span></p>
-              }
-              <p class="mb-0">Back to SignUp <span (click)="toggleForm(false)">Sign Up</span></p>
-            </div>
-          </form>
+
+        <input type="tel" formControlName="phoneNumber" placeholder="Phone Number" required />
+        @if (signupForm.get('phoneNumber')?.invalid && signupForm.get('phoneNumber')?.touched) {
+        <small class="error" *ngIf="s['phoneNumber'].errors?.['required']">Phone Number is required.</small>
+        <small class="error" *ngIf="s['phoneNumber'].errors?.['pattern']">Enter a valid 10-digit phone number</small>
         }
-      </div>
+
+        <input type="date" formControlName="dob" placeholder="Date of Birth" required />
+        @if (signupForm.get('dob')?.invalid && signupForm.get('dob')?.touched) {
+        <small class="error">Date of Birth is required</small>
+        }
+
+        <!-- <button type="submit">Sign Up</button> -->
+        <div class="resetbtn">
+          <p-button type="submit" label="Sign Up" [loading]="loading" />
+        </div>
+        <p>Already have an account? <span (click)="toggleForm(true)">Login</span></p>
+      </form>
+      }
+
+      <!-- Forgot Password Form -->
+      @if (isForgotPassword && !showOtpScreen) {
+      <form [formGroup]="forgotPasswordForm" (ngSubmit)="onSubmitForgotPassword()" class="fade-in">
+        <h2>Reset Password</h2>
+        <input type="email" formControlName="femail" placeholder="Email" autocomplete="off" required />
+        @if (forgotPasswordForm.get('femail')?.invalid && forgotPasswordForm.get('femail')?.touched) {
+        <small class="error" *ngIf="p['femail'].errors?.['required']">Email is required.</small>
+        <small class="error" *ngIf="p['femail'].errors?.['email']">Enter a valid email</small>
+        }
+        <!-- <button type="submit">
+          Send Reset Link</button> -->
+        <div class="resetbtn">
+          <p-button type="submit" label="Send Reset Link" [loading]="loading" />
+        </div>
+        <p>Remembered your password? <span (click)="backToLogin()">Back to Login</span></p>
+      </form>
+      }
+
+      <!-- OTP Form -->
+      @if (showOtpScreen) {
+      <form [formGroup]="otpForm" (ngSubmit)="onSubmitOtp()" class="otp-form">
+        <div class="otp-top-box">
+          <h2>OTP Verification</h2>
+          <p>Please enter the 6-digit OTP sent to your registered mobile/email.</p>
+        </div>
+
+        <div class="otp-boxes">
+          <input type="text" maxlength="1" formControlName="otp1" (input)="autoFocusNext($event, 1)"
+            (paste)="preventCopyPaste($event)" #otp1 />
+          <input type="text" maxlength="1" formControlName="otp2" (input)="autoFocusNext($event, 2)"
+            (paste)="preventCopyPaste($event)" #otp2 />
+          <input type="text" maxlength="1" formControlName="otp3" (input)="autoFocusNext($event, 3)"
+            (paste)="preventCopyPaste($event)" #otp3 />
+          <input type="text" maxlength="1" formControlName="otp4" (input)="autoFocusNext($event, 4)"
+            (paste)="preventCopyPaste($event)" #otp4 />
+          <input type="text" maxlength="1" formControlName="otp5" (input)="autoFocusNext($event, 5)"
+            (paste)="preventCopyPaste($event)" #otp5 />
+          <input type="text" maxlength="1" formControlName="otp6" (input)="autoFocusNext($event, 6)"
+            (paste)="preventCopyPaste($event)" #otp6 />
+        </div>
+
+        <div class="resetbtn">
+          <p-button type="submit" label="Verify OTP" [loading]="loading" />
+        </div>
+        <div class="resend-wrap">
+          @if (!resendAvailable) {
+          <p class="mb-0">Resend OTP in <span>{{ resendCountdown }}s</span></p>
+          } @else {
+          <p class="mb-0">Didn't get the OTP? <span (click)="resendOtp()">Resend</span></p>
+          }
+          <p class="mb-0">Back to SignUp <span (click)="toggleForm(false)">Sign Up</span></p>
+        </div>
+      </form>
+      }
     </div>
   </div>
-  
+</div>

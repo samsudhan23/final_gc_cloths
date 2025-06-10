@@ -4,7 +4,7 @@ import { SelectModule } from 'primeng/select';
 import { Table, TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { InputIconModule } from 'primeng/inputicon';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
@@ -23,11 +23,13 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { CheckboxModule } from 'primeng/checkbox';
 import { UserService } from '../../service/user/user.service';
 import { ToastrService } from 'ngx-toastr';
-import { WishlistService } from '../../service/wishlistService/wishlist.service';
 import { AdminProductService } from '../../service/productService/admin-product.service';
+import { CartService } from '../../service/cartService/cart.service';
+import { PlaceOrderService } from '../../service/place_orders/place-order.service';
+import { MultiSelectModule } from 'primeng/multiselect';
 
 @Component({
-  selector: 'app-wishlist',
+  selector: 'app-order-management',
   imports: [
     CommonModule,
     TableModule,
@@ -41,6 +43,7 @@ import { AdminProductService } from '../../service/productService/admin-product.
     TextareaModule,
     SelectModule,
     RadioButtonModule,
+    MultiSelectModule,
     InputNumberModule,
     DialogModule,
     TagModule,
@@ -52,38 +55,46 @@ import { AdminProductService } from '../../service/productService/admin-product.
     ReactiveFormsModule
   ],
   providers: [CustomerService, ConfirmationService, MessageService, UserService, AdminProductService],
-  templateUrl: './wishlist.component.html',
-  styleUrl: './wishlist.component.scss'
+  templateUrl: './order-management.component.html',
+  styleUrl: './order-management.component.scss'
 })
-export class WishlistComponent {
+export class OrderManagementComponent {
   @ViewChild('dt') dt!: Table;
   openDialog: boolean = false;
   selectedUser!: any | null;
-  wishList: any[] = [];
-  productData: any = [];
+  CartList: any[] = [];
   usersList: any[] = [];
+  productData: any = [];
+  orderList: any[] = [];
   mode: 'add' | 'edit' | 'view' = 'add';
   currentId: string | null = null;
-  wishlistForm: FormGroup;
-
+  orderForm: FormGroup;
+  dressSizesWithMeasurements: any[] = [];
   constructor(
     private userService: UserService,
-    private wishservice: WishlistService,
+    private orderService: PlaceOrderService,
+    private cartService: CartService,
     private product: AdminProductService,
     private confirmationService: ConfirmationService,
     private fb: FormBuilder,
     private toast: ToastrService,
   ) {
-    this.wishlistForm = this.fb.group({
+    this.orderForm = this.fb.group({
       userId: ['', Validators.required],
       productId: ['', Validators.required],
+      selectedSize: ['', Validators.required],
+      totalQuantity: this.fb.array([]),
     });
   }
 
   ngOnInit() {
-    this.loadUsers()
-    this.getWishlist();
+    this.loadOrderList()
+    this.loadUsers();
     this.productList();
+  }
+
+  get quantityControls(): FormArray {
+    return this.orderForm.get('totalQuantity') as FormArray;
   }
 
   // User List
@@ -95,10 +106,12 @@ export class WishlistComponent {
     })
   }
 
+
   productList() {
     this.product.getProductlist().subscribe((res) => {
       if (res.success === true || res.code === 200) {
         this.productData = res.result
+        console.log('this.productData : ', this.productData);
       }
     }, (error: any) => {
       this.toast.error(error.message)
@@ -106,15 +119,46 @@ export class WishlistComponent {
   }
 
   // Category Module
-  getWishlist(): void {
-    this.wishservice.getWishList().subscribe((res: any) => {
-      if (res.success === true || res.code === 200) {
-        this.wishList = res.result;
-        console.log(' this.wishList: ',  this.wishList);
-      }
+  loadOrderList(): void {
+    this.orderService.getOrderslist().subscribe((res: any) => {
+      this.orderList = res.result;
     }, (error: any) => {
       this.toast.error(error.message)
     })
+  }
+
+  selectProduct(event: any) {
+    const selectedProductIds = event.value || [];
+
+    this.dressSizesWithMeasurements = selectedProductIds //get size if selected product
+      .map((productId: string) => {
+        const product = this.productData.find((item: any) => item._id === productId);
+        if (!product?.sizeStock?.length) return null;
+        return {
+          label: product.productName,
+          items: product.sizeStock.map((e: any) => ({
+            label: e.size,
+            value: `${product._id}_${e.size}`
+          }))
+        };
+      })
+      .filter(Boolean); // Removes null entries
+  }
+  selectedSizes: any[] = [];
+
+  selectSizes(event: any) {
+    console.log('event: ', event);
+    this.selectedSizes = [event.itemValue];
+    console.log('this.selectedSizes: ', this.selectedSizes);
+    const updatedArray: FormArray = this.fb.array([]);
+    this.selectedSizes.forEach(size => {
+      updatedArray.push(this.fb.group({
+        quantity: [size.value],
+        selectedSize:[size.label]
+      }));
+    });
+    this.orderForm.setControl('totalQuantity', updatedArray);
+    console.log('this.orderForm: ', this.orderForm.value);
   }
 
   onGlobalFilter(table: Table, event: Event) {
@@ -127,17 +171,17 @@ export class WishlistComponent {
 
   deleteSelectedWishlist() {
     this.confirmationService.confirm({
-      message: 'Are you sure you want to delete the selected Wishlist?',
+      message: 'Are you sure you want to delete the selected Cart?',
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         const dele = {
           ids: this.selectedUser.map((ite: { _id: any; }) => ite._id)
         }
-        this.wishservice.deleteWishList(dele).subscribe((res: any) => {
+        this.cartService.deleteCartItem(dele).subscribe((res: any) => {
           if (res.code === 200 && res.success === true) {
             this.toast.success(res.message);
-            this.getWishlist();
+            this.loadOrderList();
           } else {
             this.toast.error(res.message);
           }
@@ -161,10 +205,10 @@ export class WishlistComponent {
         const dele = {
           ids: data._id
         }
-        this.wishservice.deleteWishList(dele).subscribe((res: any) => {
+        this.cartService.deleteCartItem(dele).subscribe((res: any) => {
           if (res.code === 200 && res.success === true) {
             this.toast.success(res.message);
-            this.getWishlist();
+            this.loadOrderList();
           } else {
             this.toast.error(res.message);
           }
@@ -177,51 +221,58 @@ export class WishlistComponent {
 
   hideDialog() {
     this.openDialog = false;
-    this.wishlistForm.reset();
+    this.orderForm.reset();
+    this.orderForm.get('quantity')?.setValue(1)
   }
 
   onDialogHide() {
-    if (this.wishlistForm) {
-      this.wishlistForm.reset(); // Reset when dialog is closed using header 'X'
+    if (this.orderForm) {
+      this.orderForm.reset(); // Reset when dialog is closed using header 'X'
+      this.orderForm.get('quantity')?.setValue(1)
     }
   }
   edit(event: any, type: string) {
     const editTableDatas = event
     this.openDialog = true;
-
+    this.dressSizesWithMeasurements = this.productData.find((item: any) => item._id === editTableDatas.productId._id)
+      ?.sizes.map((ite: string) => ({ label: ite })) || [];
     switch (type) {
       case "Edit":
         this.mode = 'edit';
         this.currentId = editTableDatas._id;
-        this.wishlistForm.patchValue({
+        this.orderForm.patchValue({
           userId: editTableDatas.userId._id,
           productId: editTableDatas.productId._id,
+          selectedSize: editTableDatas.selectedSize,
+          quantity: editTableDatas.quantity,
         });
-        this.wishlistForm.enable();
+        this.orderForm.enable();
         break;
       case "View":
         this.mode = 'view';
-        this.wishlistForm.patchValue({
+        this.orderForm.patchValue({
           userId: editTableDatas?.userId._id,
           productId: editTableDatas?.productId._id,
+          selectedSize: editTableDatas.selectedSize,
+          quantity: editTableDatas.quantity,
         });
-        this.wishlistForm.disable();
+        this.orderForm.disable();
         break;
     }
 
   }
   save() {
-    if (this.wishlistForm.invalid) {
-      this.wishlistForm.markAllAsTouched();
+    if (this.orderForm.invalid) {
+      this.orderForm.markAllAsTouched();
     }
-    if (this.wishlistForm.valid) {
-      const data = this.wishlistForm.value;
+    if (this.orderForm.valid) {
+      const data = this.orderForm.value;
 
       if (this.mode === 'add') {
-        this.wishservice.postWishlist(data).subscribe((res: any) => {
+        this.cartService.postCart(data).subscribe((res: any) => {
           if (res.code === 200 && res.success === true) {
             this.toast.success(res.message);
-            this.getWishlist();
+            this.loadOrderList();
             this.hideDialog();
           }
           else {
@@ -231,10 +282,10 @@ export class WishlistComponent {
           this.toast.error(error.error.message);
         });
       } else if (this.mode === 'edit' && this.currentId) {
-        this.wishservice.updateWishList(this.currentId, data).subscribe((res: any) => {
+        this.cartService.updateCartItem(this.currentId, data).subscribe((res: any) => {
           if (res.code === 200 && res.success === true) {
             this.toast.success(res.message);
-            this.getWishlist();
+            this.loadOrderList();
             this.hideDialog();
           }
           else {

@@ -6,14 +6,18 @@ import { CommonModule } from '@angular/common';
 import { AuthenticationService } from '../../service/authentication.service';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { Subscription, interval } from 'rxjs';
+import { ProgressSpinner } from 'primeng/progressspinner';
+import { ButtonGroupModule } from 'primeng/buttongroup';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-sign-in',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, HttpClientModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, HttpClientModule, ButtonModule, ButtonGroupModule],
   templateUrl: './sign-in.component.html',
   styleUrl: './sign-in.component.scss'
 })
 export class SignInComponent {
+  loading:boolean = false;
   isLogin: boolean = true;
   signupForm: FormGroup;
   loginForm: FormGroup;
@@ -98,6 +102,7 @@ export class SignInComponent {
 
   onSubmit() {
     if (this.signupForm.valid) {
+      this.loading = true;
       const formData = {
         name: this.signupForm.value.name,
         phoneNumber: this.signupForm.value.phoneNumber,
@@ -114,9 +119,11 @@ export class SignInComponent {
               this.toast.success('OTP sent to your email!');
               this.showOtpScreen = true;
               this.startResendTimer();
+              this.loading = false;
             },
             error: (err) => {
               this.toast.error('Failed to send OTP');
+                this.loading = false;
               console.error('Send OTP Error:', err);
             }
           });
@@ -211,6 +218,7 @@ export class SignInComponent {
   // Handle forgot password form submission
   onSubmitForgotPassword() {
     if (this.forgotPasswordForm.valid) {
+      this.loading = true
       const payload = { email: this.forgotPasswordForm.value.femail };
 
       this.http.post<any>('http://localhost:5000/api/auth/forgot-password', payload)
@@ -220,6 +228,7 @@ export class SignInComponent {
             this.forgotPasswordForm.reset();
             this.isLogin = true;           // show login view
             this.isForgotPassword = false; // hide forgot‑password view
+             this.loading = false
           },
           error: (err) => {
             const msg =
