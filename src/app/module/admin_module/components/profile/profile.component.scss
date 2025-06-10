@@ -1,0 +1,30 @@
+.profile-card {
+  max-width: 400px;
+  margin: 30px auto;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.15);
+  text-align: center;
+  background-color: #fff;
+}
+
+.profile-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: contain;
+  margin: auto;
+//   margin-bottom: 15px;
+  border: 3px solid #007ad9;
+}
+
+h2 {
+  margin-bottom: 10px;
+  color: #007ad9;
+}
+
+p {
+  font-size: 1rem;
+  margin: 6px 0;
+  color: #333;
+}

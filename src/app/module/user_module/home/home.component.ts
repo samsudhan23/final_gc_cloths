@@ -11,11 +11,12 @@ import { Carousel } from 'primeng/carousel';
 import { AdminProductService } from '../../admin_module/service/productService/admin-product.service';
 import { ToastrService } from 'ngx-toastr';
 import { TabsModule } from 'primeng/tabs';
+import { CategoryService } from '../../admin_module/service/category/category.service';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, BadgeModule, AvatarModule, InputTextModule, Carousel,TabsModule, ButtonModule, RouterModule],
+  imports: [CommonModule, BadgeModule, AvatarModule, InputTextModule, Carousel, TabsModule, ButtonModule, RouterModule],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
@@ -35,20 +36,21 @@ export class HomeComponent implements OnInit {
   ];
 
   categories = [
-  { name: 'All', id: 'Tab 1' },
-  { name: 'T-Shirt', id: 'Tab 2' },
-  { name: 'Shirt', id: 'Tab 3' },
-  { name: 'Accessories', id: 'Tab 4' },
-  { name: 'Footwear', id: 'Tab 5' },
-];
+    { name: 'All', id: 'Tab 1' },
+    { name: 'T-Shirt', id: 'Tab 2' },
+    { name: 'Shirt', id: 'Tab 3' },
+    { name: 'Accessories', id: 'Tab 4' },
+    { name: 'Footwear', id: 'Tab 5' },
+  ];
   selectedCategory: string = 'All';
   filteredProducts: any[] = [];
-
+  categoryList: any[] = [];
   constructor(@Inject(PLATFORM_ID) private platformId: Object,
     private auth: AuthenticationService,
     private router: Router,
     private productService: AdminProductService,
     private toast: ToastrService,
+    private category: CategoryService,
   ) { }
 
   ngOnInit() {
@@ -62,6 +64,7 @@ export class HomeComponent implements OnInit {
       AOS.init({ disable: 'mobile', duration: 1200, });
       AOS.refresh();
       this.getProduct();
+      this.getCategoryList();
       // this.changeSlide();
     }
 
@@ -114,6 +117,20 @@ export class HomeComponent implements OnInit {
     this.isCartOpen = !this.isCartOpen;
   }
 
+  getCategoryList() {
+    this.category.getCategoriesMasterList().subscribe((res: any) => {
+      if (res.code === 200 && res.success === true) {
+        // this.categoryList = res.result;
+        const categories = res.result || [];
+        // Prepend the 'All' option
+        this.categoryList = [
+          { _id: 'all', categoryName: 'All' },
+          ...categories
+        ];
+      }
+    });
+  }
+
   getProduct() {
     this.productService.getProductlist().subscribe((res: any) => {
       this.productList = res.result;
@@ -127,8 +144,7 @@ export class HomeComponent implements OnInit {
     if (this.selectedCategory === 'All') {
       this.filteredProducts = this.productList;
     } else {
-      this.filteredProducts = this.productList.filter((product:any) => product.category.categoryName === this.selectedCategory
-      );
+      this.filteredProducts = this.productList.filter((product: any) => product.category.categoryName === this.selectedCategory);
     }
   }
 

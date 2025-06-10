@@ -141,15 +141,15 @@
                                 </a>
                             </div> -->
                             <div class="products-tab-menu w-tab-menu" role="tablist">
-                                <a *ngFor="let category of categories; let i = index" [attr.data-w-tab]="category.id"
+                                <a *ngFor="let category of categoryList; let i = index" [attr.data-w-tab]="category._id"
                                     class="products-tab-link w-inline-block w-tab-link"
-                                    [ngClass]="{ 'w--current': selectedCategory === category.name }"
+                                    [ngClass]="{ 'w--current': selectedCategory === category.categoryName }"
                                     [id]="'w-tabs-0-data-w-tab-' + i" href="javascript:void(0)" role="tab"
-                                    (click)="selectCategory(category.name)"
+                                    (click)="selectCategory(category.categoryName)"
                                     [attr.aria-controls]="'w-tabs-0-data-w-pane-' + i"
-                                    [attr.aria-selected]="selectedCategory === category.name ? 'true' : 'false'"
-                                    [attr.tabindex]="selectedCategory === category.name ? null : '-1'">
-                                    <div class="products-tab-nav">{{ category.name }}</div>
+                                    [attr.aria-selected]="selectedCategory === category.categoryName ? 'true' : 'false'"
+                                    [attr.tabindex]="selectedCategory === category.categoryName ? null : '-1'">
+                                    <div class="products-tab-nav">{{ category.categoryName }}</div>
                                 </a>
                             </div>
 

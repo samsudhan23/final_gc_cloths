@@ -1,15 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { MenuItem } from 'primeng/api';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { StyleClassModule } from 'primeng/styleclass';
 import { AppConfigurator } from './app.configurator';
 import { LayoutService } from '../service/layout.service';
-
+import { ButtonModule } from 'primeng/button';
+import { OverlayPanel, OverlayPanelModule } from 'primeng/overlaypanel';
 @Component({
     selector: 'app-topbar',
     standalone: true,
-    imports: [RouterModule, CommonModule, StyleClassModule, AppConfigurator],
+    imports: [RouterModule, CommonModule, StyleClassModule, AppConfigurator, OverlayPanelModule, ButtonModule],
     template: ` <div class="layout-topbar">
         <div class="layout-topbar-logo-container">
             <button class="layout-menu-button layout-topbar-action" (click)="layoutService.onMenuToggle()">
@@ -72,21 +73,118 @@ import { LayoutService } from '../service/layout.service';
                         <i class="pi pi-inbox"></i>
                         <span>Messages</span>
                     </button>
-                    <button type="button" class="layout-topbar-action">
+                    <button type="button" class="layout-topbar-action" (click)="profilePanel.toggle($event)">
                         <i class="pi pi-user"></i>
                         <span>Profile</span>
                     </button>
+
+                    <!-- Overlay Panel for Profile -->
+                    <!-- <p-overlayPanel #profilePanel [showCloseIcon]="true">
+                    <div class="profile-content">
+                        <p><strong>John Doe</strong></p>
+                        <p>john&#64;example.com</p>
+                        <button pButton type="button" label="View Profile" icon="pi pi-user-edit" class="p-button-sm p-button-text"></button>
+                        <button pButton type="button" label="Logout" icon="pi pi-sign-out" class="p-button-sm p-button-text p-button-danger mt-2"></button>
+                    </div>
+                    </p-overlayPanel> -->
+                    <p-overlayPanel #profilePanel [showCloseIcon]="false" styleClass="poseidon-profile-panel">
+                        <ul class="profile-menu">
+                        <li (click)="onProfile()">
+                            <i class="pi pi-user"></i>
+                            <span>Profile</span>
+                        </li>
+                        <li (click)="onSettings()">
+                            <i class="pi pi-cog"></i>
+                            <span>Settings</span>
+                        </li>
+                        <li (click)="onLogout()">
+                            <i class="pi pi-power-off"></i>
+                            <span>Log out</span>
+                        </li>
+                        </ul>
+                    </p-overlayPanel>
                 </div>
             </div>
         </div>
-    </div>`
+    </div>`,
+    styles: [
+        `.topbar-container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 1rem;
+  background: #f5f6fa;
+}
+
+.profile-button {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+}
+
+.profile-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+  object-fit: cover;
+}
+
+.poseidon-profile-panel {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 1rem 0;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  width: 250px;
+}
+
+.profile-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.profile-menu li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  color: #425466;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.profile-menu li i {
+  font-size: 1.1rem;
+  color: #6b7280;
+}
+
+.profile-menu li:hover {
+  background-color: #f0f4f8;
+}
+
+`]
 })
 export class AppTopbar {
     items!: MenuItem[];
-
-    constructor(public layoutService: LayoutService) {}
+    constructor(public layoutService: LayoutService, private router: Router) { }
 
     toggleDarkMode() {
         this.layoutService.layoutConfig.update((state) => ({ ...state, darkTheme: !state.darkTheme }));
+    }
+    @ViewChild('profilePanel') overlayPanel!: OverlayPanel;
+    onProfile() {
+        this.router.navigate(['admin/profile']);
+        this.overlayPanel.hide();
+    }
+
+    onSettings() {
+        this.router.navigate(['admin/settings']);
+        this.overlayPanel.hide();
+    }
+    onLogout() {
+        this.router.navigate(['/login']);
     }
 }

@@ -28,6 +28,14 @@ export const routes: Routes = [
             {
                 path: 'Cart',
                 loadComponent: () => import('./components/cart/cart.component').then(m => m.CartComponent)
+            },
+            {
+                path: 'profile',
+                loadComponent: () => import('./components/profile/profile.component').then(m => m.ProfileComponent)
+            },
+            {
+                path: 'settings',
+                loadComponent: () => import('./components/setting/setting.component').then(m => m.SettingComponent)
             }
         ]
     },
