@@ -151,6 +151,7 @@ export class ProductManagementComponent {
   }
   onFileChange(event: Event, type: 'images' | 'gallery') {
     const target = event.target as HTMLInputElement;
+    console.log('target: ', target.files);
     if (target.files) {
       if (type === 'images') {
         this.imageFile = target.files[0]; // single image

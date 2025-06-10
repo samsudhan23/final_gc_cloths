@@ -12,13 +12,18 @@ export class RoleGuard implements CanActivate {
         if (typeof window === 'undefined') {
             return false;
         }
-
         const roles = route.data['roles'] as string[];
         const user = this.auth.getCurrentUser();
         if (user && roles.includes(user.role)) {
             return true;
         }
-        this.router.navigate(['/login']);
+        if (user?.role === 'admin') {
+            this.router.navigate(['/admin/dashboard'], { replaceUrl: true });
+        } else if (user?.role === 'user') {
+            this.router.navigate(['/user/home'], { replaceUrl: true });
+        } else {
+            this.router.navigate(['/login'], { replaceUrl: true });
+        }
         return false;
     }
 

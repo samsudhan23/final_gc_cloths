@@ -4,10 +4,6 @@
         <p-button severity="secondary" label="Delete" icon="pi pi-trash" outlined (onClick)="deleteSelectedProducts()"
             [disabled]="!selectedUser || !selectedUser.length" />
     </ng-template>
-
-    <!-- <ng-template #end>
-        <p-button label="Export" icon="pi pi-upload" severity="secondary" (onClick)="exportCSV()" />
-    </ng-template> -->
 </p-toolbar>
 
 <p-table #dt [value]="usersList" [rows]="10" [columns]="cols" [paginator]="true" dataKey="_id"
@@ -54,14 +50,14 @@
             <td class="sticky-left" style="width: 3rem">
                 <p-tableCheckbox [value]="user" />
             </td>
-            <td style="min-width: 12rem">{{ user.name }}</td>
-            <td style="min-width: 16rem">{{ user.email }}</td>
-            <td>{{ user.phoneNumber }}</td>
+            <td style="min-width: 12rem">{{ user?.name }}</td>
+            <td style="min-width: 16rem">{{ user?.email }}</td>
+            <td>{{ user?.phoneNumber }}</td>
 
-            <td>{{ user.role }}</td>
+            <td>{{ user?.role }}</td>
             <td>
-                <p-tag [value]="user.isBlocked == false ? 'Active':'Inactive'"
-                    [ngClass]="{'inactive': user.isBlocked, 'active': !user.isBlocked}" />
+                <p-tag [value]="user?.isBlocked == false ? 'Active':'Inactive'"
+                    [ngClass]="{'inactive': user?.isBlocked, 'active': !user?.isBlocked}" />
             </td>
             <td class="sticky-right">
                 <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true"

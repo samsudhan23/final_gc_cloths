@@ -8,7 +8,7 @@ import { enviornment } from '../../../environment/environment';
 })
 export class AuthenticationService {
 
-  private currentUserSubject = new BehaviorSubject<any>(null);
+  public currentUserSubject = new BehaviorSubject<any>(null);
 
   constructor(private http: HttpClient) {
     if (typeof window !== 'undefined') {

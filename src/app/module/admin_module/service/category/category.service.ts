@@ -33,7 +33,7 @@ export class CategoryService {
   }
 
   deleteCategoryMaster(id: any): Observable<any> {
-    return this.http.delete(`${enviornment.url}deleteCategory`, id);
+    return this.http.post(`${enviornment.url}deleteCategory`, id);
   }
   getGenderList(): Observable<any[]> {
     return this.http.get<any[]>(enviornment.url + 'genderList');

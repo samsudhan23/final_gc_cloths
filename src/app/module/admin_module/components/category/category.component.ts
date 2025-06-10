@@ -92,9 +92,10 @@ export class CategoryComponent {
   ) {
     this.userForm = this.fb.group({
       categoryName: ['', Validators.required],
-      categoryDescription: ['', Validators.required],
+      categoryDescription: [''],
       //  isBlocked: [false]
     });
+    console.log();
   }
 
   ngOnInit() {
@@ -154,7 +155,10 @@ export class CategoryComponent {
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.categoryService.deleteCategoryMaster(user._id).subscribe((res: any) => {
+        const dele = {
+          ids: user._id
+        }
+        this.categoryService.deleteCategoryMaster(dele).subscribe((res: any) => {
           if (res.code === 200 && res.success === true) {
             this.toast.success(res.message);
             this.categoryUsers();

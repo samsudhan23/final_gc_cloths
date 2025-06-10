@@ -277,6 +277,10 @@ input[type="text"] {
     padding-left: 10px;
 }
 
+::ng-deep .resetbtn .p-ripple {
+    width: 100%;
+}
+
 
 /* Responsive Design */
 @media (max-width: 768px) {

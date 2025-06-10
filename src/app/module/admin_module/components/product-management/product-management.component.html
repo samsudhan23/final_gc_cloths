@@ -2,7 +2,7 @@
     <ng-template #start>
         <p-button label="New" icon="pi pi-plus" severity="secondary" class="mr-2" (onClick)="openNew()" />
         <p-button severity="secondary" label="Delete" icon="pi pi-trash" outlined (onClick)="deleteSelectedProducts()"
-            [disabled]="!selectedUser || !selectedUser.length" />
+            [disabled]="!selectedUser || !selectedUser?.length" />
     </ng-template>
 
     <!-- <ng-template #end>
@@ -54,22 +54,22 @@
             <td>{{ user?.category?.categoryName }}</td>
             <td>
                 <div class="flex items-center gap-2">
-                    <img [alt]="user.productName" [src]="user.images" width="32" class="product_img" />
-                    <span class="image-text">{{ user.productName }}</span>
+                    <img [alt]="user?.productName" [src]="user?.images" width="32" class="product_img" />
+                    <span class="image-text">{{ user?.productName }}</span>
                 </div>
             </td>
-            <td class="wraptext">{{ user.productDescription }}</td>
-            <td>{{ user.gender?.genderName }}</td>
+            <td class="wraptext">{{ user?.productDescription }}</td>
+            <td>{{ user?.gender?.genderName }}</td>
             <!-- <td>{{ user.images | split: 'Products/':1 }}</td>
             <td>
                 <div *ngFor="let img of user.gallery" class="truncate-text">
                     {{ img | split:'Products/':1 }}
                 </div>
             </td> -->
-            <td>{{ user.price }}</td>
-            <td>{{ user.sizes }}</td>
-            <td>{{ user.totalStock }}</td>
-            <td>{{ user.tags }}</td>
+            <td>{{ user?.price }}</td>
+            <td>{{ user?.sizes }}</td>
+            <td>{{ user?.totalStock }}</td>
+            <td>{{ user?.tags }}</td>
             <td class="sticky-right">
                 <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true"
                     (click)="editProducts(user,'Edit')" />
@@ -85,7 +85,7 @@
 <p-dialog [(visible)]="formDialog" class="userModel" header="Products Details" [modal]="true" (onHide)="onDialogHide()">
     <ng-template #content>
         <form [formGroup]="productForm">
-            <div class="grid grid-cols-3 gap-4">
+            <div class="grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 grid-cols-1 gap-4">
 
                 <div>
                     <label for="category" class="block font-bold mb-3">Category</label>
@@ -153,7 +153,8 @@
                     <div [formGroupName]="i">
                         <label for="stock" class="block font-bold mb-3">{{item.get('size')?.value}}</label>
                         <p-inputgroup>
-                            <p-inputnumber (keyup)="calculateTotalStock($event)" formControlName="stock" placeholder="stock" />
+                            <p-inputnumber (keyup)="calculateTotalStock($event)" formControlName="stock"
+                                placeholder="stock" />
                         </p-inputgroup>
                         <small class="text-red-500"
                             *ngIf="productForm.get('stock')?.invalid && productForm.get('stock')?.touched">
@@ -164,8 +165,8 @@
 
                 <div>
                     <label for="totalStock" class="block font-bold mb-3 text-green-700">Total Stock</label>
-                    <input type="number" formControlName="totalStock" pInputText id="totalStock" required autofocus readonly class="cursor-not-allowed"
-                        fluid />
+                    <input type="number" formControlName="totalStock" pInputText id="totalStock" required autofocus
+                        readonly class="cursor-not-allowed" fluid />
                     <small class="text-red-500"
                         *ngIf="productForm.get('totalStock')?.invalid && productForm.get('totalStock')?.touched">Total
                         Stock
@@ -177,7 +178,7 @@
                 </div>
             </div>
             <!-- Image Upload -->
-            <div class="grid grid-cols-3 gap-4 mt-4">
+            <div class="grid md:grid-cols-3 xl:grid-cols-3 grid-cols-1 gap-4 mt-4">
                 <div>
                     <div style="padding-bottom: 10px;">
                         <button class="container-btn-file">
@@ -186,11 +187,10 @@
                             <input #fileInput class="file" name="text" type="file"
                                 (change)="onFileChange($event, 'images')" />
                         </button>
-                        <small
-                            style="display: flex; align-items: center; margin-top: 7px; color: #666; font-size: 0.85rem;">
+                        <div class="mt-2" style="color: #666; font-size: 0.85rem;">
                             <i class="pi pi-info-circle" style="margin-right: 5px;"></i>
                             Recommended upload resolution : <b>245 x 272 px</b>
-                        </small>
+                        </div>
                     </div>
                     <!-- <img [src]="fileInfo" alt="" style="width: 10%;">  -->
                     <span *ngIf="showFileName" class="file-info">{{ fileInfo | split: '/' }}</span>
@@ -210,7 +210,7 @@
                     </div>
                     <span class="file-info truncate-text" *ngFor="let file of galleryFiles">
                         <!-- *ngFor="let file of galleryFiles" -->
-                        <span *ngIf="showFileName">{{ file.name ? file.name:file | split: 'Products/':1}}</span>
+                        <span *ngIf="showFileName">{{ file?.name ? file?.name:file | split: 'Products/':1}}</span>
                         <!-- <img src="../../../../../assets/images/preview-icon-8.jpg"  alt="" style="width: 40%;"> -->
                     </span>
                     <app-popup *ngIf="galleryFiles.length > 0" [galleries]="galleryImages"></app-popup>
