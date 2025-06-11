@@ -151,7 +151,6 @@ export class ProductManagementComponent {
   }
   onFileChange(event: Event, type: 'images' | 'gallery') {
     const target = event.target as HTMLInputElement;
-    console.log('target: ', target.files);
     if (target.files) {
       if (type === 'images') {
         this.imageFile = target.files[0]; // single image
@@ -344,7 +343,6 @@ export class ProductManagementComponent {
     if (this.productForm.valid) {
       const formData = new FormData();
       const FormControlValues = this.productForm.value;
-      console.log('FormControlValues: ', FormControlValues);
 
       formData.append('productName', FormControlValues.productName);
       formData.append('productDescription', FormControlValues.productDescription);

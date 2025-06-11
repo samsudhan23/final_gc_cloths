@@ -95,7 +95,6 @@ export class CategoryComponent {
       categoryDescription: [''],
       //  isBlocked: [false]
     });
-    console.log();
   }
 
   ngOnInit() {
@@ -126,7 +125,6 @@ export class CategoryComponent {
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        console.log('this.selectedUser: ', this.selectedUser);
         const dele = {
           ids: this.selectedUser.map((ite: { _id: any; }) => ite._id)
         }
@@ -149,7 +147,6 @@ export class CategoryComponent {
   }
 
   deleteProduct(user: any) {
-    console.log('user: ', user);
     this.confirmationService.confirm({
       message: 'Are you sure you want to delete ' + user.categoryName + '?',
       header: 'Confirm',
@@ -206,7 +203,6 @@ export class CategoryComponent {
     }
     if (this.userForm.valid) {
       const user = this.userForm.value;
-      console.log('user: ', user);
 
       if (this.mode === 'add') {
         this.categoryService.postCategoryMaster(user).subscribe((res: any) => {

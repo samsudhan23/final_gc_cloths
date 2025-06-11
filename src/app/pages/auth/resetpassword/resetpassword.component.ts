@@ -4,11 +4,12 @@ import { Component } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-resetpassword',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, HttpClientModule],
+  imports: [CommonModule, ReactiveFormsModule, HttpClientModule, ButtonModule],
   templateUrl: './resetpassword.component.html',
   styleUrl: './resetpassword.component.scss'
 })
@@ -57,9 +58,10 @@ export class ResetpasswordComponent {
     this.isconfirmPasswordVisible = !this.isconfirmPasswordVisible;
   }
 
-  onSubmit(){
+  onSubmit() {
     this.submitted = true;
     if (this.resetForm.invalid) return;
+    this.loading = true;
     const { password, confirmPassword } = this.resetForm.value;
     if (password !== confirmPassword) {
       this.toast.warning("Passwords do not match!");
@@ -67,15 +69,17 @@ export class ResetpasswordComponent {
     }
 
     this.http.post(`http://localhost:5000/api/auth/reset-password/${this.token}`, {
-    newPassword: password
-  }).subscribe({
+      newPassword: password
+    }).subscribe({
       next: (res: any) => {
         console.log('res: ', res);
         this.message = res.message;
         this.resetForm.reset();
         setTimeout(() => this.router.navigate(['/login']), 2000);
+        this.loading = false;
       },
       error: (err: any) => {
+        this.loading = false;
         this.error = err.error.message || 'Something went wrong';
       }
     });
