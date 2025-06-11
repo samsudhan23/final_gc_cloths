@@ -102,7 +102,6 @@ export class CartComponent {
     this.product.getProductlist().subscribe((res) => {
       if (res.success === true || res.code === 200) {
         this.productData = res.result
-        console.log('this.productData : ', this.productData );
       }
     }, (error: any) => {
       this.toast.error(error.message)
@@ -123,7 +122,7 @@ export class CartComponent {
   selectProduct(event: any) {
     const data = event.value
     const filtered = this.productData.find((item: any) => item._id === data)?.sizeStock.map((ite: any) => (ite));
-    this.dressSizesWithMeasurements = filtered.map((e: any) => ({ label: e.size })) || [];
+    this.dressSizesWithMeasurements = filtered.map((e: any) => ({ size: e.size })) || [];
   }
 
   onGlobalFilter(table: Table, event: Event) {
@@ -200,7 +199,7 @@ export class CartComponent {
     const editTableDatas = event
     this.openDialog = true;
     this.dressSizesWithMeasurements = this.productData.find((item: any) => item._id === editTableDatas.productId._id)
-      ?.sizes.map((ite: string) => ({ label: ite })) || [];
+      ?.sizeStock.map((ite: string) => ite) || [];
     switch (type) {
       case "Edit":
         this.mode = 'edit';

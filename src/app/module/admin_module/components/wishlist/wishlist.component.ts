@@ -110,7 +110,6 @@ export class WishlistComponent {
     this.wishservice.getWishList().subscribe((res: any) => {
       if (res.success === true || res.code === 200) {
         this.wishList = res.result;
-        console.log(' this.wishList: ',  this.wishList);
       }
     }, (error: any) => {
       this.toast.error(error.message)

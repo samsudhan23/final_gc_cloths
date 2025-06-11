@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
-import { UserService } from '../../service/user/user.service';
+import { UserService } from '../../module/admin_module/service/user/user.service';
 
 @Component({
   selector: 'app-profile',

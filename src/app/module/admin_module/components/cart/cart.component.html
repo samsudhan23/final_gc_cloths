@@ -76,7 +76,7 @@
 
                 <div>
                     <label class="block font-bold mb-3">User</label>
-                    <p-select inputId="userId" formControlName="userId" [options]="usersList" optionLabel="name"
+                    <p-select inputId="userId" formControlName="userId"  [options]="usersList" optionLabel="name"
                         optionValue="_id" placeholder="Select a User" fluid />
                     <small class="text-red-500"
                         *ngIf="cartForm.get('userId')?.invalid && cartForm.get('userId')?.touched">User is
@@ -93,7 +93,7 @@
                 <div>
                     <label class="block font-bold mb-3">Size</label>
                     <p-select inputId="selectedSize" formControlName="selectedSize" [options]="dressSizesWithMeasurements"
-                        optionLabel="label" optionValue="label" placeholder="Select a Product" fluid />
+                        optionLabel="size" optionValue="size" placeholder="Select a Product" fluid />
                     <small class="text-red-500"
                         *ngIf="cartForm.get('selectedSize')?.invalid && cartForm.get('selectedSize')?.touched">Size
                         is required.</small>

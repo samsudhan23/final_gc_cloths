@@ -32,7 +32,7 @@ export const routes: Routes = [
             },
             {
                 path: 'profile',
-                loadComponent: () => import('./components/profile/profile.component').then(m => m.ProfileComponent)
+                loadComponent: () => import('../../pages/profile/profile.component').then(m => m.ProfileComponent)
             },
             {
                 path: 'settings',

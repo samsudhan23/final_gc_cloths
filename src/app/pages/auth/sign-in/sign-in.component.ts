@@ -6,7 +6,6 @@ import { CommonModule } from '@angular/common';
 import { AuthenticationService } from '../../service/authentication.service';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { Subscription, interval } from 'rxjs';
-import { ProgressSpinner } from 'primeng/progressspinner';
 import { ButtonGroupModule } from 'primeng/buttongroup';
 import { ButtonModule } from 'primeng/button';
 

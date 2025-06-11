@@ -111,8 +111,7 @@ export class UserManagementComponent {
     this.userService.getUsers().subscribe((res: any) => {
       this.usersList = res.result;
     }, (error: any) => {
-      console.log('error: ', error);
-
+      this.toast.warning(error.error.message);
     })
   }
 
@@ -189,7 +188,6 @@ export class UserManagementComponent {
       case "Edit":
         this.mode = 'edit';
         this.currentUserId = editTableDatas._id;
-        console.log('editTableDatas: ', editTableDatas);
         this.userForm.patchValue(editTableDatas);
         this.userForm.patchValue({
           dateOfBirth: new Date(editTableDatas.dateOfBirth)
