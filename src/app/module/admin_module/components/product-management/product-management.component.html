@@ -67,7 +67,12 @@
                 </div>
             </td> -->
             <td>{{ user?.price }}</td>
-            <td>{{ user?.sizes }}</td>
+            <td>
+                <div *ngFor="let item of user?.sizeStock">
+                    Size: {{ item.size }}, Stock: {{ item.stock }}
+                </div>
+            </td>
+
             <td>{{ user?.totalStock }}</td>
             <td>{{ user?.tags }}</td>
             <td class="sticky-right">
@@ -153,13 +158,11 @@
                     <div [formGroupName]="i">
                         <label for="stock" class="block font-bold mb-3">{{item.get('size')?.value}}</label>
                         <p-inputgroup>
-                            <p-inputnumber (keyup)="calculateTotalStock($event)" formControlName="stock"
+                            <p-inputnumber [min]="1" (keyup)="calculateTotalStock($event)" formControlName="stock"
                                 placeholder="stock" />
                         </p-inputgroup>
-                        <small class="text-red-500"
-                            *ngIf="productForm.get('stock')?.invalid && productForm.get('stock')?.touched">
-                            Stock
-                            is required.</small>
+                        <small class="text-red-500" *ngIf="item.get('stock')?.invalid && item.get('stock')?.touched">
+                            {{item.get('size')?.value}} Stock is required.</small>
                     </div>
                 </div>
 
