@@ -192,6 +192,11 @@ export class ProductManagementComponent {
       const stock = control.get('stock')?.value;
       existingSizeMap.set(size, stock);
     });
+    // Check size is already present
+    const getValue = event.itemValue.label ? event.itemValue.label : event.itemValue
+    if (existingSizeMap.has(getValue)) {
+      existingSizeMap.delete(getValue)
+    }
 
     // 2. Rebuild FormArray with preserved values
     const updatedArray: FormArray = this.fb.array([]);
@@ -201,12 +206,20 @@ export class ProductManagementComponent {
         size: [size],
         stock: [
           existingSizeMap.has(size) ? existingSizeMap.get(size) : 0,
-          [Validators.required, Validators.min(0)]
+          [Validators.required, Validators.min(1)]
         ]
       }));
     });
 
     this.productForm.setControl('sizeStock', updatedArray);
+    // after clear the size calcluate the stock
+    const sizeStockArray = this.productForm.get('sizeStock')?.value || [];  
+    console.log('sizeStockArray: ', sizeStockArray);
+    const total = sizeStockArray.reduce((acc: number, curr: any) => {
+      const stock = Number(curr.stock) || 0;
+      return acc + stock;
+    }, 0);
+    this.productForm.get('totalStock')?.setValue(total);
   }
 
   onGlobalFilter(table: Table, event: Event) {
@@ -220,6 +233,7 @@ export class ProductManagementComponent {
   // Calculate Total Stock
   calculateTotalStock(stock: any) {
     const sizeStockArray = this.productForm.get('sizeStock')?.value || [];
+    console.log('sizeStockArray: ', sizeStockArray);
     const total = sizeStockArray.reduce((acc: number, curr: any) => {
       const stock = Number(curr.stock) || 0;
       return acc + stock;
