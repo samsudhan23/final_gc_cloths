@@ -106,6 +106,7 @@ export class SignInComponent {
         name: this.signupForm.value.name,
         phoneNumber: this.signupForm.value.phoneNumber,
         email: this.signupForm.value.email,
+        dateOfBirth: this.signupForm.value.dob,
         password: this.signupForm.value.password
       };
       // Call register API
@@ -122,7 +123,7 @@ export class SignInComponent {
             },
             error: (err) => {
               this.toast.error('Failed to send OTP');
-                this.loading = false;
+              this.loading = false;
               console.error('Send OTP Error:', err);
             }
           });
@@ -130,6 +131,7 @@ export class SignInComponent {
         error: (err) => {
           this.toast.error('Registration failed');
           console.error('Register Error:', err);
+           this.loading = false;
         }
       });
     } else {
@@ -152,6 +154,7 @@ export class SignInComponent {
         phoneNumber: this.signupForm.value.phoneNumber,
         email: this.signupForm.value.email,
         password: this.signupForm.value.password,
+        dateOfBirth: this.signupForm.value.dob,
         otp: otp
       };
 
@@ -227,7 +230,7 @@ export class SignInComponent {
             this.forgotPasswordForm.reset();
             this.isLogin = true;           // show login view
             this.isForgotPassword = false; // hide forgot‑password view
-             this.loading = false
+            this.loading = false
           },
           error: (err) => {
             const msg =

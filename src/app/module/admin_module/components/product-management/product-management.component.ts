@@ -29,6 +29,7 @@ import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { SplitPipe } from '../../../../shared/core/pipes/split.pipe';
 import { PopupComponent } from '../../../../shared/components/popup/popup.component';
+import { KeyFilterModule } from 'primeng/keyfilter';
 
 
 @Component({
@@ -51,6 +52,7 @@ import { PopupComponent } from '../../../../shared/components/popup/popup.compon
     TagModule,
     InputIconModule,
     IconFieldModule,
+    KeyFilterModule,
     ConfirmDialogModule,
     DatePickerModule,
     CheckboxModule,
@@ -167,18 +169,6 @@ export class ProductManagementComponent {
     }
   }
 
-  // onSizeChange(event: any): void {
-  //   this.selectedSizes = event.value;
-  //   const sizeStockArray: FormArray = this.fb.array([]);
-  //   this.selectedSizes.forEach(size => {
-  //     sizeStockArray.push(this.fb.group({
-  //       size: [size],
-  //       stock: [0, [Validators.required, Validators.min(0)]]
-  //     }));
-  //   });
-  //   this.productForm.setControl('sizeStock', sizeStockArray);
-
-  // }
   onSizeChange(event: any): void {
     this.selectedSizes = event.value;
     const currentArray = this.productForm.get('sizeStock') as FormArray;

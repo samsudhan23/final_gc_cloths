@@ -126,7 +126,7 @@
                     <!-- <input type="number" formControlName="price" pInputText id="price" required autofocus fluid /> -->
                     <p-inputgroup>
                         <p-inputgroup-addon>₹</p-inputgroup-addon>
-                        <p-inputnumber formControlName="price" placeholder="Price" />
+                        <p-inputnumber formControlName="price" placeholder="Price" min="0"/>
                         <p-inputgroup-addon>.00</p-inputgroup-addon>
                     </p-inputgroup>
                     <small class="text-red-500"
@@ -136,7 +136,7 @@
 
                 <div>
                     <label for="discountPrice" class="block font-bold mb-3">Discount Price</label>
-                    <input type="number" formControlName="discountPrice" pInputText id="discountPrice" autofocus
+                    <input min="0" pKeyFilter="num" formControlName="discountPrice" pInputText id="discountPrice" autofocus autocomplete="off"
                         fluid />
                 </div>
 
