@@ -9,16 +9,16 @@ export const appRoutes: Routes = [
 
     { path: '', redirectTo: 'user', pathMatch: 'full' },
     {
+        path: 'user',
+        loadChildren: () => import('./app/module/user_module/user.module').then(m => m.UserModule),
+        // canActivate: [RoleGuard],
+        // data: { roles: ['user'] }
+    },
+    {
         path: 'admin',
         loadChildren: () => import('./app/module/admin_module/admin.module').then(m => m.AdminModule),
         canActivate: [RoleGuard],
         data: { roles: ['admin'] }
-    },
-    {
-        path: 'user',
-        loadChildren: () => import('./app/module/user_module/user.module').then(m => m.UserModule),
-        canActivate: [RoleGuard],
-        data: { roles: ['user'] }
     },
     { path: 'notfound', component: Notfound },
     {
