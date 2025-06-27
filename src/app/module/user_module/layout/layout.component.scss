@@ -384,13 +384,6 @@
     justify-content: center;
 }
 
-.m-header__left,
-.m-header__center,
-.m-header__right {
-    display: flex;
-    align-items: center;
-}
-
 @media (max-width: 1440px) {
     .m-menu {
         --main-link-px: 12px;
@@ -558,13 +551,6 @@ menu {
 
 .m-header__right {
     justify-content: flex-end;
-}
-
-.m-header__left,
-.m-header__center,
-.m-header__right {
-    display: flex;
-    align-items: center;
 }
 
 .m-header .ssw-link-fave-menu,

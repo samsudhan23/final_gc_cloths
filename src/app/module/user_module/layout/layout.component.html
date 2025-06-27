@@ -42,7 +42,7 @@
 
             </div>
             <!-- Mobile Side menu -->
-            <div *ngIf="sidebarVisible" @slideInOut class="m-menu-drawer open" style="--menu-drawer-height: 858.140625px;">
+            <div [ngClass]="{ 'open': sidebarVisible }" class="m-menu-drawer open" style="--menu-drawer-height: 858.140625px;">
                 <div class="m-menu-drawer__backdrop"></div>
                 <div class="m-menu-drawer__wrapper">
                     <div class="m-menu-drawer__content">
@@ -59,7 +59,7 @@
                                         </path>
                                     </svg>
                                 </span>
-                                <div *ngIf="sideSubMenu" @slideInOut class="m-megamenu-mobile open m-megamenu-mobile--level-1">
+                                <div [ngClass]="{ 'open': sideSubMenu }" class="m-megamenu-mobile m-megamenu-mobile--level-1 open">
                                     <div class="m-megamenu-mobile__wrapper">
                                         <button (click)="openSubNav()" class="m-menu-mobile__back-button" data-level="1">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 17">
