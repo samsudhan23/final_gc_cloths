@@ -8734,7 +8734,13 @@ blockquote {
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   margin-top: 1rem;
 }
-
+// Carousel back and next button hide
+::ng-deep .hideBtn .p-carousel-prev-button {
+  display: none !important;
+}
+::ng-deep .hideBtn .p-carousel-next-button {
+  display: none !important;
+}
 
 // .testimonial-card {
 //   border: 1px solid #f36;
