@@ -91,16 +91,26 @@
                     <label for="name" class="block font-bold mb-3">Phone Number</label>
                     <input type="number" formControlName="phoneNumber" pInputText id="name" required autofocus fluid />
                     <small class="text-red-500"
-                        *ngIf="userForm.get('phoneNumber')?.invalid && userForm.get('phoneNumber')?.touched">Phone
-                        Number is
-                        required.</small>
+                        *ngIf="userForm.get('phoneNumber')?.touched && userForm.get('phoneNumber')?.errors">
+                        <span *ngIf="userForm.get('phoneNumber')?.errors?.['required']">
+                            Phone Number is required.
+                        </span>
+                        <span *ngIf="userForm.get('phoneNumber')?.errors?.['pattern']">
+                            Enter a valid 10-digit phone number (starting with 6-9).
+                        </span>
+                    </small>
                 </div>
                 <div>
                     <label for="email" class="block font-bold mb-3">Email</label>
                     <input type="email" formControlName="email" pInputText id="name" required autofocus fluid />
-                    <small class="text-red-500"
-                        *ngIf="userForm.get('email')?.invalid && userForm.get('email')?.touched">Email is
-                        required.</small>
+                    <small class="text-red-500" *ngIf="userForm.get('email')?.touched && userForm.get('email')?.errors">
+                        <span *ngIf="userForm.get('email')?.errors?.['required']">
+                            Email is required.
+                        </span>
+                        <span *ngIf="userForm.get('email')?.errors?.['pattern']">
+                            Please enter a valid email address (e.g. user&#64;example.com).
+                        </span>
+                    </small>
                 </div>
                 <div *ngIf="this.mode == 'add'">
                     <label for="password" class="block font-bold mb-3">Password</label>

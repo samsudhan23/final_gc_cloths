@@ -217,7 +217,7 @@
                         <!-- <img src="../../../../../assets/images/preview-icon-8.jpg"  alt="" style="width: 40%;"> -->
                     </span>
                     <app-popup *ngIf="galleryFiles.length > 0" [galleries]="galleryImages"></app-popup>
-                    <small class="text-red-500" *ngIf="galleryFiles.length == 0 || this.productForm.invalid">Gallery
+                    <small class="text-red-500" *ngIf="galleryFiles.length == 0">Gallery
                         is required.</small>
                 </div>
             </div>

@@ -8,10 +8,44 @@ import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { Subscription, interval } from 'rxjs';
 import { ButtonGroupModule } from 'primeng/buttongroup';
 import { ButtonModule } from 'primeng/button';
+import { CheckboxModule } from 'primeng/checkbox';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { DatePickerModule } from 'primeng/datepicker';
+import { DialogModule } from 'primeng/dialog';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { InputTextModule } from 'primeng/inputtext';
+import { RadioButtonModule } from 'primeng/radiobutton';
+import { RatingModule } from 'primeng/rating';
+import { RippleModule } from 'primeng/ripple';
+import { SelectModule } from 'primeng/select';
+import { TableModule } from 'primeng/table';
+import { TagModule } from 'primeng/tag';
+import { TextareaModule } from 'primeng/textarea';
+import { ToastModule } from 'primeng/toast';
+import { ToolbarModule } from 'primeng/toolbar';
 
 @Component({
   selector: 'app-sign-in',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, HttpClientModule, ButtonModule, ButtonGroupModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, HttpClientModule, ButtonModule, ButtonGroupModule,
+    TableModule,
+    RippleModule,
+    ToastModule,
+    ToolbarModule,
+    RatingModule,
+    InputTextModule,
+    TextareaModule,
+    SelectModule,
+    RadioButtonModule,
+    InputNumberModule,
+    DialogModule,
+    TagModule,
+    InputIconModule,
+    IconFieldModule,
+    ConfirmDialogModule,
+    DatePickerModule,
+    CheckboxModule],
   templateUrl: './sign-in.component.html',
   styleUrl: './sign-in.component.scss'
 })
@@ -131,7 +165,7 @@ export class SignInComponent {
         error: (err) => {
           this.toast.error('Registration failed');
           console.error('Register Error:', err);
-           this.loading = false;
+          this.loading = false;
         }
       });
     } else {

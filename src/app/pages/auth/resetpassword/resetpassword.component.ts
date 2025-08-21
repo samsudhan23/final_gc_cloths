@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Component } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { ButtonModule } from 'primeng/button';
@@ -33,9 +33,26 @@ export class ResetpasswordComponent {
     this.token = this.route.snapshot.paramMap.get('token') || '';
     console.log('this.token: ', this.token);
     this.resetForm = this.fb.group({
-      password: ['', [Validators.required, Validators.minLength(6)]],
-      confirmPassword: ['', [Validators.required]]
+      password: ['', [Validators.required, Validators.minLength(8), Validators.pattern(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)]],
+      confirmPassword: ['', { validators: [Validators.required, this.matchOtherValidator('password')], updateOn: 'change' }]
     });
+
+    // When password changes, re-validate confirmPassword immediately
+    this.resetForm.get('password')?.valueChanges.subscribe(() => {
+      this.resetForm.get('confirmPassword')?.updateValueAndValidity({ onlySelf: true });
+    });
+  }
+
+  // Validator for confirmPassword that compares to another control on the same form
+  matchOtherValidator(otherControlName: string): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const parent = control.parent;
+      if (!parent) return null; // form not ready yet
+      const other = parent.get(otherControlName);
+      if (!other) return null;
+
+      return other.value === control.value ? null : { mismatch: true };
+    };
   }
 
   get p(): { [key: string]: AbstractControl } {

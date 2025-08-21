@@ -80,13 +80,23 @@
         <small class="error" *ngIf="s['phoneNumber'].errors?.['pattern']">Enter a valid 10-digit phone number</small>
         }
 
-        <input type="date" formControlName="dob" placeholder="Date of Birth" required />
+        <!-- <input type="date" formControlName="dob" placeholder="Date of Birth" required />
         @if (signupForm.get('dob')?.invalid && signupForm.get('dob')?.touched) {
         <small class="error">Date of Birth is required</small>
-        }
+        } -->
 
+        <div class="form-field">
+          <p-datepicker formControlName="dob" class="userDOB" [showIcon]="true" iconDisplay="input"
+            [showButtonBar]="true"
+            dateFormat="dd/mm/yy"
+            placeholder="Date of Birth">
+          </p-datepicker>
+          <small class="text-red-500" *ngIf="signupForm.get('dob')?.invalid && signupForm.get('dob')?.touched">
+            Date of Birth is required.
+          </small>
+        </div>
         <!-- <button type="submit">Sign Up</button> -->
-        <div class="resetbtn">
+        <div class="resetbtn mt-2">
           <p-button type="submit" label="Sign Up" [loading]="loading" />
         </div>
         <p>Already have an account? <span (click)="toggleForm(true)">Login</span></p>
