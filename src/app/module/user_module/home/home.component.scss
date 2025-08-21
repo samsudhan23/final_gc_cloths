@@ -8783,3 +8783,359 @@ blockquote {
 //   color: #666;
 // }
 
+.latest-products h2 {
+  font-size: 2.2rem;
+  color: #222;
+}
+
+.product-card {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  background: #fff;
+  transition: all 0.3s ease-in-out;
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.product-card:hover {
+  transform: translateY(-8px);
+}
+
+.product-img {
+  position: relative;
+  overflow: hidden;
+}
+
+.product-img img {
+  width: 100%;
+//   height: 280px;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.product-card:hover .product-img img {
+  transform: scale(1.08);
+}
+
+.product-icons {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: all 0.3s ease;
+}
+
+.product-card:hover .product-icons {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.icon-btn {
+  background: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.icon-btn:hover {
+  background: #000;
+  color: #fff;
+}
+
+.product-content {
+  flex-grow: 1;
+}
+
+.product-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+  min-height: 40px;
+}
+
+.product-price {
+  font-size: 1rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.product-price .discount {
+  color: #ff4d4d;
+  margin-right: 8px;
+}
+
+.old-price {
+  text-decoration: line-through;
+  color: #777;
+}
+
+.btn-dark {
+  border-radius: 25px;
+  transition: 0.3s;
+}
+
+.btn-dark:hover {
+  background: #ff4d4d;
+  border-color: #ff4d4d;
+}
+
+.bi-heart-fill {
+  color: #ff4d4d; /* Red highlight */
+  transition: color 0.3s ease;
+}
+
+.icon-btn .bi-heart {
+  color: #555;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-6px);
+  }
+  60% {
+    transform: translateY(-3px);
+  }
+}
+
+.animate-bounce {
+  animation: bounce 0.6s ease;
+}
+
+/* ✅ Badges */
+.badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 30px;
+  z-index: 2;
+}
+.sale-badge {
+  background: #ff4d4d;
+  color: #fff;
+}
+.new-badge {
+  background: #28a745;
+  color: #fff;
+}
+
+/* ✅ Hover image swap */
+.product-img {
+  position: relative;
+  overflow: hidden;
+}
+.product-img .back-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.product-card:hover .back-img {
+  opacity: 1;
+}
+.product-img .front-img {
+  transition: opacity 0.4s ease;
+}
+.product-card:hover .front-img {
+  opacity: 0;
+}
+
+
+/* ✅ Ratings */
+.rating {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2px;
+  font-size: 0.9rem;
+  color: #f5a623;
+  margin-bottom: 8px;
+}
+.rating span {
+  font-size: 0.8rem;
+  color: #666;
+  margin-left: 4px;
+}
+
+/* 🏷 Stock Badge */
+.stock-badge {
+  top: 40px; /* below Sale/New badge */
+  left: 12px;
+  font-size: 0.7rem;
+}
+.stock-badge.low-stock { background: #ff9800; color: #fff; }
+.stock-badge.out-stock { background: #f44336; color: #fff; }
+
+/* 👁 Quick View Button (hover only) */
+.quick-view-btn {
+  position: absolute;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #000;
+  color: #fff;
+  padding: 6px 14px;
+  font-size: 14px;
+  border: none;
+  border-radius: 20px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.product-img:hover .quick-view-btn {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Responsive Images in Modal */
+.quick-view-gallery img {
+  width: 100%;
+  max-height: 300px;
+  object-fit: contain;
+}
+
+/* 🎨 Subtle Tilt Effect */
+.product-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.product-card:hover {
+  transform: perspective(1000px) rotateX(2deg) rotateY(2deg) scale(1.02);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+}
+
+
+
+/* Backdrop */
+.modal-backdrop {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+}
+
+/* Modal Content */
+.modal-content {
+  position: relative;
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: fadeIn 0.3s ease;
+  text-align: center;
+}
+
+/* Close Button */
+.close-btn {
+  position: absolute;
+  top: 12px;
+  right: 15px;
+  font-size: 28px;
+  cursor: pointer;
+  color: #444;
+  transition: 0.3s;
+}
+.close-btn:hover {
+  color: #ff4d4d;
+}
+
+/* Gallery Images */
+.quick-view-gallery img {
+  width: 100%;
+  max-height: 350px;
+  object-fit: contain;
+  margin-bottom: 12px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+/* Small animation */
+@keyframes fadeIn {
+  from {opacity: 0; transform: translateY(-20px);}
+  to {opacity: 1; transform: translateY(0);}
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+  .modal-content {
+    padding: 15px;
+    max-width: 95%;
+  }
+  .quick-view-gallery img {
+    max-height: 250px;
+  }
+}
+
+/* Unique Buy Now Button */
+.btn-dark {
+  border-radius: 25px;
+  background: linear-gradient(135deg, #000 0%, #333 100%);
+  border: none;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-dark i {
+  font-size: 1rem;
+}
+
+.btn-dark::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at center, rgba(255,77,77,0.25) 0%, transparent 70%);
+  transform: scale(0);
+  transition: transform 0.4s ease;
+  z-index: -1;
+}
+
+.btn-dark:hover::before {
+  transform: scale(1);
+}
+
+.btn-dark:hover {
+  transform: translateY(-3px);
+  background: linear-gradient(135deg, #ff4d4d 0%, #ff1a75 100%);
+  color: #fff;
+  box-shadow: 0 6px 15px rgba(255, 77, 77, 0.4);
+}
+
+
+
+

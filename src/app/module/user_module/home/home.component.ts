@@ -143,6 +143,7 @@ export class HomeComponent implements OnInit {
   filterProducts(): void {
     if (this.selectedCategory === 'All') {
       this.filteredProducts = this.productList;
+      console.log('this.filteredProducts: ', this.filteredProducts);
     } else {
       this.filteredProducts = this.productList.filter((product: any) => product.category.categoryName === this.selectedCategory);
     }
@@ -152,4 +153,34 @@ export class HomeComponent implements OnInit {
     this.selectedCategory = category;
     this.filterProducts();
   }
+
+  addToCart(product: any) {
+    console.log("Added to cart:", product);
+    // your cart logic here
+  }
+
+  addToWishlist(product: any) {
+    console.log("Added to wishlist:", product);
+    // your wishlist logic here
+  }
+
+  toggleWishlist(product: any) {
+    product.isWishlisted = !product.isWishlisted;
+  }
+
+  selectedProduct: any = null;
+
+  openQuickView(product: any) {
+    this.selectedProduct = product;
+    console.log('this.selectedProduct: ', this.selectedProduct);
+  }
+
+  closeQuickView() {
+    this.selectedProduct = null;
+  }
+
+  buyNow(product:any) {
+    console.log('product: ', product);
+  }
+
 }
