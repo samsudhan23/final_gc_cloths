@@ -179,8 +179,13 @@ export class HomeComponent implements OnInit {
     this.selectedProduct = null;
   }
 
-  buyNow(product:any) {
+  buyNow(product: any) {
     console.log('product: ', product);
+  }
+
+  viewDetails(product: any) {
+    console.log('product: ', product);
+   this.router.navigate(['user/product-details'], { state: { product,allProducts: this.filteredProducts} });
   }
 
 }

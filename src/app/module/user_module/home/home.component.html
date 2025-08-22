@@ -153,25 +153,101 @@
                                 </a>
                             </div>
 
-                            <div class="products-tab-content w-tab-content">
+                            <div class="row g-4">
+                                <!-- Loop through products -->
+                                <div class="col-lg-3 col-md-4 col-sm-6" *ngFor="let product of filteredProducts">
+                                    <div class="product-card">
+
+                                        <div class="product-img cursor-pointer" (click)="viewDetails(product)">
+                                            <!-- Sale / New Badge -->
+                                            <span *ngIf="product.discountPrice" class="badge sale-badge">Sale</span>
+                                            <span *ngIf="!product.discountPrice" class="badge new-badge">New</span>
+
+                                            <!-- 🏷 Stock Badge -->
+                                            <span *ngIf="!product.inStock" class="badge stock-badge out-stock">Out of
+                                                Stock</span>
+                                            <span *ngIf="product.inStock && product.totalStock <= 5"
+                                                class="badge stock-badge low-stock">Low Stock</span>
+
+                                            <!-- Front Image -->
+                                            <img [src]="product.images" [alt]="product.productName"
+                                                class="img-fluid front-img">
+
+                                            <!-- Hover Image -->
+                                            <img *ngIf="product.gallery && product.gallery.length > 0"
+                                                [src]="product.gallery[0]" [alt]="product.productName"
+                                                class="img-fluid back-img">
+
+                                            <!-- Wishlist & Cart Icons -->
+                                            <div class="product-icons">
+                                                <button class="icon-btn" (click)="toggleWishlist(product)">
+                                                    <i [ngClass]="{
+                  'bi bi-heart': !product.isWishlisted,
+                  'bi bi-heart-fill text-danger animate-bounce': product.isWishlisted
+                }"></i>
+                                                </button>
+                                                <button class="icon-btn" (click)="addToCart(product)">
+                                                    <i class="bi bi-cart"></i>
+                                                </button>
+                                            </div>
+
+                                            <!-- 👁 Quick View Button -->
+                                            <button class="quick-view-btn" (click)="openQuickView(product)"><i
+                                                    class="bi bi-eye me-1"></i> Quick View</button>
+                                        </div>
+
+                                        <!-- Product Content -->
+                                        <div class="product-content text-center p-3">
+                                            <h5 class="product-title">{{ product.productName }}</h5>
+
+                                            <!-- Price with discount -->
+                                            <p class="product-price">
+                                                <span *ngIf="product.discountPrice" class="discount">
+                                                    ₹{{ product.discountPrice }}
+                                                </span>
+                                                <span [class.old-price]="product.discountPrice">
+                                                    ₹{{ product.price }}
+                                                </span>
+                                            </p>
+
+                                            <!-- ⭐ Ratings -->
+                                            <div class="rating" *ngIf="product.rating">
+                                                <ng-container *ngFor="let star of [1,2,3,4,5]; let i = index">
+                                                    <i class="bi" [ngClass]="{
+                  'bi-star-fill': star <= product.rating.average,
+                  'bi-star-half': star - 0.5 === product.rating.average,
+                  'bi-star': star > product.rating.average
+                }"></i>
+                                                </ng-container>
+                                                <span>({{ product.rating.count }})</span>
+                                            </div>
+
+                                            <button class="btn btn-dark buy-btn" (click)="buyNow(product)">
+                                                Buy Now <i class="bi bi-bag ml-2"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- <div class="products-tab-content w-tab-content">
                                 <div class="products-tab-pane w-tab-pane w--tab-active"
                                     style="opacity: 1; transition: all, opacity 300ms;">
                                     <div class="product-list-wrapper w-dyn-list">
                                         <div class="product-cms-list w-dyn-items">
-                                            <!-- Product CARD -->
+                                            Product CARD
                                             <div *ngFor="let product of filteredProducts" role="listitem"
                                                 data-aos="fade-up" class="product-list-item w-dyn-item">
                                                 <div data-aos="fade-up"
                                                     style="opacity: 1; transform: translate3d(0px, 0px, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); transform-style: preserve-3d;"
                                                     class="product-list-box">
-                                                    <!-- Card Content -->
+                                                    Card Content
                                                     <div class="product-thumbnail">
                                                         <img loading="lazy" [alt]="product.name" [src]="product.images"
                                                             sizes="(max-width: 479px) 100vw, (max-width: 767px) 41vw, (max-width: 991px) 43vw, (max-width: 1279px) 28vw, (max-width: 1439px) 20vw, (max-width: 1919px) 19vw, 24vw"
                                                             [srcset]="product.images + ' 500w, ' + product.images + ' 707w'"
                                                             class="product-image"
                                                             style="transform: translate3d(0px, 0px, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); transform-style: preserve-3d;">
-                                                        <!-- Product Marquee -->
+                                                        Product Marquee
                                                         <div class="product-marquee-block" style="opacity: 0;">
                                                             <div class="product-marquee-item"
                                                                 style="transform: translate3d(-82.082%, 0px, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); transform-style: preserve-3d; will-change: transform;"
@@ -187,7 +263,7 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <!-- Card Footer -->
+                                                    Card Footer
                                                     <div class="product-content">
                                                         <div class="product-title-box">
                                                             <a class="product-link">{{ product.productName}}</a>
@@ -202,7 +278,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 </div>
@@ -210,85 +286,6 @@
         </div>
     </section>
 
-    <section class="latest-products py-5">
-        <div class="container">
-            <h2 class="text-center mb-5 fw-bold">Our Latest Products</h2>
-
-            <div class="row g-4">
-                <!-- Loop through products -->
-                <div class="col-lg-3 col-md-4 col-sm-6" *ngFor="let product of filteredProducts">
-                    <div class="product-card">
-
-                        <div class="product-img">
-                            <!-- Sale / New Badge -->
-                            <span *ngIf="product.discountPrice" class="badge sale-badge">Sale</span>
-                            <span *ngIf="!product.discountPrice" class="badge new-badge">New</span>
-
-                            <!-- 🏷 Stock Badge -->
-                            <span *ngIf="!product.inStock" class="badge stock-badge out-stock">Out of Stock</span>
-                            <span *ngIf="product.inStock && product.totalStock <= 5"
-                                class="badge stock-badge low-stock">Low Stock</span>
-
-                            <!-- Front Image -->
-                            <img [src]="product.images" [alt]="product.productName" class="img-fluid front-img">
-
-                            <!-- Hover Image -->
-                            <img *ngIf="product.gallery && product.gallery.length > 0" [src]="product.gallery[0]"
-                                [alt]="product.productName" class="img-fluid back-img">
-
-                            <!-- Wishlist & Cart Icons -->
-                            <div class="product-icons">
-                                <button class="icon-btn" (click)="toggleWishlist(product)">
-                                    <i [ngClass]="{
-                  'bi bi-heart': !product.isWishlisted,
-                  'bi bi-heart-fill text-danger animate-bounce': product.isWishlisted
-                }"></i>
-                                </button>
-                                <button class="icon-btn" (click)="addToCart(product)">
-                                    <i class="bi bi-cart"></i>
-                                </button>
-                            </div>
-
-                            <!-- 👁 Quick View Button -->
-                            <button class="quick-view-btn" (click)="openQuickView(product)"><i
-                                    class="bi bi-eye me-1"></i> Quick View</button>
-                        </div>
-
-                        <!-- Product Content -->
-                        <div class="product-content text-center p-3">
-                            <h5 class="product-title">{{ product.productName }}</h5>
-
-                            <!-- Price with discount -->
-                            <p class="product-price">
-                                <span *ngIf="product.discountPrice" class="discount">
-                                    ₹{{ product.discountPrice }}
-                                </span>
-                                <span [class.old-price]="product.discountPrice">
-                                    ₹{{ product.price }}
-                                </span>
-                            </p>
-
-                            <!-- ⭐ Ratings -->
-                            <div class="rating" *ngIf="product.rating">
-                                <ng-container *ngFor="let star of [1,2,3,4,5]; let i = index">
-                                    <i class="bi" [ngClass]="{
-                  'bi-star-fill': star <= product.rating.average,
-                  'bi-star-half': star - 0.5 === product.rating.average,
-                  'bi-star': star > product.rating.average
-                }"></i>
-                                </ng-container>
-                                <span>({{ product.rating.count }})</span>
-                            </div>
-
-                            <button class="btn btn-dark buy-btn" (click)="buyNow(product)">
-                                 Buy Now <i class="bi bi-bag ml-2"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <!-- Quick View Modal -->
     <div class="modal-backdrop" *ngIf="selectedProduct">

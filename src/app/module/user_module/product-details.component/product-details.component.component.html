@@ -1,0 +1,108 @@
+<button class="ml-2 btn btn-outline-secondary px-4 rounded-pill shadow-sm hover-scale back-btn" (click)="goBack()"><i
+        class="bi bi-arrow-left me-2"></i>Back
+    to Products</button>
+<div class="container py-5" *ngIf="product">
+    <div class="row g-5 align-items-center">
+        <!-- Gallery -->
+        <div class="col-md-6">
+            <div class="main-img text-center mb-3">
+                <img [src]="selectedImage" alt="{{product.productName}}" class="img-fluid rounded shadow">
+            </div>
+            <div class="thumb-gallery d-flex justify-content-center gap-2">
+                <img *ngFor="let img of product.gallery" [src]="img" alt="{{product.productName}}" class="thumb-img"
+                    (click)="changeImage(img)">
+            </div>
+        </div>
+
+        <!-- Product Info -->
+        <div class="col-md-6">
+            <h2 class="fw-bold">{{ product.productName }}</h2>
+            <p class="text-muted">{{ product.productDescription }}</p>
+
+            <!-- Price -->
+            <p class="fs-4">
+                <span *ngIf="product.discountPrice" class="text-success fw-bold">₹{{ product.discountPrice }}</span>
+                <span [class.text-muted]="product.discountPrice"
+                    [class.text-decoration-line-through]="product.discountPrice">
+                    ₹{{ product.price }}
+                </span>
+            </p>
+
+            <!-- Category & Gender -->
+            <p><strong>Category:</strong> {{ product.category.categoryName }}</p>
+            <p><strong>Gender:</strong> {{ product.gender.genderName }}</p>
+
+            <!-- Sizes -->
+            <div class="mb-3">
+                <strong>Available Sizes:</strong>
+                <div class="d-flex gap-2 mt-2 flex-wrap">
+                    <span *ngFor="let size of product.sizeStock" (click)="selectSize(size)" class="size-chip" [ngClass]="{
+                            'selected': selectedSize === size.size,
+                            'disabled': size.stock === 0}">
+                        {{ size.size }} ({{ size.stock }})
+                    </span>
+                </div>
+            </div>
+
+
+            <!-- Stock Info -->
+            <p>
+                <span *ngIf="!product.inStock" class="badge bg-danger">Out of Stock</span>
+                <span *ngIf="product.inStock && product.totalStock <= 5" class="badge bg-warning text-dark">Low
+                    Stock</span>
+                <span *ngIf="product.inStock && product.totalStock > 5" class="badge bg-success">In Stock</span>
+            </p>
+
+            <!-- Buttons -->
+            <div class="d-flex gap-3 mt-4 flex-wrap">
+                <!-- Buy Now -->
+                <button class="btn buy-now-btn px-4 rounded-pill shadow-sm hover-scale" (click)="buyNow(product)">
+                    <i class="bi bi-bag-check-fill me-2"></i>Buy Now
+                </button>
+                <button class="btn btn-outline-secondary px-4 rounded-pill shadow-sm hover-scales"
+                    (click)="addToCart(product)">
+                    <i class="bi bi-cart me-2"></i>Add to Cart
+                </button>
+                <button class="btn btn-outline-danger px-4 rounded-pill shadow-sm hover-scale"
+                    (click)="toggleWishlist(product)">
+                    <i
+                        [ngClass]="{ 'bi bi-heart': !product.isWishlisted, 'bi bi-heart-fill text-danger': product.isWishlisted }"></i>
+                    Wishlist
+                </button>
+                <!-- <button class="btn btn-outline-secondary px-4 rounded-pill shadow-sm hover-scale back-btn"
+                    (click)="goBack()"><i class="bi bi-arrow-left me-2"></i>Back
+                    to Products</button> -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Related Products -->
+    <div class="related-products mt-5" *ngIf="relatedProducts.length > 0">
+        <h3 class="fw-bold mb-4">Related Products</h3>
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-4 col-sm-6" *ngFor="let rp of relatedProducts">
+                <div class="product-card" (click)="goToDetails(rp)">
+                    <div class="product-img">
+                        <img [src]="rp.images" [alt]="rp.productName" class="img-fluid front-img">
+                    </div>
+                    <div class="product-content text-center p-3">
+                        <h6 class="fw-bold">{{ rp.productName }}</h6>
+                        <p>
+                            <span *ngIf="rp.discountPrice" class="text-success">₹{{ rp.discountPrice }}</span>
+                            <span [class.text-decoration-line-through]="rp.discountPrice">₹{{ rp.price }}</span>
+                        </p>
+                        <div>
+                            <ng-container *ngFor="let star of [1,2,3,4,5]">
+                                <i class="bi" [ngClass]="{
+                  'bi-star-fill text-warning': star <= rp.rating.average,
+                  'bi-star': star > rp.rating.average
+                }"></i>
+                            </ng-container>
+                            <small class="text-muted">({{ rp.rating.count }})</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

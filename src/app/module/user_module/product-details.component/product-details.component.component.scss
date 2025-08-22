@@ -1,0 +1,107 @@
+.main-img img {
+  max-height: 400px;
+  object-fit: contain;
+}
+.thumb-img {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.thumb-img:hover {
+  border-color: #000;
+  transform: scale(1.05);
+}
+
+//Related Products
+.related-products .product-card {
+  border: 1px solid #eee;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.related-products .product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+.related-products .product-img img {
+  height: 200px;
+  object-fit: cover;
+  width: 100%;
+}
+
+/* Smooth hover animation */
+.hover-scale {
+  transition: all 0.3s ease;
+}
+
+.hover-scale:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Optional: subtle active effect */
+.hover-scale:active {
+  transform: scale(0.97);
+}
+
+/* Back button modern style */
+.back-btn {
+  background-color: #f8f9fa; /* Soft gray */
+  border: 1px solid #dee2e6;
+  color: #495057;
+  transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+  background-color: #317dc9; /* Darker gray on hover */
+  color: #edf0f3;
+  border-color: #adb5bd;
+}
+
+/* Buy Now button modern style */
+.buy-now-btn {
+  background-color: #f8f9fa; /* Soft gray */
+  border: 1px solid #dee2e6;
+  color: #495057;
+  transition: all 0.3s ease;
+}
+
+.buy-now-btn:hover {
+  background-color: #2bac72; /* Darker gray on hover */
+  color: #e8eff6;
+  border-color: #adb5bd;
+}
+
+.size-chip {
+  padding: 4px 12px;
+  border-radius: 50px;
+  border: 1px solid #dee2e6;
+  background: #f8f9fa;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  user-select: none;
+}
+
+.size-chip:hover {
+  background: #e9ecef;
+}
+
+.size-chip.selected {
+  background: #000;
+  color: #fff;
+  border-color: #000;
+  font-weight: 600;
+}
+
+.size-chip.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  text-decoration: line-through;
+}
+
+
+
