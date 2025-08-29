@@ -76,7 +76,7 @@
 
                 <div>
                     <label class="block font-bold mb-3">User</label>
-                    <p-select inputId="userId" formControlName="userId"  [options]="usersList" optionLabel="name"
+                    <p-select inputId="userId" formControlName="userId" [options]="usersList" optionLabel="name"
                         optionValue="_id" placeholder="Select a User" fluid />
                     <small class="text-red-500"
                         *ngIf="cartForm.get('userId')?.invalid && cartForm.get('userId')?.touched">User is
@@ -84,19 +84,29 @@
                 </div>
                 <div>
                     <label class="block font-bold mb-3">Product</label>
-                    <p-select inputId="productId" formControlName="productId" [options]="productData" (onChange)="selectProduct($event)"
-                        optionLabel="productName" optionValue="_id" placeholder="Select a Product" fluid />
+                    <p-select inputId="productId" formControlName="productId" [options]="productData"
+                        (onChange)="selectProduct($event)" optionLabel="productName" optionValue="_id"
+                        placeholder="Select a Product" fluid />
                     <small class="text-red-500"
                         *ngIf="cartForm.get('productId')?.invalid && cartForm.get('productId')?.touched">Product
                         is required.</small>
                 </div>
                 <div>
                     <label class="block font-bold mb-3">Size</label>
-                    <p-select inputId="selectedSize" formControlName="selectedSize" [options]="dressSizesWithMeasurements"
-                        optionLabel="size" optionValue="size" placeholder="Select a Product" fluid />
+                    <p-select inputId="selectedSize" formControlName="selectedSize" (onChange)="selectProductSize($event)"
+                        [options]="dressSizesWithMeasurements" optionLabel="size" optionValue="size"
+                        placeholder="Select a Product" fluid />
                     <small class="text-red-500"
                         *ngIf="cartForm.get('selectedSize')?.invalid && cartForm.get('selectedSize')?.touched">Size
                         is required.</small>
+                </div>
+                <div>
+                    <label class="block font-bold mb-3">Available Stock</label>
+                    <input type="number" formControlName="avlStock" readonly pInputText id="avlStock" required autofocus fluid />
+                    <small class="text-red-500"
+                        *ngIf="cartForm.get('avlStock')?.invalid && cartForm.get('avlStock')?.touched">Available Stock
+                        is
+                        required.</small>
                 </div>
                 <div>
                     <label class="block font-bold mb-3">Quantity</label>
@@ -104,6 +114,8 @@
                     <small class="text-red-500"
                         *ngIf="cartForm.get('quantity')?.invalid && cartForm.get('quantity')?.touched">Quantity is
                         required.</small>
+                         <small class="text-red-500"
+                        *ngIf="cartForm.get('quantity')?.value > cartForm.get('avlStock')?.value">Quantity is more than the available stock.</small>
                 </div>
             </div>
         </form>
