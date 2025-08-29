@@ -67,6 +67,7 @@ export class CartComponent {
   currentId: string | null = null;
   cartForm: FormGroup;
   dressSizesWithMeasurements = [];
+  selectedProdSize: any = [];
   constructor(
     private userService: UserService,
     private cartService: CartService,
@@ -79,6 +80,7 @@ export class CartComponent {
       userId: ['', Validators.required],
       productId: ['', Validators.required],
       selectedSize: ['', Validators.required],
+      avlStock: [0, Validators.required],
       quantity: [1, Validators.required]
     });
   }
@@ -122,9 +124,16 @@ export class CartComponent {
   selectProduct(event: any) {
     const data = event.value
     const filtered = this.productData.find((item: any) => item._id === data)?.sizeStock.map((ite: any) => (ite));
+    this.selectedProdSize = filtered;
     this.dressSizesWithMeasurements = filtered.map((e: any) => ({ size: e.size })) || [];
+    this.cartForm.get('selectedSize')?.setValue('')
+    this.cartForm.get('avlStock')?.setValue(0)
   }
-
+  selectProductSize(event: any) {
+    const selctedSize = event.value;
+    const getStockValue = this.selectedProdSize.find((item: { size: string }) => item.size == selctedSize)
+    this.cartForm.get('avlStock')?.setValue(getStockValue?.stock)
+  }
   onGlobalFilter(table: Table, event: Event) {
     table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
   }
@@ -204,11 +213,14 @@ export class CartComponent {
       case "Edit":
         this.mode = 'edit';
         this.currentId = editTableDatas._id;
+        const getSizeQuantity = editTableDatas.productId.sizeStock.filter((val: { size: any; }) => val.size == editTableDatas.selectedSize)
+        this.selectedProdSize = editTableDatas.productId.sizeStock;
         this.cartForm.patchValue({
           userId: editTableDatas.userId._id,
           productId: editTableDatas.productId._id,
           selectedSize: editTableDatas.selectedSize,
           quantity: editTableDatas.quantity,
+          avlStock: getSizeQuantity[0].stock
         });
         this.cartForm.enable();
         break;
