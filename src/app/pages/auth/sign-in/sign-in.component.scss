@@ -345,4 +345,37 @@ input[type="text"] {
     border-color: #ff6b6b;
     box-shadow: 0 0 5px rgba(255, 107, 107, 0.5);
     outline: none;
+} 
+/* Make DOB input look like your other fields */
+::ng-deep .userDOB .p-inputtext {
+  width: 100% !important;
+  height: 38px;                /* same height as your inputs */
+  margin: 10px 0;
+  border-radius: 10px;         /* match rounding */
+  font-size: 16px;
+  padding: 0 45px 0 16px;      /* space for calendar icon */
+  border: 1px solid #ccc;
+}
+
+/* Remove extra spacing and align */
+::ng-deep .userDOB .p-datepicker {
+  width: 100% !important;
+  display: block;
+}
+
+/* Place calendar icon inside the input on the right */
+::ng-deep .userDOB .p-datepicker .p-datepicker-trigger {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Optional: focus styling like other inputs */
+::ng-deep .userDOB .p-inputtext:focus {
+  border-color: #101010;
+  box-shadow: 0 0 0 3px rgba(16,185,129,.2);
 }

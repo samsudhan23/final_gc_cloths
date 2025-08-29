@@ -92,8 +92,8 @@ export class UserManagementComponent {
   ) {
     this.userForm = this.fb.group({
       name: ['', Validators.required],
-      phoneNumber: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
+      phoneNumber: ['', [Validators.required, Validators.pattern(/^[6-9]\d{9}$/)]],
+      email: ['', [Validators.required,Validators.pattern(/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/i)]],
       password: ['', Validators.required],
       dateOfBirth: [null, Validators.required],
       role: ['user', Validators.required],
@@ -209,27 +209,39 @@ export class UserManagementComponent {
   saveProduct() {
     if (this.userForm.invalid) {
       this.userForm.markAllAsTouched();
+      return;
     }
-    if (this.userForm.valid) {
-      const user = this.userForm.value;
 
-      if (this.mode === 'add') {
-        this.userService.addUser(user).subscribe((res: any) => {
-          if (res.code === 200 && res.success === true) {
-            this.toast.success(res.message);
-            this.loadUsers();
-            this.hideDialog();
-          }
-        });
-      } else if (this.mode === 'edit' && this.currentUserId) {
-        this.userService.updateUser(this.currentUserId, user).subscribe((res: any) => {
-          if (res.code === 200 && res.success === true) {
-            this.toast.success(res.message);
-            this.loadUsers();
-            this.hideDialog();
-          }
-        });
-      }
+    const user = this.userForm.value;
+
+    if (this.mode === 'add') {
+      this.userService.addUser(user).subscribe((res: any) => {
+        if (res.code === 200 && res.success === true) {
+          this.toast.success(res.message);
+          this.loadUsers();
+          this.hideDialog();
+        } else {
+          this.toast.error(res.message || 'Something went wrong');
+        }
+      },
+        (err) => {
+          this.toast.error(err?.error?.message || 'Server error occurred');
+        }
+      );
+    } else if (this.mode === 'edit' && this.currentUserId) {
+      this.userService.updateUser(this.currentUserId, user).subscribe((res: any) => {
+        if (res.code === 200 && res.success === true) {
+          this.toast.success(res.message);
+          this.loadUsers();
+          this.hideDialog();
+        } else {
+          this.toast.error(res.message || 'Something went wrong');
+        }
+      },
+        (err) => {
+          this.toast.error(err?.error?.message || 'Server error occurred');
+        }
+      );
     }
   }
 }

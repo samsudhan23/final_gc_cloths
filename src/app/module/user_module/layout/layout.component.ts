@@ -169,7 +169,13 @@ export class LayoutComponent {
     this.sidebarVisible = !this.sidebarVisible;
   }
 
-    openSubNav() {
+  openSubNav() {
     this.sideSubMenu = !this.sideSubMenu;
+  }
+
+  logout() {
+    localStorage.removeItem('role');
+    localStorage.removeItem('user');
+    this.router.navigate(['/login'], { replaceUrl: true });
   }
 }
