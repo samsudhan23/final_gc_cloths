@@ -189,6 +189,7 @@ export class AppTopbar {
     onLogout() {
         localStorage.removeItem('role');
         localStorage.removeItem('user');
+        this.auth.currentUserSubject.next(null);
         this.router.navigate(['/login'], { replaceUrl: true });
     }
 }
