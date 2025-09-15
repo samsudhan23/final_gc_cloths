@@ -21,7 +21,6 @@ import { TextareaModule } from 'primeng/textarea';
 import { ToolbarModule } from 'primeng/toolbar';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { CheckboxModule } from 'primeng/checkbox';
-import { UserService } from '../../service/user/user.service';
 import { ToastrService } from 'ngx-toastr';
 import { CategoryService } from '../../service/category/category.service';
 
