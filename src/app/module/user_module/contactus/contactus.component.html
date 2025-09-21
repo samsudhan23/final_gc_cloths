@@ -1,0 +1,112 @@
+<section class="relative bg-theme-bg py-16 px-6 text-theme-text">
+    <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10">
+
+        <!-- Contact Info -->
+        <div class="flex flex-col justify-center">
+            <h2 class="text-4xl font-extrabold mb-6 text-theme-accent">Get in Touch</h2>
+            <p class="mb-6 text-lg text-theme-muted">
+                We’d love to hear from you! Whether you have a question about products, orders, or anything else, our
+                team is ready to answer all your questions.
+            </p>
+
+            <div class="space-y-6">
+                <div class="flex items-center space-x-4">
+                    <div class="bg-theme-accent p-3 rounded-full text-white">
+                        <!-- <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17.657 16.657L13.414 20.9a2 2 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg> -->
+
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="feather feather-map-pin">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                    </div>
+                    <p>123, E-Commerce Street, Chennai, India</p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="bg-theme-accent p-3 rounded-full text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="feather feather-phone">
+                            <path
+                                d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z">
+                            </path>
+                        </svg>
+                    </div>
+                    <p>+91 98765 43210</p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="bg-theme-accent p-3 rounded-full text-white">
+                        <!-- <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 8l9 6 9-6M5 6h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2z" />
+                        </svg> -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="feather feather-mail">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z">
+                            </path>
+                            <polyline points="22,6 12,13 2,6"></polyline>
+                        </svg>
+                    </div>
+                    <p>support&#64;yourecommerce.com</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Form -->
+        <div class="bg-black rounded-2xl shadow-lg p-8">
+            <h3 class="text-center text-2xl font-semibold mb-6 text-theme-accent">Send us a Message</h3>
+            <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" novalidate>
+                <div class="mb-4">
+                    <input formControlName="name" type="text" placeholder="Your Name"
+                        class="w-full px-4 py-3 rounded-lg bg-theme-bg text-theme-text border border-theme-muted focus:outline-none focus:ring-2 focus:ring-theme-accent" />
+                    <div *ngIf="submitted && f['name'].invalid" class="text-red-500 text-sm mt-1">Name is required (min
+                        3 characters).</div>
+                </div>
+                <div class="mb-4">
+                    <input formControlName="email" type="email" placeholder="Your Email"
+                        class="w-full px-4 py-3 rounded-lg bg-theme-bg text-theme-text border border-theme-muted focus:outline-none focus:ring-2 focus:ring-theme-accent" />
+                    <div *ngIf="submitted && f['email'].invalid" class="text-red-500 text-sm mt-1">Valid email is
+                        required.</div>
+                </div>
+                <div class="mb-4">
+                    <input formControlName="subject" type="text" placeholder="Subject"
+                        class="w-full px-4 py-3 rounded-lg bg-theme-bg text-theme-text border border-theme-muted focus:outline-none focus:ring-2 focus:ring-theme-accent" />
+                    <div *ngIf="submitted && f['subject'].invalid" class="text-red-500 text-sm mt-1">Subject is
+                        required.</div>
+                </div>
+                <div class="mb-4">
+                    <textarea formControlName="message" rows="5" placeholder="Your Message"
+                        class="w-full px-4 py-3 rounded-lg bg-theme-bg text-theme-text border border-theme-muted focus:outline-none focus:ring-2 focus:ring-theme-accent"></textarea>
+                    <div *ngIf="submitted && f['message'].invalid" class="text-red-500 text-sm mt-1">Message should be
+                        at least 10 characters.</div>
+                </div>
+                <button type="submit"
+                    class="w-full bg-theme-accent hover:bg-theme-accentHover text-white py-3 rounded-lg font-semibold shadow-md transition">
+                    Send Message
+                </button>
+
+                <p *ngIf="successMessage" class="mt-4 text-green-400">{{ successMessage }}</p>
+                <p *ngIf="errorMessage" class="mt-4 text-red-400">{{ errorMessage }}</p>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- Google Map Section -->
+<section class="w-full h-[400px] mt-10 px-6 mb-3">
+    <div class="max-w-6xl mx-auto rounded-2xl overflow-hidden shadow-lg">
+        <iframe class="w-full h-[400px] rounded-2xl"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3916.313238912936!2d80.22096621471855!3d13.082680890775371!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a5265d3aa7c6c5d%3A0x63d076a8ddc7b78b!2sChennai%20Central%20Railway%20Station!5e0!3m2!1sen!2sin!4v1675956600000!5m2!1sen!2sin"
+            allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+    </div>
+</section>
