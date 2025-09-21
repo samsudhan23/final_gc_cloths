@@ -1,0 +1,33 @@
+.summary-card {
+  text-align: center;
+}
+
+.summary-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.summary-title {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.summary-value {
+  font-size: 1.8rem;
+  color: var(--primary-color);
+}
+
+.best-sellers {
+  list-style: none;
+  padding: 0;
+}
+
+.best-sellers li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.best-sellers li:last-child {
+  border-bottom: none;
+}
