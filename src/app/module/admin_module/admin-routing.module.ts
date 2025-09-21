@@ -23,6 +23,10 @@ export const routes: Routes = [
                 loadComponent: () => import('./components/category/category.component').then(m => m.CategoryComponent)
             },
             {
+                path: 'productVariant',
+                loadComponent: () => import('./components/product-variant/product-variant.component').then(m => m.ProductVariantComponent)
+            },
+            {
                 path: 'wishlist',
                 loadComponent: () => import('./components/wishlist/wishlist.component').then(m => m.WishlistComponent)
             },
