@@ -11,11 +11,15 @@ import { ButtonModule } from 'primeng/button';
 import { Sidebar, SidebarModule } from 'primeng/sidebar';
 import { RippleModule } from 'primeng/ripple';
 import { StyleClassModule } from 'primeng/styleclass';
-import { trigger, transition, style, animate } from '@angular/animations';
+import { OverlayBadgeModule } from 'primeng/overlaybadge';
+import { Gender } from '../../../shared/interface/gender';
+import { Tooltip } from 'primeng/tooltip';
+import { Popover, PopoverModule } from 'primeng/popover';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-layout',
-  imports: [CommonModule, BadgeModule, AvatarModule, RouterModule, UserFooterComponent, SidebarModule, ButtonModule, RippleModule, StyleClassModule],
+  imports: [CommonModule, PopoverModule, BadgeModule, Tooltip, OverlayBadgeModule, AvatarModule, RouterModule, UserFooterComponent, SidebarModule, ButtonModule, RippleModule, StyleClassModule],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.scss',
   animations: [
@@ -34,6 +38,7 @@ export class LayoutComponent {
   responsiveOptions: any[] | undefined;
 
   @ViewChild('sidebarRef') sidebarRef!: Sidebar;
+  @ViewChild('op') op!: Popover;
 
   closeCallback(e: any): void {
     this.sidebarRef.close(e);
@@ -78,9 +83,12 @@ export class LayoutComponent {
       // ],
     },
   ];
-
-
+  genderList: Gender[] = [];
   categoryList: any[] = [];
+  members: any = [{ name: 'Profile', image: '../../../../assets/images/Avatar/icons8-cat-profile-48.png' }];
+  selectedMember = null;
+  private sub!: Subscription;
+
   constructor(@Inject(PLATFORM_ID) private platformId: Object,
     private auth: AuthenticationService,
     private category: CategoryService,
@@ -88,12 +96,14 @@ export class LayoutComponent {
   ) { }
 
   ngOnInit() {
-    const user = this.auth.getCurrentUser();
-    if (user?.role === 'admin') {
-      this.router.navigate(['/admin']);
-    } else if (user?.role === 'user') {
-      this.router.navigate(['/user']);
-    }
+    this.sub = this.auth.currentUser$.subscribe(user => {
+      if (user?.role === 'admin') {
+        this.router.navigate(['/admin']);
+      } else if (user?.role === 'user') {
+        this.router.navigate(['/user']);
+        this.members.push({ name: 'Logout', image: '../../../../assets/images/Avatar/logout.png' })
+      }
+    });
     if (isPlatformBrowser(this.platformId)) {
       AOS.init({ disable: 'mobile', duration: 1200, });
       AOS.refresh();
@@ -118,8 +128,26 @@ export class LayoutComponent {
         numScroll: 1
       }
     ]
+    this.genderData();
   }
 
+  ngOnDestroy() {
+    if (this.sub) this.sub.unsubscribe();
+  }
+
+  toggle(event: any) {
+      this.op.toggle(event);
+  }
+
+  selectMember(member: any) {
+    this.selectedMember = member;
+    this.op.hide();
+    if (member.name === 'Logout') {
+      this.logout()
+    } else if (member.name === 'Profile') {
+      this.router.navigate(['/user/user-profile'])
+    }
+  }
   getCategoryList() {
     this.category.getCategoriesMasterList().subscribe((res: any) => {
       if (res.code === 200 && res.success === true) {
@@ -151,7 +179,13 @@ export class LayoutComponent {
     });
   }
 
-
+  genderData() {
+    this.category.getGenderList().subscribe((res: any) => {
+      if (res.code === 200 && res.success === true) {
+        this.genderList = res.navData
+      }
+    })
+  }
   gotoPages(label: string) {
     console.log('label: ', label);
     if (label == 'Shop') {
@@ -172,10 +206,14 @@ export class LayoutComponent {
   openSubNav() {
     this.sideSubMenu = !this.sideSubMenu;
   }
-
+  movedToWishlist() {
+    this.router.navigate(['/user/wishlist'])
+  }
   logout() {
     localStorage.removeItem('role');
     localStorage.removeItem('user');
-    this.router.navigate(['/login'], { replaceUrl: true });
+    this.router.navigate(['/user/home']).then(() => {
+      window.location.reload(); // reloads Angular app completely
+    });
   }
 }
