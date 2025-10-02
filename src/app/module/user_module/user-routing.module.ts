@@ -5,6 +5,8 @@ import { LayoutComponent } from "./layout/layout.component";
 import { ProductDetailsComponent } from "./product-details.component/product-details.component.component";
 import { ContactusComponent } from "./contactus/contactus.component";
 import { AboutComponent } from "./about/about.component";
+import { UserProfileComponent } from "./user-profile/user-profile.component";
+import { UserWishlistComponent } from "./user-wishlist/user-wishlist.component";
 // import { UserLayoutComponent } from "./user-layout/user-layout.component";
 
 export const routes: Routes = [
@@ -17,6 +19,8 @@ export const routes: Routes = [
             { path: 'product-details', component: ProductDetailsComponent },
             { path: 'contactus', component: ContactusComponent },
             { path: 'about', component: AboutComponent },
+            { path: 'user-profile', component: UserProfileComponent },
+            { path: 'wishlist', component: UserWishlistComponent },
             {
                 path: 'shop',
                 loadComponent: () => import('./shop/shop.component').then(m => m.ShopComponent)

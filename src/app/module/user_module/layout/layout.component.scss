@@ -147,6 +147,25 @@
 .m\:display-flex {
     display: flex;
 }
+// Menu icons
+.m-menu__link .m-menu__arrow{
+    padding: 6px 0px 0px 8px;
+}
+
+.m-menu__link {
+  .pi-angle-up {
+    display: none;
+  }
+
+  &:hover {
+    .pi-angle-down {
+      display: none;
+    }
+    .pi-angle-up {
+      display: block;
+    }
+  }
+}
 
 .m-menu-drawer__backdrop {
     position: absolute;
@@ -550,6 +569,7 @@ menu {
 }
 
 .m-header__right {
+    padding-top: 15px;
     justify-content: flex-end;
 }
 
@@ -558,7 +578,7 @@ menu {
 .m-header__account,
 .m-header__wishlist {
     position: relative;
-    padding: 14px 8px;
+    padding: 0px 8px;
 }
 
 .m-tooltip--style-2 {
@@ -569,7 +589,7 @@ menu {
 .m-tooltip {
     border-radius: 9999px;
     cursor: pointer;
-    background-color: rgba(255, 255, 255, 1);
+    // background-color: rgba(255, 255, 255, 1);
     position: relative;
     margin-bottom: 8px;
     padding: 5px;

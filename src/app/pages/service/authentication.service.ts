@@ -9,6 +9,7 @@ import { enviornment } from '../../../environment/environment';
 export class AuthenticationService {
 
   public currentUserSubject = new BehaviorSubject<any>(null);
+   currentUser$ = this.currentUserSubject.asObservable();
 
   constructor(private http: HttpClient) {
     if (typeof window !== 'undefined') {

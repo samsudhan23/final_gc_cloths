@@ -42,7 +42,8 @@
 
             </div>
             <!-- Mobile Side menu -->
-            <div [ngClass]="{ 'open': sidebarVisible }" class="m-menu-drawer open" style="--menu-drawer-height: 858.140625px;">
+            <div [ngClass]="{ 'open': sidebarVisible }" class="m-menu-drawer open"
+                style="--menu-drawer-height: 858.140625px;">
                 <div class="m-menu-drawer__backdrop"></div>
                 <div class="m-menu-drawer__wrapper">
                     <div class="m-menu-drawer__content">
@@ -51,7 +52,8 @@
                                 <a class="m-menu-mobile__link">
                                     <span>Women</span>
                                 </a>
-                                <span (click)="openSubNav()" class="m-menu-mobile__toggle-button" data-toggle-submenu="1">
+                                <span (click)="openSubNav()" class="m-menu-mobile__toggle-button"
+                                    data-toggle-submenu="1">
                                     <svg fill="currentColor" stroke="currentColor" xmlns="http://www.w3.org/2000/svg"
                                         viewBox="0 0 256 512">
                                         <path
@@ -59,9 +61,11 @@
                                         </path>
                                     </svg>
                                 </span>
-                                <div [ngClass]="{ 'open': sideSubMenu }" class="m-megamenu-mobile m-megamenu-mobile--level-1 open">
+                                <div [ngClass]="{ 'open': sideSubMenu }"
+                                    class="m-megamenu-mobile m-megamenu-mobile--level-1 open">
                                     <div class="m-megamenu-mobile__wrapper">
-                                        <button (click)="openSubNav()" class="m-menu-mobile__back-button" data-level="1">
+                                        <button (click)="openSubNav()" class="m-menu-mobile__back-button"
+                                            data-level="1">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 17">
                                                 <path fill="currentColor"
                                                     d="M8.12109 15.9141c-.21093.1875-.41015.1875-.59765 0L.175781 8.53125c-.210937-.1875-.210937-.375 0-.5625L7.52344.585938c.1875-.1875.38672-.1875.59765 0l.70313.703122c.1875.1875.1875.38672 0 .59766L3.375 7.33594h11.9883c.2812 0 .4219.14062.4219.42187v.98438c0 .28125-.1407.42187-.4219.42187H3.375l5.44922 5.44924c.1875.2109.1875.4101 0 .5976l-.70313.7032z">
@@ -203,21 +207,19 @@
                     <div class="m-header__center">
                         <div class="m-header__menu">
                             <ul class="m-menu">
-                                <li (click)="openSubNav()" class="m-menu__item m-menu__item--parent m-menu__item--has-submenu m-menu__item--dropdown"
+                                @for (item of genderList; track item._id) {
+                                <li (click)="openSubNav()"
+                                    class="m-menu__item m-menu__item--parent m-menu__item--has-submenu m-menu__item--dropdown"
                                     data-index="1">
                                     <a href="" class="m-menu__link m-menu__link--main">
-                                        Women
-                                        <span (click)="openSubNav()" class="m-menu__arrow">
-                                            <svg fill="currentColor" xmlns="http://www.w3.org/2000/svg"
-                                                viewBox="0 0 448 512">
-                                                <path fill="currentColor"
-                                                    d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"
-                                                    class=""></path>
-                                            </svg>
+                                        {{item.genderName}}
+                                        <span class="m-menu__arrow">
+                                            <i class="pi pi-angle-down" style="font-size: 1.2rem"></i>
+                                            <i class="pi pi-angle-up" style="font-size: 1.2rem"></i>
                                         </span>
                                     </a>
 
-                                    <div *ngIf="sideSubMenu" class="m-mega-menu m-gradient m-color-default" style="--total-columns: 3">
+                                    <div class="m-mega-menu m-gradient m-color-default" style="--total-columns: 3">
                                         <div class="m-mega-menu__container">
                                             <div class="m-mega-menu__inner">
                                                 <ul class="m-sub-menu m-sub-menu--level-1">
@@ -254,13 +256,7 @@
                                         </div>
                                     </div>
                                 </li>
-                                <li class="m-menu__item">
-                                    <a href="/collections/new-arrival" class="m-menu__link m-menu__link--main">
-                                        New Arrivals
-
-                                    </a>
-
-                                </li>
+                                }
 
                             </ul>
                         </div>
@@ -285,38 +281,72 @@
 
 
 
-                        <a href="/account" class="m-header__account" aria-label="Account">
-                            <span class="m-tooltip m:block m-tooltip--bottom m-tooltip--style-2">
-                                <svg class="m-svg-icon--medium" fill="currentColor" stroke="currentColor"
-                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                                    <path
-                                        d="M313.6 304c-28.7 0-42.5 16-89.6 16-47.1 0-60.8-16-89.6-16C60.2 304 0 364.2 0 438.4V464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48v-25.6c0-74.2-60.2-134.4-134.4-134.4zM400 464H48v-25.6c0-47.6 38.8-86.4 86.4-86.4 14.6 0 38.3 16 89.6 16 51.7 0 74.9-16 89.6-16 47.6 0 86.4 38.8 86.4 86.4V464zM224 288c79.5 0 144-64.5 144-144S303.5 0 224 0 80 64.5 80 144s64.5 144 144 144zm0-240c52.9 0 96 43.1 96 96s-43.1 96-96 96-96-43.1-96-96 43.1-96 96-96z">
-                                    </path>
-                                </svg>
-                                <!-- <span class="m-tooltip__content">Account</span> -->
+                        <a class="m-header__account" aria-label="Account">
+                            <span (click)="toggle($event)" [pTooltip]="tooltipContentAccount" severity="secondary"
+                                tooltipPosition="bottom" class="m-tooltip m:block m-tooltip--bottom m-tooltip--style-2">
+                                <!-- <i class="pi pi-user" style="font-size: 1.6rem"></i> -->
+                                <img width="31" height="33" src="../../../../assets/images/Avatar/icons8-account-94.png"
+                                    alt="">
+                                <ng-template #tooltipContentAccount>
+                                    <div class="flex items-center">
+                                        <img width="31" height="33" src="../../../../assets/images/Avatar/profile1.png"
+                                            alt="">
+                                        <span style="padding-left: 2px;"> <b>Account</b> </span>
+                                    </div>
+                                </ng-template>
+
+                                <p-popover #op>
+                                    <div class=" flex flex-col gap-4">
+                                        <div>
+                                            <ul class="list-none p-0 m-0 flex flex-col">
+                                                <li *ngFor="let member of members"
+                                                    class="flex items-center gap-2 px-2 py-3 hover:bg-emphasis cursor-pointer rounded-border"
+                                                    (click)="selectMember(member)">
+                                                    <img [src]="member.image" style="width: 32px" />
+                                                    <div>
+                                                        <span class="font-medium">{{ member.name }}</span>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </p-popover>
                             </span>
                         </a>
-
-                        <a (click)="logout()" title="Click to Logout" class="m-header__account" aria-label="Logout">
-                            <span class="m-tooltip m:block m-tooltip--bottom m-tooltip--style-2">
-                                <i class="pi pi-sign-out" style="font-size: 1.4rem"></i>
-                                <!-- <span class="m-tooltip__content">Account</span> -->
+                        <a title="Click to wishlist" class="m-header__account" aria-label="wishlist">
+                            <span (click)="movedToWishlist()" [pTooltip]="tooltipContent" severity="secondary" tooltipPosition="bottom"
+                                class="m-tooltip m:block m-tooltip--bottom m-tooltip--style-2">
+                                <ng-template #tooltipContent>
+                                    <div class="flex items-center">
+                                        <img width="31" height="33"
+                                            src="../../../../assets/images/Avatar/icons8-heart-100.png" alt="">
+                                        <span> <b>Wishlist</b> </span>
+                                    </div>
+                                </ng-template>
+                                <p-overlaybadge value="4" severity="danger">
+                                    <!-- <i class="pi pi-heart" style="font-size: 1.6rem"></i> -->
+                                    <img width="31" height="33"
+                                        src="../../../../assets/images/Avatar/icons8-heart-64.png" alt="">
+                                </p-overlaybadge>
                             </span>
                         </a>
-
-                        <!-- <a href="/cart" class="m-cart-icon-bubble" aria-label="0" role="button" aria-haspopup="dialog">
-                            <span class="m-tooltip m:block m-tooltip--bottom m-tooltip--style-2">
-                                <svg class="m-svg-icon--medium" fill="currentColor" stroke="currentColor"
-                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                                    <path
-                                        d="M352 128C352 57.42 294.579 0 224 0 153.42 0 96 57.42 96 128H0v304c0 44.183 35.817 80 80 80h288c44.183 0 80-35.817 80-80V128h-96zM224 48c44.112 0 80 35.888 80 80H144c0-44.112 35.888-80 80-80zm176 384c0 17.645-14.355 32-32 32H80c-17.645 0-32-14.355-32-32V176h48v40c0 13.255 10.745 24 24 24s24-10.745 24-24v-40h160v40c0 13.255 10.745 24 24 24s24-10.745 24-24v-40h48v256z">
-                                    </path>
-                                </svg>
-                                <span class="m-tooltip__content">Cart</span>
+                        <a title="Click to Cart" class="m-header__account" aria-label="cart">
+                            <span [pTooltip]="tooltipContentCart" severity="secondary" tooltipPosition="bottom"
+                                class="m-tooltip m:block m-tooltip--bottom m-tooltip--style-2">
+                                <p-overlaybadge value="4" severity="danger">
+                                    <ng-template #tooltipContentCart>
+                                        <div class="flex items-center">
+                                            <img width="31" height="33"
+                                                src="../../../../assets/images/Avatar/icons8-cart-48.png" alt="">
+                                            <span style="padding-left: 2px;"> <b>Cart</b> </span>
+                                        </div>
+                                    </ng-template>
+                                    <!-- <i class="pi pi-shopping-cart" style="font-size: 1.6rem"></i> -->
+                                    <img width="31" height="33"
+                                        src="../../../../assets/images/Avatar/icons8-cart-94.png" alt="">
+                                </p-overlaybadge>
                             </span>
-                            <span class="m-cart-count-bubble m-cart-count m:hidden">0</span>
-                        </a> -->
-
+                        </a>
                     </div>
                 </div>
             </div>
