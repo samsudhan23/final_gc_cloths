@@ -10,14 +10,14 @@
     </ng-template> -->
 </p-toolbar>
 
-<p-table #dt [value]="productVariantList" [rows]="10" [columns]="cols" [paginator]="true" dataKey="_id"
-    [globalFilterFields]="['category','productVariantName', 'productVariantDescription', 'createdAt', 'role']" [tableStyle]="{ 'min-width': '75rem' }"
-    [(selection)]="selectedUser" [rowHover]="true"
+<p-table #dt [value]="warehouseList" [rows]="10" [columns]="cols" [paginator]="true" dataKey="_id"
+    [globalFilterFields]="['warehouseName', 'address', 'contactPerson','phone', 'role']"
+    [tableStyle]="{ 'min-width': '75rem' }" [(selection)]="selectedUser" [rowHover]="true"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Categories" [showCurrentPageReport]="true"
     [rowsPerPageOptions]="[10, 20, 30]">
     <ng-template #caption>
         <div class="flex items-center justify-between">
-            <h5 class="m-0">Manage Product Variants</h5>
+            <h5 class="m-0">Manage Warehouse</h5>
             <p-iconfield>
                 <p-inputicon styleClass="pi pi-search" />
                 <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search..." />
@@ -29,28 +29,28 @@
             <th class="sticky-left" style="width: 3rem">
                 <p-tableHeaderCheckbox />
             </th>
-            <th pSortableColumn="categoryName" style="min-width:8rem">
-                Category
-                <p-sortIcon field="categoryName" />
-            </th>
-            <th pSortableColumn="productVariantName" style="min-width:8rem">
+            <th pSortableColumn="warehouseName" style="min-width:8rem">
                 Name
-                <p-sortIcon field="productVariantName" />
+                <p-sortIcon field="warehouseName" />
             </th>
             <!-- <th pSortableColumn="email" style="min-width: 8rem">email <p-sortIcon field="email" /></th> -->
-            <th pSortableColumn="productVariantDescription" style="min-width: 8rem">
-                Description
-                <p-sortIcon field="productVariantDescription" />
+            <th pSortableColumn="address" style="min-width: 8rem">
+                Address
+                <p-sortIcon field="address" />
             </th>
-            <!-- <th pSortableColumn="createdAt" style="min-width:8rem">
-                Created Date
-                <p-sortIcon field="createdAt" />
-            </th> -->
+            <th pSortableColumn="contactPerson" style="min-width:8rem">
+                Contact Person
+                <p-sortIcon field="contactPerson" />
+            </th>
+            <th pSortableColumn="phone" style="min-width:8rem">
+                Phone
+                <p-sortIcon field="phone" />
+            </th>
             <th pSortableColumn="isBlocked" style="min-width: 8rem">
                 Status
                 <p-sortIcon field="isBlocked" />
             </th>
-            <th class="sticky-right" style="min-width: 12rem">Action</th>
+            <th class="sticky-right" style="min-width: 8cap">Action</th>
         </tr>
     </ng-template>
     <ng-template #body let-user>
@@ -58,10 +58,10 @@
             <td class="sticky-left" style="width: 3rem">
                 <p-tableCheckbox [value]="user" />
             </td>
-            <td style="min-width: 8rem">{{ user?.category }}</td>
-            <td style="min-width: 8rem">{{ user?.productVariantName }}</td>
-            <td style="min-width: 8rem">{{ user?.productVariantDescription }}</td>
-            <!-- <td>{{ user.createdAt | date:'yyyy-MM-dd HH:MM:SS'  }}</td> -->
+            <td style="min-width: 12rem">{{ user?.warehouseName }}</td>
+            <td style="min-width: 16rem">{{ user?.address }}</td>
+            <td>{{ user.contactPerson }}</td>
+            <td>{{ user.phone }}</td>
             <td>
                 <p-tag [value]="user?.isBlocked == true ? 'Active':'Active'"
                     [ngClass]="{'inactive': user?.isBlocked, 'active': !user?.isBlocked}" />
@@ -76,28 +76,40 @@
     </ng-template>
 </p-table>
 
-<p-dialog [(visible)]="userDialog" class="userModel" [header]="mode == 'add' ? 'Add Product Variant' : (mode === 'edit' ? 'Edit Product Variant' : 'Product Variants')" [modal]="true"  (onHide)="onDialogHide()">
+<p-dialog [(visible)]="userDialog" class="userModel" header="User Details" [modal]="true" (onHide)="onDialogHide()">
     <ng-template #content>
         <form [formGroup]="userForm">
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 gap-4">
+            <div class="grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 grid-cols-1 gap-4">
                 <div>
-                    <label for="category" class="block font-bold mb-3">Category</label>
-                    <p-select inputId="category" formControlName="category" [options]="categoryList"
-                        optionLabel="categoryName" optionValue="_id" placeholder="Select a Category" fluid />
+                    <label for="name" class="block font-bold mb-3">WarehouseName</label>
+                    <input type="text" formControlName="warehouseName" pInputText id="warehouseName" required autofocus
+                        fluid />
                     <small class="text-red-500"
-                        *ngIf="userForm.get('category')?.invalid && userForm.get('category')?.touched">Category is
-                        required.</small>
+                        *ngIf="userForm.get('warehouseName')?.invalid && userForm.get('warehouseName')?.touched">WarehouseName
+                        is required.</small>
+                </div>
+                <div>
+                    <label for="name" class="block font-bold mb-3">Address</label>
+                    <input type="text" formControlName="address" pInputText id="name" autofocus fluid />
+                    <small class="text-red-500"
+                        *ngIf="userForm.get('address')?.invalid && userForm.get('address')?.touched">Address
+                        is required.</small>
                 </div>
 
                 <div>
-                    <label for="name" class="block font-bold mb-3">Name</label>
-                    <input type="text" formControlName="productVariantName" pInputText id="productVariantName" required autofocus fluid />
+                    <label for="name" class="block font-bold mb-3">Contact Person</label>
+                    <input type="text" formControlName="contactPerson" pInputText id="name" autofocus fluid />
                     <small class="text-red-500"
-                        *ngIf="userForm.get('productVariantName')?.invalid && userForm.get('productVariantName')?.touched">Name is required.</small>
+                        *ngIf="userForm.get('contactPerson')?.invalid && userForm.get('contactPerson')?.touched">Contact Person
+                        is required.</small>
                 </div>
+
                 <div>
-                    <label for="name" class="block font-bold mb-3">Description</label>
-                    <input type="text" formControlName="productVariantDescription" pInputText id="name" autofocus fluid />
+                    <label for="name" class="block font-bold mb-3">Phone</label>
+                    <input type="text" formControlName="phone" pInputText id="name" autofocus fluid />
+                    <small class="text-red-500"
+                        *ngIf="userForm.get('phone')?.invalid && userForm.get('phone')?.touched">Phone
+                        is required.</small>
                 </div>
                 <!-- <div class="flex items-center">
                     <p-checkbox formControlName="isBlocked" inputId="checkOption1" binary="true" />

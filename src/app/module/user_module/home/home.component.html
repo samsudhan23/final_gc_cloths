@@ -1,4 +1,25 @@
 <div class="page">
+    <div class="carousel">
+        <div class="item" *ngFor="let product of animated; let i = index" [ngClass]="getPositionClass(i)">
+            <img [src]="product.image" [alt]="product.name" />
+            <div class="info" *ngIf="getPositionClass(i) === 'active'">
+                <div class="bg">
+                    <h3>{{ product.name }}</h3>
+                    <p>₹ {{ product.price }}</p>
+                </div>
+                <button>Explore</button>
+                <!-- pagination dots -->
+                <div class="dots">
+                    <span *ngFor="let p of animated; let j = index" [class.active-dot]="j === activeIndex"></span>
+                </div>
+            </div>
+        </div>
+
+        <button class="nav prev" (click)="prev()">&#10094;</button>
+        <button class="nav next" (click)="next()">&#10095;</button>
+    </div>
+
+
     <!-- Banner Slider -->
     <p-carousel class="hideBtn" [value]="images" [numVisible]="1" [numScroll]="1" [circular]="true"
         [autoplayInterval]="3000" [responsiveOptions]="responsiveOptions">

@@ -23,7 +23,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ToastrService } from 'ngx-toastr';
 import { CategoryService } from '../../service/category/category.service';
-import { ProductVariantService } from '../../service/productVariant/product-variant.service';
+import { WarehouseService } from '../../service/warehouse/warehouse.service';
 
 interface Column {
   field: string;
@@ -35,9 +35,8 @@ interface ExportColumn {
   title: string;
   dataKey: string;
 }
-
 @Component({
-  selector: 'app-product-variant',
+  selector: 'app-warehouse',
   imports: [
     CommonModule,
     TableModule,
@@ -62,15 +61,14 @@ interface ExportColumn {
     ReactiveFormsModule
   ],
   providers: [CustomerService, ConfirmationService, MessageService],
-  templateUrl: './product-variant.component.html',
-  styleUrl: './product-variant.component.scss'
+  templateUrl: './warehouse.component.html',
+  styleUrl: './warehouse.component.scss'
 })
-export class ProductVariantComponent {
+export class WarehouseComponent {
   @ViewChild('dt') dt!: Table;
   userDialog: boolean = false;
   selectedUser!: any | null;
-  categoryList: any[] = [];
-  productVariantList: any[] = [];
+  warehouseList: any[] = [];
   exportColumns!: ExportColumn[];
   mode: 'add' | 'edit' | 'view' = 'add';
   currentUserId: string | null = null;
@@ -79,7 +77,6 @@ export class ProductVariantComponent {
     { label: 'User', value: 'user' },
   ];
   cols: Column[] = [
-    { field: 'category', header: 'name' },
     { field: 'Name', header: 'name' },
     { field: 'Email', header: 'email' },
     { field: 'Description', header: 'description' },
@@ -88,37 +85,30 @@ export class ProductVariantComponent {
   userForm: FormGroup;
   constructor(
     private categoryService: CategoryService,
-    private productVariantService: ProductVariantService,
+    private warehouseService: WarehouseService,
     private confirmationService: ConfirmationService,
     private fb: FormBuilder,
     private toast: ToastrService,
   ) {
     this.userForm = this.fb.group({
-      category:['',Validators.required],
-      productVariantName: ['', Validators.required],
-      productVariantDescription: [''],
+      warehouseName: ['', Validators.required],
+      address: ['',Validators.required],
+      contactPerson: ['', Validators.required],
+      phone: ['',Validators.required],
       //  isBlocked: [false]
     });
   }
 
   ngOnInit() {
-    this.getCategoryList();
-    this.getProductVariantList();
+    this.getWarehouseList();
     this.exportColumns = this.cols.map((col) => ({ title: col.header, dataKey: col.field }));
   }
 
-  getCategoryList() {
-    this.categoryService.getCategoriesMasterList().subscribe((res: any) => {
-      if (res.code === 200 && res.success === true) {
-        this.categoryList = res.result
-      }
-    })
-  }
-
-  // Product Variant Grid
-  getProductVariantList(): void {
-    this.productVariantService.getProductVariantList().subscribe((res: any) => {
-      this.productVariantList = res.result;
+  // Category Module
+  getWarehouseList(): void {
+    this.warehouseService.getWareHouseList().subscribe((res: any) => {
+      this.warehouseList = res.result;
+      console.log('this.warehouseList: ', this.warehouseList);
     }, (error: any) => {
       this.toast.warning(error.error.message);
     })
@@ -142,10 +132,10 @@ export class ProductVariantComponent {
           ids: this.selectedUser.map((ite: { _id: any; }) => ite._id)
         }
 
-        this.productVariantService.deleteProductVariant(dele).subscribe((res: any) => {
+        this.warehouseService.deleteWareHouse(dele).subscribe((res: any) => {
           if (res.code === 200 && res.success === true) {
             this.toast.success(res.message);
-            this.getProductVariantList();
+            this.getWarehouseList();
           }
         },
           (error: any) => {
@@ -160,19 +150,18 @@ export class ProductVariantComponent {
   }
 
   deleteProduct(user: any) {
-    console.log('user: ', user);
     this.confirmationService.confirm({
-      message: 'Are you sure you want to delete ' + user.productVariantName + '?',
+      message: 'Are you sure you want to delete ' + user.warehouseName + '?',
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         const dele = {
           ids: user._id
         }
-        this.productVariantService.deleteProductVariant(dele).subscribe((res: any) => {
+        this.warehouseService.deleteWareHouse(dele).subscribe((res: any) => {
           if (res.code === 200 && res.success === true) {
             this.toast.success(res.message);
-            this.getProductVariantList();
+            this.getWarehouseList();
           }
         },
           (error: any) => {
@@ -193,6 +182,7 @@ export class ProductVariantComponent {
     }
   }
   editUser(event: any, type: string) {
+    console.log('event: ', event);
     const editTableDatas = event
     this.userDialog = true;
 
@@ -212,17 +202,18 @@ export class ProductVariantComponent {
 
   }
   saveProduct() {
+    debugger
     if (this.userForm.invalid) {
       this.userForm.markAllAsTouched();
     }
     if (this.userForm.valid) {
       const user = this.userForm.value;
-
+      console.log('user: ', user);
       if (this.mode === 'add') {
-        this.productVariantService.postProductVariant(user).subscribe((res: any) => {
-          if (res.code === 200) {
+        this.warehouseService.postWareHouse(user).subscribe((res: any) => {
+          if (res.code === 200 && res.success === true) {
             this.toast.success(res.message);
-            this.getProductVariantList();
+            this.getWarehouseList();
             this.hideDialog();
           }
         },
@@ -230,10 +221,10 @@ export class ProductVariantComponent {
             this.toast.warning(error.error.message);
           });
       } else if (this.mode === 'edit' && this.currentUserId) {
-        this.productVariantService.updateProductVariant(this.currentUserId, user).subscribe((res: any) => {
+        this.warehouseService.updateWareHouse(this.currentUserId, user).subscribe((res: any) => {
           if (res.code === 200 && res.success === true) {
             this.toast.success(res.message);
-            this.getProductVariantList();
+            this.getWarehouseList();
             this.hideDialog();
           }
         },
@@ -243,4 +234,5 @@ export class ProductVariantComponent {
       }
     }
   }
+
 }
