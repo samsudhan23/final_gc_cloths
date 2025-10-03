@@ -30,6 +30,7 @@ import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { SplitPipe } from '../../../../shared/core/pipes/split.pipe';
 import { PopupComponent } from '../../../../shared/components/popup/popup.component';
 import { KeyFilterModule } from 'primeng/keyfilter';
+import { WarehouseService } from '../../service/warehouse/warehouse.service';
 
 
 @Component({
@@ -87,6 +88,7 @@ export class ProductManagementComponent {
   productForm!: FormGroup;
   productData: any = [];
   categoryList: any[] = [];
+  warehouseList: any[] = [];
   genderList: any[] = [];
   fileInfo: string | number = '';
   imageFile!: File;
@@ -102,10 +104,12 @@ export class ProductManagementComponent {
     private product: AdminProductService,
     private fb: FormBuilder,
     private toast: ToastrService,
+    private warehouseService: WarehouseService
   ) {
     this.productForm = this.fb.group({
       productName: ['', Validators.required],
       productDescription: [''],
+      warehouse:[''],
       gender: ['', [Validators.required]],
       price: ['', Validators.required],
       discountPrice: [''],
@@ -114,13 +118,15 @@ export class ProductManagementComponent {
       totalStock: ['', Validators.required],
       tags: [''],
       category: ['', Validators.required],
+      careInstruction:[''],
     });
   }
   get sizeStockControls(): FormArray {
     return this.productForm.get('sizeStock') as FormArray;
   }
   ngOnInit() {
-    this.getCategoryList()
+    this.getCategoryList();
+    this.getWarehouseList();
     this.productList();
     this.genderData();
     // this.exportColumns = this.cols.map((col) => ({ title: col.header, dataKey: col.field }));
@@ -131,6 +137,14 @@ export class ProductManagementComponent {
     this.category.getCategoriesMasterList().subscribe((res: any) => {
       if (res.code === 200 && res.success === true) {
         this.categoryList = res.result
+      }
+    })
+  }
+
+  getWarehouseList() {
+    this.warehouseService.getWareHouseList().subscribe((res: any) => {
+      if (res.code === 200 && res.success === true) {
+        this.warehouseList = res.result
       }
     })
   }

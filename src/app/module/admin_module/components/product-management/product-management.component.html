@@ -100,6 +100,16 @@
                         *ngIf="productForm.get('category')?.invalid && productForm.get('category')?.touched">Category is
                         required.</small>
                 </div>
+
+                <div>
+                    <label for="warehouse" class="block font-bold mb-3">Warehouse</label>
+                    <p-select inputId="warehouse" formControlName="warehouse" [options]="warehouseList"
+                        optionLabel="warehouseName" optionValue="_id" placeholder="Select a Warehouse" fluid />
+                    <small class="text-red-500"
+                        *ngIf="productForm.get('warehouse')?.invalid && productForm.get('warehouse')?.touched">Warehouse is
+                        required.</small>
+                </div>
+
                 <div>
                     <label for="productName" class="block font-bold mb-3">Product Name</label>
                     <input type="text" formControlName="productName" pInputText id="productName" required autofocus
@@ -178,6 +188,10 @@
                 <div>
                     <label for="tags" class="block font-bold mb-3">Tags</label>
                     <input type="text" formControlName="tags" pInputText id="tags" autofocus fluid />
+                </div>
+                <div>
+                    <label for="careInstruction" class="block font-bold mb-3">Care Instruction</label>
+                    <input type="text" formControlName="careInstruction" pInputText id="careInstruction" autofocus fluid />
                 </div>
             </div>
             <!-- Image Upload -->

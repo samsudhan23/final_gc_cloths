@@ -31,8 +31,10 @@ export class AppMenu {
                 items: [
                     { label: 'User Management', icon: 'pi pi-fw pi-user', routerLink: ['/admin/users'] },
                     { label: 'Category', icon: 'pi pi-fw pi-bars', routerLink: ['/admin/category'] },
-                    { label: 'Product Variants', icon: 'pi pi-fw pi-bars', routerLink: ['/admin/productVariant'] },
-                    { label: 'Product Management', icon: 'pi pi-fw pi-shopping-cart', routerLink: ['/admin/products'] }
+                    { label: 'Product Variants', icon: 'pi pi-fw pi-box', routerLink: ['/admin/productVariant'] },
+                    { label: 'Product Management', icon: 'pi pi-fw pi-shopping-cart', routerLink: ['/admin/products'] },
+                    { label: 'Warehouse', icon: 'pi pi-fw pi-warehouse', routerLink: ['/admin/warehouse'] },
+
                 ]
             },
             {
