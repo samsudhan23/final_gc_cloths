@@ -84,6 +84,7 @@ export class LayoutComponent {
     },
   ];
   genderList: Gender[] = [];
+  maleList: Gender[] = [];
   categoryList: any[] = [];
   members: any = [{ name: 'Profile', image: '../../../../assets/images/Avatar/icons8-cat-profile-48.png' }];
   selectedMember = null;
@@ -136,7 +137,7 @@ export class LayoutComponent {
   }
 
   toggle(event: any) {
-      this.op.toggle(event);
+    this.op.toggle(event);
   }
 
   selectMember(member: any) {
@@ -183,6 +184,7 @@ export class LayoutComponent {
     this.category.getGenderList().subscribe((res: any) => {
       if (res.code === 200 && res.success === true) {
         this.genderList = res.navData
+        this.maleList = res.navData.filter((item: Gender) => item._id === "680bd68af7f32e61016eb82f")
       }
     })
   }

@@ -207,19 +207,19 @@
                     <div class="m-header__center">
                         <div class="m-header__menu">
                             <ul class="m-menu">
-                                @for (item of genderList; track item._id) {
+                                @for (item of maleList; track item._id) {
                                 <li (click)="openSubNav()"
                                     class="m-menu__item m-menu__item--parent m-menu__item--has-submenu m-menu__item--dropdown"
                                     data-index="1">
-                                    <a href="" class="m-menu__link m-menu__link--main">
-                                        {{item.genderName}}
-                                        <span class="m-menu__arrow">
+                                    <a class="m-menu__link m-menu__link--main">
+                                        {{item.genderName }}
+                                        <!-- <span class="m-menu__arrow">
                                             <i class="pi pi-angle-down" style="font-size: 1.2rem"></i>
                                             <i class="pi pi-angle-up" style="font-size: 1.2rem"></i>
-                                        </span>
+                                        </span> -->
                                     </a>
-
-                                    <div class="m-mega-menu m-gradient m-color-default" style="--total-columns: 3">
+                                    <!-- Sub menu -->
+                                    <!-- <div class="m-mega-menu m-gradient m-color-default" style="--total-columns: 3">
                                         <div class="m-mega-menu__container">
                                             <div class="m-mega-menu__inner">
                                                 <ul class="m-sub-menu m-sub-menu--level-1">
@@ -254,7 +254,7 @@
 
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> -->
                                 </li>
                                 }
 
@@ -314,8 +314,8 @@
                             </span>
                         </a>
                         <a title="Click to wishlist" class="m-header__account" aria-label="wishlist">
-                            <span (click)="movedToWishlist()" [pTooltip]="tooltipContent" severity="secondary" tooltipPosition="bottom"
-                                class="m-tooltip m:block m-tooltip--bottom m-tooltip--style-2">
+                            <span (click)="movedToWishlist()" [pTooltip]="tooltipContent" severity="secondary"
+                                tooltipPosition="bottom" class="m-tooltip m:block m-tooltip--bottom m-tooltip--style-2">
                                 <ng-template #tooltipContent>
                                     <div class="flex items-center">
                                         <img width="31" height="33"
