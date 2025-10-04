@@ -35,7 +35,10 @@
                         "styles": [
                             "src/styles.scss"
                         ],
-                        "scripts": []
+                        "scripts": [
+                           "src/assets/js/particles.min.js",
+                           "src/assets/js/bg.js"
+                        ]
                     },
                     "configurations": {
                         "production": {
@@ -95,7 +98,10 @@
                         "styles": [
                             "src/styles.scss"
                         ],
-                        "scripts": []
+                        "scripts": [
+                              "src/assets/js/particles.min.js",
+                              "src/assets/js/bg.js"
+                        ]
                     }
                 }
             }

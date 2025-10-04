@@ -13,7 +13,6 @@ import { ToastrService } from 'ngx-toastr';
 import { TabsModule } from 'primeng/tabs';
 import { CategoryService } from '../../admin_module/service/category/category.service';
 
-declare function showAlert(): void;
 @Component({
   selector: 'app-home',
   standalone: true,
@@ -35,7 +34,6 @@ export class HomeComponent implements OnInit {
     'assets/images/basic/home2.webp',
     'assets/images/basic/home3.webp'
   ];
-  animated: any[] = []
 
   categories = [
     { name: 'All', id: 'Tab 1' },
@@ -47,8 +45,6 @@ export class HomeComponent implements OnInit {
   selectedCategory: string = 'All';
   filteredProducts: any[] = [];
   categoryList: any[] = [];
-  activeIndex = 0;
-  interval: any;
   constructor(@Inject(PLATFORM_ID) private platformId: Object,
     private auth: AuthenticationService,
     private router: Router,
@@ -56,11 +52,8 @@ export class HomeComponent implements OnInit {
     private toast: ToastrService,
     private category: CategoryService,
   ) { }
-  ngAfterViewInit(): void {
-    showAlert();
-  }
+
   ngOnInit() {
-    showAlert(); 
     // const user = this.auth.getCurrentUser();
     // if (user?.role === 'admin') {
     //   this.router.navigate(['/admin']);
@@ -92,40 +85,6 @@ export class HomeComponent implements OnInit {
         numScroll: 1
       }
     ]
-
-    this.animated = [
-      { "id": 1, "name": "Bata Power Walk", "price": 45000, "image": "assets/images/Products/1 (1).avif" },
-      { "id": 2, "name": "Skechers Go Walk 1", "price": 67490, "image": "assets/images/Products/1 (2).avif" },
-      { "id": 3, "name": "Bata Power Walk", "price": 12000, "image": "assets/images/Products/1 (3).avif" },
-      { "id": 4, "name": "Skechers Flex Appeal", "price": 67490, "image": "assets/images/Products/2 (1).avif" },
-      { "id": 5, "name": "Fila Sport Max", "price": 12000, "image": "assets/images/Products/2 (2).avif" },
-      { "id": 6, "name": "Bata Power Walk", "price": 45000, "image": "assets/images/Products/2 (3).avif" },
-      { "id": 7, "name": "Skechers Go Walk 1", "price": 67490, "image": "assets/images/Products/1 (1).avif" },
-      { "id": 8, "name": "Bata Power Walk", "price": 12000, "image": "assets/images/Products/1 (2).avif" }
-    ]
-    // auto slide every 10s
-    this.interval = setInterval(() => this.next(), 5000);
-  }
-
-  getPositionClass(i: number): string {
-    const total = this.animated.length;
-
-    if (i === this.activeIndex) return 'active';
-    if (i === (this.activeIndex - 1 + total) % total) return 'left1';
-    if (i === (this.activeIndex - 2 + total) % total) return 'left2';
-    if (i === (this.activeIndex + 1) % total) return 'right1';
-    if (i === (this.activeIndex + 2) % total) return 'right2';
-
-    return 'hidden';
-  }
-
-  next() {
-    this.activeIndex = (this.activeIndex + 1) % this.animated.length;
-  }
-
-  prev() {
-    this.activeIndex =
-      (this.activeIndex - 1 + this.animated.length) % this.animated.length;
   }
 
   index = 0; // Add this as a property of your component
@@ -226,7 +185,7 @@ export class HomeComponent implements OnInit {
 
   viewDetails(product: any) {
     console.log('product: ', product);
-    this.router.navigate(['user/product-details'], { state: { product,allProducts: this.filteredProducts} });
+   this.router.navigate(['user/product-details'], { state: { product,allProducts: this.filteredProducts} });
   }
 
 }

@@ -1,5 +1,4 @@
 <div class="page">
-
     <!-- Banner Slider -->
     <p-carousel class="hideBtn" [value]="images" [numVisible]="1" [numScroll]="1" [circular]="true"
         [autoplayInterval]="3000" [responsiveOptions]="responsiveOptions">
@@ -9,70 +8,6 @@
             </div>
         </ng-template>
     </p-carousel>
-    <!-- product Carousel Section -->
-    <!-- <div>
-        
-        <div id="particles-js" class="particles2"></div>
-        <div class="carousel">
-            <div class="item" *ngFor="let product of animated; let i = index" [ngClass]="getPositionClass(i)">
-                <img [src]="product.image" [alt]="product.name" />
-                <div class="info" *ngIf="getPositionClass(i) === 'active'">
-                    <div class="bg">
-                        <h3>{{ product.name }}</h3>
-                        <p>₹ {{ product.price }}</p>
-                    </div>
-                    <button class="btn">
-                        Explore
-                    </button>
-
-                    <div class="dots">
-                        <span *ngFor="let p of animated; let j = index" [class.active-dot]="j === activeIndex"></span>
-                    </div>
-                </div>
-            </div>
-
-            <button class="nav prev" (click)="prev()">&#10094;</button>
-            <button class="nav next" (click)="next()">&#10095;</button>
-        </div>
-    </div> -->
-<section>
-  <div id="particles-js" class="particles2">
-    <div class="overlay d-flex justify-content-center align-items-center">
-      <!-- <div class="card custom-card text-center p-4">
-        <div class="card-body">
-          <h4 class="card-title mb-3">Welcome</h4>
-          <p class="card-text mb-4">
-            This is a responsive card inside your particles background.
-          </p>
-          <button class="btn btn-primary">Get Started</button>
-        </div>
-      </div> -->
-       <div class="carousel">
-            <div class="item" *ngFor="let product of animated; let i = index" [ngClass]="getPositionClass(i)">
-                <img [src]="product.image" [alt]="product.name" />
-                <div class="info" *ngIf="getPositionClass(i) === 'active'">
-                    <div class="bg">
-                        <h3>{{ product.name }}</h3>
-                        <p>₹ {{ product.price }}</p>
-                    </div>
-                    <button class="btn">
-                        Explore
-                    </button>
-
-                    <div class="dots">
-                        <span *ngFor="let p of animated; let j = index" [class.active-dot]="j === activeIndex"></span>
-                    </div>
-                </div>
-            </div>
-
-            <button class="nav prev" (click)="prev()">&#10094;</button>
-            <button class="nav next" (click)="next()">&#10095;</button>
-        </div>
-    </div>
-  </div>
-</section>
-
-
 
     <!-- marquee -->
     <section class="marquee-section">
