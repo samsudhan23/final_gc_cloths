@@ -153,6 +153,7 @@ export class ProductManagementComponent {
     this.category.getGenderList().subscribe((res: any) => {
       if (res.code === 200 && res.success === true) {
         this.genderList = res.result
+        console.log('this.genderList: ', this.genderList);
       }
     })
   }
@@ -365,6 +366,7 @@ export class ProductManagementComponent {
       formData.append('productName', FormControlValues.productName);
       formData.append('productDescription', FormControlValues.productDescription);
       formData.append('gender', FormControlValues.gender);
+      formData.append('warehouse', FormControlValues.warehouse);
       formData.append('price', FormControlValues.price);
       if (FormControlValues.discountPrice !== null && FormControlValues.discountPrice !== undefined && FormControlValues.discountPrice !== '') {
         formData.append('discountPrice', FormControlValues.discountPrice.toString());

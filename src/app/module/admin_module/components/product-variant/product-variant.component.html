@@ -78,14 +78,14 @@
 
 <p-dialog [(visible)]="userDialog" class="userModel" [header]="mode == 'add' ? 'Add Product Variant' : (mode === 'edit' ? 'Edit Product Variant' : 'Product Variants')" [modal]="true"  (onHide)="onDialogHide()">
     <ng-template #content>
-        <form [formGroup]="userForm">
+        <form [formGroup]="productVariantForm">
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 gap-4">
                 <div>
                     <label for="category" class="block font-bold mb-3">Category</label>
                     <p-select inputId="category" formControlName="category" [options]="categoryList"
                         optionLabel="categoryName" optionValue="_id" placeholder="Select a Category" fluid />
                     <small class="text-red-500"
-                        *ngIf="userForm.get('category')?.invalid && userForm.get('category')?.touched">Category is
+                        *ngIf="productVariantForm.get('category')?.invalid && productVariantForm.get('category')?.touched">Category is
                         required.</small>
                 </div>
 
@@ -93,7 +93,7 @@
                     <label for="name" class="block font-bold mb-3">Name</label>
                     <input type="text" formControlName="productVariantName" pInputText id="productVariantName" required autofocus fluid />
                     <small class="text-red-500"
-                        *ngIf="userForm.get('productVariantName')?.invalid && userForm.get('productVariantName')?.touched">Name is required.</small>
+                        *ngIf="productVariantForm.get('productVariantName')?.invalid && productVariantForm.get('productVariantName')?.touched">Name is required.</small>
                 </div>
                 <div>
                     <label for="name" class="block font-bold mb-3">Description</label>

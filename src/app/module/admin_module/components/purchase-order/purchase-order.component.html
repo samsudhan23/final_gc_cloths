@@ -1,0 +1,135 @@
+<p-toolbar styleClass="mb-6">
+    <ng-template #start>
+        <p-button label="New" icon="pi pi-plus" severity="secondary" class="mr-2" (onClick)="openNew()" />
+        <p-button severity="secondary" label="Delete" icon="pi pi-trash" outlined (onClick)="deleteSelectedProducts()"
+            [disabled]="!selectedUser || !selectedUser.length" />
+    </ng-template>
+
+    <!-- <ng-template #end>
+        <p-button label="Export" icon="pi pi-upload" severity="secondary" (onClick)="exportCSV()" />
+    </ng-template> -->
+</p-toolbar>
+
+<p-table #dt [value]="purchaseOrderList" [rows]="10" [columns]="cols" [paginator]="true" dataKey="_id"
+    [globalFilterFields]="['category','purchaseItem', 'orderDate', 'expextedDate', 'status']"
+    [tableStyle]="{ 'min-width': '75rem' }" [(selection)]="selectedUser" [rowHover]="true"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Categories" [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[10, 20, 30]">
+    <ng-template #caption>
+        <div class="flex items-center justify-between">
+            <h5 class="m-0">Manage Purchase Order</h5>
+            <p-iconfield>
+                <p-inputicon styleClass="pi pi-search" />
+                <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search..." />
+            </p-iconfield>
+        </div>
+    </ng-template>
+    <ng-template #header>
+        <tr>
+            <th class="sticky-left" style="width: 3rem">
+                <p-tableHeaderCheckbox />
+            </th>
+            <th pSortableColumn="supplierName" style="min-width:8rem">
+                Supplier Name
+                <p-sortIcon field="supplierName" />
+            </th>
+            <th pSortableColumn="purchaseItem" style="min-width:8rem">
+                Purchase Item
+                <p-sortIcon field="purchaseItem" />
+            </th>
+            <!-- <th pSortableColumn="email" style="min-width: 8rem">email <p-sortIcon field="email" /></th> -->
+            <th pSortableColumn="orderDate" style="min-width: 8rem">
+                Order Date
+                <p-sortIcon field="orderDate" />
+            </th>
+            <th pSortableColumn="expextedDate" style="min-width:8rem">
+                Expected Date
+                <p-sortIcon field="expextedDate" />
+            </th>
+            <th pSortableColumn="status" style="min-width: 8rem">
+                Status
+                <p-sortIcon field="status" />
+            </th>
+            <th class="sticky-right" style="min-width: 12rem">Action</th>
+        </tr>
+    </ng-template>
+    <ng-template #body let-user>
+        <tr>
+            <td class="sticky-left" style="width: 3rem">
+                <p-tableCheckbox [value]="user" />
+            </td>
+            <td style="min-width: 8rem">{{ user?.category.categoryName }}</td>
+            <td style="min-width: 8rem">{{ user?.purchaseItem }}</td>
+            <td style="min-width: 8rem">{{ user?.productVariantDescription }}</td>
+            <!-- <td>{{ user.createdAt | date:'yyyy-MM-dd HH:MM:SS'  }}</td> -->
+            <td>
+                <p-tag [value]="user?.isBlocked == true ? 'Active':'Active'"
+                    [ngClass]="{'inactive': user?.isBlocked, 'active': !user?.isBlocked}" />
+            </td>
+            <td class="sticky-right">
+                <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true"
+                    (click)="editUser(user,'Edit')" />
+                <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true"
+                    (click)="deleteProduct(user)" />
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
+
+<p-dialog [(visible)]="userDialog" class="userModel"
+    [header]="mode == 'add' ? 'Add Purchase Order' : (mode === 'edit' ? 'Edit Purchase Order' : 'Purchase Order')"
+    [modal]="true" (onHide)="onDialogHide()">
+    <ng-template #content>
+        <form [formGroup]="purchaseOrderForm">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 gap-4">
+                <div>
+                    <label for="supplierId" class="block font-bold mb-3">Supplier</label>
+                    <p-select inputId="supplierId" formControlName="supplierId" [options]="supplierList"
+                        optionLabel="supplierName" optionValue="_id" placeholder="Select a Supplier" fluid />
+                    <small class="text-red-500"
+                        *ngIf="purchaseOrderForm.get('supplierId')?.invalid && purchaseOrderForm.get('supplierId')?.touched">Supplier
+                        is
+                        required.</small>
+                </div>
+
+                <div>
+                    <label for="purchaseItem" class="block font-bold mb-3">Purchase Item</label>
+                    <input type="text" formControlName="purchaseItem" pInputText id="purchaseItem" required autofocus
+                        fluid />
+                    <small class="text-red-500"
+                        *ngIf="purchaseOrderForm.get('purchaseItem')?.invalid && purchaseOrderForm.get('purchaseItem')?.touched">Purchase
+                        Item is required.</small>
+                </div>
+
+                <div>
+                    <label for="orderDate" class="block font-bold mb-3">Order Date</label>
+                    <p-datepicker formControlName="orderDate" class="userDOB" [showIcon]="true" [showButtonBar]="true"
+                        dateFormat="dd/mm/yy"></p-datepicker>
+                    <small class="text-red-500"
+                        *ngIf="purchaseOrderForm.get('orderDate')?.invalid && purchaseOrderForm.get('expextedDate')?.touched">Order
+                        Date is required.</small>
+                </div>
+
+                <div>
+                    <label for="expextedDate" class="block font-bold mb-3">Expected Date</label>
+                    <p-datepicker formControlName="expextedDate" class="userDOB" [showIcon]="true"
+                        [showButtonBar]="true" dateFormat="dd/mm/yy"></p-datepicker>
+                    <small class="text-red-500"
+                        *ngIf="purchaseOrderForm.get('expextedDate')?.invalid && purchaseOrderForm.get('expextedDate')?.touched">Expected
+                        Date is required.</small>
+                </div>
+            </div>
+            <div class="flex items-center mt-2">
+                <p-checkbox formControlName="status" inputId="checkOption1" binary="true" />
+                <label for="checkOption1" class="ml-2">Status</label>
+            </div>
+        </form>
+    </ng-template>
+
+    <ng-template #footer>
+        <p-button label="Cancel" variant="text" severity="danger" icon="pi pi-times" text (click)="hideDialog()" />
+        <p-button label="Save" icon="pi pi-check" (click)="saveProduct()" />
+    </ng-template>
+</p-dialog>
+
+<p-confirmdialog [style]="{ width: '450px' }" />
