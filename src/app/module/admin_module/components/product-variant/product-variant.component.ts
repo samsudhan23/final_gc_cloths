@@ -85,7 +85,7 @@ export class ProductVariantComponent {
     { field: 'Description', header: 'description' },
     { field: 'Role', header: 'role' }
   ];
-  userForm: FormGroup;
+  productVariantForm: FormGroup;
   constructor(
     private categoryService: CategoryService,
     private productVariantService: ProductVariantService,
@@ -93,7 +93,7 @@ export class ProductVariantComponent {
     private fb: FormBuilder,
     private toast: ToastrService,
   ) {
-    this.userForm = this.fb.group({
+    this.productVariantForm = this.fb.group({
       category:['',Validators.required],
       productVariantName: ['', Validators.required],
       productVariantDescription: [''],
@@ -184,12 +184,12 @@ export class ProductVariantComponent {
 
   hideDialog() {
     this.userDialog = false;
-    this.userForm.reset();
+    this.productVariantForm.reset();
   }
 
   onDialogHide() {
-    if (this.userForm) {
-      this.userForm.reset(); // Reset when dialog is closed using header 'X'
+    if (this.productVariantForm) {
+      this.productVariantForm.reset(); // Reset when dialog is closed using header 'X'
     }
   }
   editUser(event: any, type: string) {
@@ -200,23 +200,23 @@ export class ProductVariantComponent {
       case "Edit":
         this.mode = 'edit';
         this.currentUserId = editTableDatas._id;
-        this.userForm.patchValue(editTableDatas);
-        this.userForm.enable();
+        this.productVariantForm.patchValue(editTableDatas);
+        this.productVariantForm.enable();
         break;
       case "View":
         this.mode = 'view';
-        this.userForm.patchValue(editTableDatas);
-        this.userForm.disable();
+        this.productVariantForm.patchValue(editTableDatas);
+        this.productVariantForm.disable();
         break;
     }
 
   }
   saveProduct() {
-    if (this.userForm.invalid) {
-      this.userForm.markAllAsTouched();
+    if (this.productVariantForm.invalid) {
+      this.productVariantForm.markAllAsTouched();
     }
-    if (this.userForm.valid) {
-      const user = this.userForm.value;
+    if (this.productVariantForm.valid) {
+      const user = this.productVariantForm.value;
 
       if (this.mode === 'add') {
         this.productVariantService.postProductVariant(user).subscribe((res: any) => {

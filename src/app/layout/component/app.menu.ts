@@ -34,6 +34,8 @@ export class AppMenu {
                     { label: 'Product Variants', icon: 'pi pi-fw pi-box', routerLink: ['/admin/productVariant'] },
                     { label: 'Product Management', icon: 'pi pi-fw pi-shopping-cart', routerLink: ['/admin/products'] },
                     { label: 'Warehouse', icon: 'pi pi-fw pi-warehouse', routerLink: ['/admin/warehouse'] },
+                    { label: 'Supplier Management', icon: 'pi pi-fw pi-briefcase', routerLink: ['/admin/supplier'] },
+                    { label: 'Purchase Order', icon: 'pi pi-fw pi-receipt', routerLink: ['/admin/purchase-order'] },
 
                 ]
             },

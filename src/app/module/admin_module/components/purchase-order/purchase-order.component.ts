@@ -23,7 +23,8 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ToastrService } from 'ngx-toastr';
 import { CategoryService } from '../../service/category/category.service';
-import { WarehouseService } from '../../service/warehouse/warehouse.service';
+import { SupplierManagementService } from '../../service/supplier-management.service';
+import { PurchaseOrderService } from '../../service/purchaseOrder/purchase-order.service';
 
 interface Column {
   field: string;
@@ -36,39 +37,40 @@ interface ExportColumn {
   dataKey: string;
 }
 @Component({
-  selector: 'app-warehouse',
+  selector: 'app-purchase-order',
   imports: [
-    CommonModule,
-    TableModule,
-    FormsModule,
-    ButtonModule,
-    RippleModule,
-    ToastModule,
-    ToolbarModule,
-    RatingModule,
-    InputTextModule,
-    TextareaModule,
-    SelectModule,
-    RadioButtonModule,
-    InputNumberModule,
-    DialogModule,
-    TagModule,
-    InputIconModule,
-    IconFieldModule,
-    ConfirmDialogModule,
-    DatePickerModule,
-    CheckboxModule,
-    ReactiveFormsModule
-  ],
-  providers: [CustomerService, ConfirmationService, MessageService],
-  templateUrl: './warehouse.component.html',
-  styleUrl: './warehouse.component.scss'
+      CommonModule,
+      TableModule,
+      FormsModule,
+      ButtonModule,
+      RippleModule,
+      ToastModule,
+      ToolbarModule,
+      RatingModule,
+      InputTextModule,
+      TextareaModule,
+      SelectModule,
+      RadioButtonModule,
+      InputNumberModule,
+      DialogModule,
+      TagModule,
+      InputIconModule,
+      IconFieldModule,
+      ConfirmDialogModule,
+      DatePickerModule,
+      CheckboxModule,
+      ReactiveFormsModule
+    ],
+    providers: [CustomerService, ConfirmationService, MessageService],
+  templateUrl: './purchase-order.component.html',
+  styleUrl: './purchase-order.component.scss'
 })
-export class WarehouseComponent {
-  @ViewChild('dt') dt!: Table;
+export class PurchaseOrderComponent {
+@ViewChild('dt') dt!: Table;
   userDialog: boolean = false;
   selectedUser!: any | null;
-  warehouseList: any[] = [];
+  supplierList: any[] = [];
+  purchaseOrderList: any[] = [];
   exportColumns!: ExportColumn[];
   mode: 'add' | 'edit' | 'view' = 'add';
   currentUserId: string | null = null;
@@ -77,38 +79,47 @@ export class WarehouseComponent {
     { label: 'User', value: 'user' },
   ];
   cols: Column[] = [
-    { field: 'Name', header: 'name' },
-    { field: 'Email', header: 'email' },
-    { field: 'Description', header: 'description' },
-    { field: 'Role', header: 'role' }
+    { field: 'supplierName', header: 'supplierName' },
+    { field: 'purchaseItem', header: 'purchaseItem' },
+    { field: 'Order Date', header: 'orderDate' },
+    { field: 'Expexted Date', header: 'expextedDate' },
+    { field: 'Status', header: 'status' }
   ];
-  warehouseForm: FormGroup;
+  purchaseOrderForm: FormGroup;
   constructor(
-    private categoryService: CategoryService,
-    private warehouseService: WarehouseService,
+    private supplierService: SupplierManagementService,
+    private purchaseOrderService: PurchaseOrderService,
     private confirmationService: ConfirmationService,
     private fb: FormBuilder,
     private toast: ToastrService,
   ) {
-    this.warehouseForm = this.fb.group({
-      warehouseName: ['', Validators.required],
-      address: ['',Validators.required],
-      contactPerson: ['', Validators.required],
-      phone: ['',Validators.required],
-      //  isBlocked: [false]
+    this.purchaseOrderForm = this.fb.group({
+      supplierId:['',Validators.required],
+      purchaseItem: ['', Validators.required],
+      orderDate: ['', Validators.required],
+      expextedDate: ['', Validators.required],
+      status :[false]
     });
   }
 
   ngOnInit() {
-    this.getWarehouseList();
+    this.getSupplierList();
+    this.getPurchaseOrderList();
     this.exportColumns = this.cols.map((col) => ({ title: col.header, dataKey: col.field }));
   }
 
-  // Category Module
-  getWarehouseList(): void {
-    this.warehouseService.getWareHouseList().subscribe((res: any) => {
-      this.warehouseList = res.result;
-      console.log('this.warehouseList: ', this.warehouseList);
+  getSupplierList() {
+    this.supplierService.getSupplierList().subscribe((res: any) => {
+      if (res.code === 200 && res.status === true) {
+        this.supplierList = res.result
+      }
+    })
+  }
+
+  // Purchase Order Grid
+  getPurchaseOrderList(): void {
+    this.purchaseOrderService.getPurchaseOrderList().subscribe((res: any) => {
+      this.purchaseOrderList = res.result;
     }, (error: any) => {
       this.toast.warning(error.error.message);
     })
@@ -124,7 +135,7 @@ export class WarehouseComponent {
 
   deleteSelectedProducts() {
     this.confirmationService.confirm({
-      message: 'Are you sure you want to delete the selected Category?',
+      message: 'Are you sure you want to delete the selected Purchase Orders?',
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
@@ -132,10 +143,10 @@ export class WarehouseComponent {
           ids: this.selectedUser.map((ite: { _id: any; }) => ite._id)
         }
 
-        this.warehouseService.deleteWareHouse(dele).subscribe((res: any) => {
+        this.purchaseOrderService.deletePurchaseOrder(dele).subscribe((res: any) => {
           if (res.code === 200 && res.success === true) {
             this.toast.success(res.message);
-            this.getWarehouseList();
+            this.getPurchaseOrderList();
           }
         },
           (error: any) => {
@@ -150,18 +161,19 @@ export class WarehouseComponent {
   }
 
   deleteProduct(user: any) {
+    console.log('user: ', user);
     this.confirmationService.confirm({
-      message: 'Are you sure you want to delete ' + user.warehouseName + '?',
+      message: 'Are you sure you want to delete ' + user.purchaseItem + '?',
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         const dele = {
           ids: user._id
         }
-        this.warehouseService.deleteWareHouse(dele).subscribe((res: any) => {
+        this.purchaseOrderService.deletePurchaseOrder(dele).subscribe((res: any) => {
           if (res.code === 200 && res.success === true) {
             this.toast.success(res.message);
-            this.getWarehouseList();
+            this.getPurchaseOrderList();
           }
         },
           (error: any) => {
@@ -173,16 +185,15 @@ export class WarehouseComponent {
 
   hideDialog() {
     this.userDialog = false;
-    this.warehouseForm.reset();
+    this.purchaseOrderForm.reset();
   }
 
   onDialogHide() {
-    if (this.warehouseForm) {
-      this.warehouseForm.reset(); // Reset when dialog is closed using header 'X'
+    if (this.purchaseOrderForm) {
+      this.purchaseOrderForm.reset(); // Reset when dialog is closed using header 'X'
     }
   }
   editUser(event: any, type: string) {
-    console.log('event: ', event);
     const editTableDatas = event
     this.userDialog = true;
 
@@ -190,28 +201,29 @@ export class WarehouseComponent {
       case "Edit":
         this.mode = 'edit';
         this.currentUserId = editTableDatas._id;
-        this.warehouseForm.patchValue(editTableDatas);
-        this.warehouseForm.enable();
+        this.purchaseOrderForm.patchValue(editTableDatas);
+        this.purchaseOrderForm.enable();
         break;
       case "View":
         this.mode = 'view';
-        this.warehouseForm.patchValue(editTableDatas);
-        this.warehouseForm.disable();
+        this.purchaseOrderForm.patchValue(editTableDatas);
+        this.purchaseOrderForm.disable();
         break;
     }
 
   }
   saveProduct() {
-    if (this.warehouseForm.invalid) {
-      this.warehouseForm.markAllAsTouched();
+    if (this.purchaseOrderForm.invalid) {
+      this.purchaseOrderForm.markAllAsTouched();
     }
-    if (this.warehouseForm.valid) {
-      const user = this.warehouseForm.value;
+    if (this.purchaseOrderForm.valid) {
+      const user = this.purchaseOrderForm.value;
+
       if (this.mode === 'add') {
-        this.warehouseService.postWareHouse(user).subscribe((res: any) => {
-          if (res.code === 200 && res.success === true) {
+        this.purchaseOrderService.postPurchaseOrder(user).subscribe((res: any) => {
+          if (res.code === 200) {
             this.toast.success(res.message);
-            this.getWarehouseList();
+            this.getPurchaseOrderList();
             this.hideDialog();
           }
         },
@@ -219,10 +231,10 @@ export class WarehouseComponent {
             this.toast.warning(error.error.message);
           });
       } else if (this.mode === 'edit' && this.currentUserId) {
-        this.warehouseService.updateWareHouse(this.currentUserId, user).subscribe((res: any) => {
+        this.purchaseOrderService.updatePurchaseOrder(this.currentUserId, user).subscribe((res: any) => {
           if (res.code === 200 && res.success === true) {
             this.toast.success(res.message);
-            this.getWarehouseList();
+            this.getPurchaseOrderList();
             this.hideDialog();
           }
         },
@@ -232,5 +244,4 @@ export class WarehouseComponent {
       }
     }
   }
-
 }

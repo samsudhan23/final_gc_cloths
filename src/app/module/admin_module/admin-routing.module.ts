@@ -49,6 +49,14 @@ export const routes: Routes = [
             {
                 path: 'warehouse',
                 loadComponent: () => import('./components/warehouse/warehouse.component').then(m => m.WarehouseComponent)
+            },
+            {
+                path: 'supplier',
+                loadComponent: () => import('./components/supplier-management/supplier-management.component').then(m => m.SupplierManagementComponent)
+            },
+            {
+                path: 'purchase-order',
+                loadComponent: () => import('./components/purchase-order/purchase-order.component').then(m => m.PurchaseOrderComponent)
             }
         ]
     },
