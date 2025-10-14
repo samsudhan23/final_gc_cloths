@@ -23,6 +23,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ToastrService } from 'ngx-toastr';
 import { CategoryService } from '../../service/category/category.service';
+import { apiResponse } from '../../../../shared/interface/response';
 
 interface Column {
   field: string;
@@ -204,7 +205,7 @@ export class CategoryComponent {
       const user = this.userForm.value;
 
       if (this.mode === 'add') {
-        this.categoryService.postCategoryMaster(user).subscribe((res: any) => {
+        this.categoryService.postCategoryMaster(user).subscribe((res: apiResponse) => {
           if (res.code === 200 && res.success === true) {
             this.toast.success(res.message);
             this.categoryUsers();

@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { enviornment } from '../../../../../environment/environment';
+import { apiResponse } from '../../../../shared/interface/response';
 
 @Injectable({
   providedIn: 'root'
@@ -10,19 +11,19 @@ export class AdminProductService {
 
   constructor(private http: HttpClient) { }
 
-  getProductlist(): Observable<any> {
-    return this.http.get<any>(enviornment.url + "getProducts");
+  getProductlist(): Observable<apiResponse> {
+    return this.http.get<apiResponse>(enviornment.url + "getProducts");
   }
 
-  saveProducts(data: any): Observable<any> {
-    return this.http.post<any>(enviornment.url + "products", data);
+  saveProducts(data: any): Observable<apiResponse> {
+    return this.http.post<apiResponse>(enviornment.url + "products", data);
   }
 
-  updateProducts(data: any, id: number | string): Observable<any> {
-    return this.http.put<any>(enviornment.url + "updateProducts/" + id, data);
+  updateProducts(data: any, id: number | string): Observable<apiResponse> {
+    return this.http.put<apiResponse>(enviornment.url + "updateProducts/" + id, data);
   }
 
-  deleteProducts(id: { ids: string[] | number[] }): Observable<any> {
-    return this.http.post(`${enviornment.url}deleteProducts`, id);  
+  deleteProducts(id: { ids: string[] | number[] }): Observable<apiResponse> {
+    return this.http.post<apiResponse>(`${enviornment.url}deleteProducts`, id);  
   }
 }

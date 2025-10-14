@@ -1,0 +1,227 @@
+<!-- <div class=" py-5" style="    max-width: 1500px;
+    margin: auto;
+    min-height: 491px;">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+        <div class="col-span-2 bg-white shadow-md rounded-md">
+            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-2 p-2">
+                <div class="">
+                    <img class="h-[250px] rounded-md" src="../../../../assets/images/Products/1 (1).avif" alt="">
+                </div>
+                <div class="col-span-2">
+                    <div class="flex justify-between items-center pb-2">
+                        <span class="font-bold text-3xl">Black panther</span>
+                        <span class="mr-[10%] font-bold text-3xl">$233</span>
+                    </div>
+                    <div class="pb-3">
+                        <span class="text-lg">Category: <strong class="text-xl">T-Shirt</strong></span>
+                        <br>
+                        <span class="text-lg">Gender: <strong class="text-xl">Male</strong></span>
+                        <br>
+                        <span class="text-lg">Size: <strong class="text-xl">XL</strong></span>
+                    </div>
+                    <div class="grid grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 pt-4">
+                        <div >
+                            <span class="bg-gray-800 shadow-md rounded-md" style="padding: 15px 8px 15px 7px; !important">
+                                <p-button icon="pi pi-plus" [outlined]="true"></p-button>
+                                <span class="px-2 text-white"> 4 </span>
+                                <p-button icon="pi pi-minus" [outlined]="true"></p-button>
+                            </span>
+                        </div>
+                        <div class="text-end p-2">
+                            <p-button [raised]="true" label="Remove" icon="pi pi-trash" severity="danger" />
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="bg-white shadow-md rounded-md p-5">
+            sdfdsf
+        </div>
+    </div>
+
+</div> -->
+<div *ngIf="!allCartList" class="min-h-screen bg-white">
+    <div class="container mx-auto px-4 py-8 md:py-16">
+        <div class="flex flex-col items-center justify-center py-16 px-4 text-center">
+            <img src="https://c.animaapp.com/mgfcgz6sqvonyu/img/ai_3.png" alt="empty cart illustration"
+                class="w-full max-w-md h-auto mb-8" loading="lazy" />
+            <i class="pi pi-shopping-cart w-16 h-16 text-neutral-400 mb-4" style="font-size: 2rem"></i>
+            <h2 class="font-heading font-semibold text-2xl text-foreground mb-2">
+                Your cart is empty
+            </h2>
+            <p class="text-base text-neutral-600 mb-6 max-w-md">
+                Looks like you haven't added anything to your cart yet. Start shopping to fill it up!
+            </p>
+            <p-button class="" label="Start Shopping" icon="pi pi-shopping-cart" />
+        </div>
+    </div>
+</div>
+
+<div class="min-h-screen bg-white">
+    <div class="container mx-auto px-4 py-8 md:py-16">
+        <header class="mb-8">
+            <h1 class="font-heading font-bold text-3xl md:text-4xl text-foreground">
+                Your Shopping Cart
+            </h1>
+            <p class="text-base text-neutral-600 mt-2">
+                1 item in your cart
+            </p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-2">
+                @for(item of allCartList; track item._id){
+                <section aria-label="Cart items">
+                    <div>
+                        <div
+                            class="relative rounded-xl p-4 md:p-6 transition-all duration-200 ease-in hover:scale-[1.02] hover:bg-neutral-50 mb-4 border border-border">
+                            <Button
+                                class="absolute top-2 right-2 bg-transparent text-neutral-600 hover:bg-neutral-200 hover:text-neutral-900"
+                                aria-label="Remove item">
+                                <p-button icon="pi pi-times" [rounded]="true" [text]="true" severity="danger" />
+                            </Button>
+                            <!-- @for(ite of item; track ite){ -->
+                            <div class="flex flex-col md:flex-row gap-4 md:gap-6">
+                                <div class="w-full md:w-[30%] flex-shrink-0">
+                                    <img [src]="item?.productId?.images" class="w-full h-auto rounded-lg object-cover"
+                                        loading="lazy" />
+                                </div>
+
+                                <div class="flex-1 flex flex-col gap-3">
+                                    <div>
+                                        <h3 class="font-heading font-semibold text-lg text-foreground">
+                                           {{item?.productId?.productName}}
+                                        </h3>
+                                        <p class="text-base text-foreground mt-1">{{item?.productId?.productName}}</p>
+                                    </div>
+
+                                    <a href="#"
+                                        class="text-secondary text-sm font-medium hover:underline transition-all duration-200 ease-in">
+                                        Buy 2 Get 1 Free
+                                    </a>
+
+                                    <div class="flex items-center gap-2 text-sm text-neutral-700">
+
+                                        <i class="pi pi-truck text-success"></i>
+                                        <span>Delivery by Dec 28</span>
+                                    </div>
+
+                                    <div class="flex flex-col sm:flex-row gap-3 mt-2">
+                                        <div class="flex-1">
+                                            <label class="text-sm font-medium text-foreground mb-1 block">
+                                                Size
+                                            </label>
+                                            <p-select [options]="cities" [(ngModel)]="selectedCity" optionLabel="name"
+                                                placeholder="Select a Size" class="w-full md:w-56" />
+                                        </div>
+
+                                        <div class="flex-1">
+                                            <label class="text-sm font-medium text-foreground mb-1 block">
+                                                Quantity
+                                            </label>
+                                            <p-select [options]="quantity" optionLabel="value"
+                                                placeholder="Select a Quantity" class="w-full md:w-56" />
+
+                                        </div>
+                                    </div>
+
+                                    <div class="flex flex-wrap items-baseline gap-2 mt-2">
+                                        <span class="text-2xl font-bold text-primary font-heading">
+                                            $29.99
+                                        </span>
+                                        <span class="text-base text-neutral-500 line-through">
+                                            $49.99
+                                        </span>
+                                        <span class="text-sm font-bold text-tertiary">
+                                            Save $20.00
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        <!-- } -->
+                        </div>
+                    </div>
+
+                </section>
+                }
+            </div>
+
+            <div class="lg:col-span-1">
+                <div class="p-6 top-4 border border-border bg-card rounded-xl">
+                    <h2 class="font-heading font-semibold text-xl text-foreground mb-4">
+                        Price Summary
+                    </h2>
+
+                    <div class="space-y-3">
+                        <div class="flex justify-between text-base text-foreground">
+                            <span>Subtotal</span>
+                            <span class="font-medium">$29.99</span>
+                        </div>
+
+                        <div class="flex justify-between text-base text-tertiary">
+                            <span>Discount</span>
+                            <span class="font-medium">-$20.00</span>
+                        </div>
+
+                        <div class="flex justify-between text-base text-foreground">
+                            <span>Delivery</span>
+                            <span class="font-medium">
+                                5.99
+                            </span>
+                        </div>
+
+                        <div class="border-t border-border pt-3 mt-3">
+                            <div class="flex justify-between text-lg font-bold text-primary font-heading">
+                                <span>Total</span>
+                                <span>$35.98</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-8">
+                    <Button
+                        class="w-full text-white rounded-xl py-6 text-base font-normal bg-sky-900 text-secondary-foreground hover:bg-secondary/90 transition-all duration-200 ease-in"
+                        size="lg">
+                        Proceed to Checkout
+                    </Button>
+                    <!-- <p-button
+                        class="w-full py-6 text-base font-normal bg-secondary text-secondary-foreground hover:bg-secondary/90 transition-all duration-200 ease-in"
+                        label=" Proceed to Checkout" severity="info" /> -->
+
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-12">
+            <img src="https://c.animaapp.com/mgfcgz6sqvonyu/img/ai_2.png" alt="secure payment illustration"
+                class="w-full max-w-2xl mx-auto h-auto rounded-lg" loading="lazy" />
+        </div>
+
+        <!-- <TrustIndicators />  @for(indicator of indicators; track item){}-->
+        <section class="mt-12 py-8 px-4 md:px-8 bg-neutral-50 rounded-lg border border-border">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                @for(indicator of indicators; track indicator){
+                <div class="flex flex-col items-center text-center gap-3">
+                    <div class="w-16 h-16 rounded-full bg-secondary/10 flex items-center justify-center">
+                        <i class="pi rounded-full p-3" [ngClass]="'pi-' + indicator.icon"
+                            style="font-size: 2rem; background-color: antiquewhite;"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-heading font-semibold text-base text-foreground">
+                            {{indicator.label}}
+                        </h3>
+                        <p class="text-sm text-neutral-600 mt-1">
+                            {{indicator.description}}
+                        </p>
+                    </div>
+                </div>
+                }
+            </div>
+        </section>
+    </div>
+</div>

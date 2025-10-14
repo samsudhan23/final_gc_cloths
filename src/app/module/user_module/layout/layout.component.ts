@@ -16,6 +16,8 @@ import { Gender } from '../../../shared/interface/gender';
 import { Tooltip } from 'primeng/tooltip';
 import { Popover, PopoverModule } from 'primeng/popover';
 import { Subscription } from 'rxjs';
+import { CartService } from '../../admin_module/service/cartService/cart.service';
+import { apiResponse } from '../../../shared/interface/response';
 
 @Component({
   selector: 'app-layout',
@@ -89,14 +91,19 @@ export class LayoutComponent {
   members: any = [{ name: 'Profile', image: '../../../../assets/images/Avatar/icons8-cat-profile-48.png' }];
   selectedMember = null;
   private sub!: Subscription;
+  cartLength: any = 0;
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object,
     private auth: AuthenticationService,
     private category: CategoryService,
-    private router: Router
+    private router: Router,
+    private cart: CartService
   ) { }
 
   ngOnInit() {
+    this.cart.updateCartLength$.subscribe((res: any) => {
+      this.cartLength = res
+    })
     this.sub = this.auth.currentUser$.subscribe(user => {
       if (user?.role === 'admin') {
         this.router.navigate(['/admin']);
@@ -130,8 +137,13 @@ export class LayoutComponent {
       }
     ]
     this.genderData();
+    this.getCartLength();
   }
-
+  getCartLength() {
+    this.cart.getCartList().subscribe((res: apiResponse) => {
+    this.cartLength = res.result.map(item => item.quantity).reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+    })
+  }
   ngOnDestroy() {
     if (this.sub) this.sub.unsubscribe();
   }
@@ -150,7 +162,7 @@ export class LayoutComponent {
     }
   }
   getCategoryList() {
-    this.category.getCategoriesMasterList().subscribe((res: any) => {
+    this.category.getCategoriesMasterList().subscribe((res: apiResponse) => {
       if (res.code === 200 && res.success === true) {
         this.categoryList = res.result;
 
@@ -181,7 +193,7 @@ export class LayoutComponent {
   }
 
   genderData() {
-    this.category.getGenderList().subscribe((res: any) => {
+    this.category.getGenderList().subscribe((res: apiResponse) => {
       if (res.code === 200 && res.success === true) {
         this.genderList = res.navData
         this.maleList = res.navData.filter((item: Gender) => item._id === "680bd68af7f32e61016eb82f")
@@ -208,8 +220,13 @@ export class LayoutComponent {
   openSubNav() {
     this.sideSubMenu = !this.sideSubMenu;
   }
-  movedToWishlist() {
-    this.router.navigate(['/user/wishlist'])
+  movedToMenuPages(pages: String) {
+    if (pages === 'wishlist') {
+      this.router.navigate(['/user/wishlist'])
+    }
+    else if (pages === 'cart') {
+      this.router.navigate(['/user/cart'])
+    }
   }
   logout() {
     localStorage.removeItem('role');

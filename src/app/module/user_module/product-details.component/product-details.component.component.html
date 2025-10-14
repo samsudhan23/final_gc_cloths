@@ -52,6 +52,25 @@
                     Stock</span>
                 <span *ngIf="product.inStock && product.totalStock > 5" class="badge bg-success">In Stock</span>
             </p>
+            <!-- Quantity -->
+            <div class="mb-8"><strong><label class="block mb-3 text-foreground">Quantity</label></strong>
+                <div class="flex items-center space-x-2">
+                    <button (click)="quantityAdding('minus')"
+                        class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border shadow-sm h-11 w-11 bg-neutral text-neutral-foreground border-border hover:bg-gray-200 hover:text-primary transition-colors duration-150"
+                        aria-label="Decrease quantity" [disabled]="quantityValue == 1">
+                        <i class="pi pi-minus" style="font-size: 1rem"></i>
+                    </button>
+                    <input [disabled]="true" [(ngModel)]="quantityValue" type="number" min="1" max="99"
+                        class="w-16 pl-[13px] h-11 text-center border border-border rounded-md bg-neutral text-foreground font-medium focus:outline-none focus:ring-2 focus:ring-primary"
+                        aria-label="Quantity" value="1">
+                    <button (click)="quantityAdding('add')" [disabled]="quantityValue == this.stock"
+                        class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border shadow-sm h-11 w-11 bg-neutral text-neutral-foreground border-border hover:bg-gray-200 hover:text-primary transition-colors duration-150"
+                        aria-label="Increase quantity">
+                        <i class="pi pi-plus" style="font-size: 1rem"></i>
+                    </button>
+
+                </div>
+            </div>
 
             <!-- Buttons -->
             <div class="d-flex gap-3 mt-4 flex-wrap">

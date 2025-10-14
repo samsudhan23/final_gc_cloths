@@ -60,7 +60,7 @@ export class HomeComponent implements OnInit {
     showAlert();
   }
   ngOnInit() {
-    showAlert(); 
+    showAlert();
     // const user = this.auth.getCurrentUser();
     // if (user?.role === 'admin') {
     //   this.router.navigate(['/admin']);
@@ -195,24 +195,25 @@ export class HomeComponent implements OnInit {
     this.filterProducts();
   }
 
-  addToCart(product: any) {
-    console.log("Added to cart:", product);
-    // your cart logic here
-  }
+  // addToCart(product: any) {
+  //   console.log("Added to cart:", product);
+  // }
 
   addToWishlist(product: any) {
     console.log("Added to wishlist:", product);
     // your wishlist logic here
   }
 
-  toggleWishlist(product: any) {
+  toggleWishlist(product: any, event:Event) {
     product.isWishlisted = !product.isWishlisted;
+    event.stopPropagation();
   }
 
   selectedProduct: any = null;
 
-  openQuickView(product: any) {
+  openQuickView(product: any,event:Event) {
     this.selectedProduct = product;
+    event.stopPropagation();
     console.log('this.selectedProduct: ', this.selectedProduct);
   }
 
@@ -224,9 +225,11 @@ export class HomeComponent implements OnInit {
     console.log('product: ', product);
   }
 
-  viewDetails(product: any) {
+  viewDetails(product: any, data: string) {
     console.log('product: ', product);
-    this.router.navigate(['user/product-details'], { state: { product,allProducts: this.filteredProducts} });
+    if(data == 'data'){
+      this.router.navigate(['user/product-details'], { state: { product, allProducts: this.filteredProducts } });
+    }
   }
 
 }

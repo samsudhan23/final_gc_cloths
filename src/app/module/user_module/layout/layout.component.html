@@ -314,8 +314,9 @@
                             </span>
                         </a>
                         <a title="Click to wishlist" class="m-header__account" aria-label="wishlist">
-                            <span (click)="movedToWishlist()" [pTooltip]="tooltipContent" severity="secondary"
-                                tooltipPosition="bottom" class="m-tooltip m:block m-tooltip--bottom m-tooltip--style-2">
+                            <span (click)="movedToMenuPages('wishlist')" [pTooltip]="tooltipContent"
+                                severity="secondary" tooltipPosition="bottom"
+                                class="m-tooltip m:block m-tooltip--bottom m-tooltip--style-2">
                                 <ng-template #tooltipContent>
                                     <div class="flex items-center">
                                         <img width="31" height="33"
@@ -331,9 +332,10 @@
                             </span>
                         </a>
                         <a title="Click to Cart" class="m-header__account" aria-label="cart">
-                            <span [pTooltip]="tooltipContentCart" severity="secondary" tooltipPosition="bottom"
+                            <span *ngIf="cartLength != 0" (click)="movedToMenuPages('cart')"
+                                [pTooltip]="tooltipContentCart" severity="secondary" tooltipPosition="bottom"
                                 class="m-tooltip m:block m-tooltip--bottom m-tooltip--style-2">
-                                <p-overlaybadge value="4" severity="danger">
+                                <p-overlaybadge value="{{cartLength}}" severity="danger">
                                     <ng-template #tooltipContentCart>
                                         <div class="flex items-center">
                                             <img width="31" height="33"
@@ -341,10 +343,24 @@
                                             <span style="padding-left: 2px;"> <b>Cart</b> </span>
                                         </div>
                                     </ng-template>
-                                    <!-- <i class="pi pi-shopping-cart" style="font-size: 1.6rem"></i> -->
+
                                     <img width="31" height="33"
                                         src="../../../../assets/images/Avatar/icons8-cart-94.png" alt="">
                                 </p-overlaybadge>
+                            </span>
+                            <!-- Empty Cart -->
+                            <span *ngIf="cartLength == 0" class="m-tooltip m:block m-tooltip--bottom m-tooltip--style-2"
+                                (click)="movedToMenuPages('cart')" [pTooltip]="tooltipContentCarts" severity="secondary"
+                                tooltipPosition="bottom">
+                                <ng-template #tooltipContentCarts>
+                                    <div class="flex items-center">
+                                        <img width="31" height="33"
+                                            src="../../../../assets/images/Avatar/icons8-cart-48.png" alt="">
+                                        <span style="padding-left: 2px;"> <b>Cart</b> </span>
+                                    </div>
+                                </ng-template>
+                                <img *ngIf="cartLength == 0" width="31" height="33"
+                                    src="../../../../assets/images/Avatar/icons8-cart-94.png" alt="">
                             </span>
                         </a>
                     </div>

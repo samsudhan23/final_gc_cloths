@@ -31,6 +31,9 @@ import { SplitPipe } from '../../../../shared/core/pipes/split.pipe';
 import { PopupComponent } from '../../../../shared/components/popup/popup.component';
 import { KeyFilterModule } from 'primeng/keyfilter';
 import { WarehouseService } from '../../service/warehouse/warehouse.service';
+import { apiResponse } from '../../../../shared/interface/response';
+import { Products } from '../../../../shared/interface/product';
+import { Gender } from '../../../../shared/interface/gender';
 
 
 @Component({
@@ -86,10 +89,10 @@ export class ProductManagementComponent {
     { id: 7, label: '3XL', bust: '46-48', waist: '38-40', hips: '48-50' }
   ];
   productForm!: FormGroup;
-  productData: any = [];
+  productData: Products[] = [];
   categoryList: any[] = [];
   warehouseList: any[] = [];
-  genderList: any[] = [];
+  genderList: Gender[] = [];
   fileInfo: string | number = '';
   imageFile!: File;
   galleryFiles: any[] = [];
@@ -134,7 +137,7 @@ export class ProductManagementComponent {
 
 
   getCategoryList() {
-    this.category.getCategoriesMasterList().subscribe((res: any) => {
+    this.category.getCategoriesMasterList().subscribe((res: apiResponse) => {
       if (res.code === 200 && res.success === true) {
         this.categoryList = res.result
       }
@@ -142,7 +145,7 @@ export class ProductManagementComponent {
   }
 
   getWarehouseList() {
-    this.warehouseService.getWareHouseList().subscribe((res: any) => {
+    this.warehouseService.getWareHouseList().subscribe((res: apiResponse) => {
       if (res.code === 200 && res.success === true) {
         this.warehouseList = res.result
       }
@@ -150,7 +153,7 @@ export class ProductManagementComponent {
   }
 
   genderData() {
-    this.category.getGenderList().subscribe((res: any) => {
+    this.category.getGenderList().subscribe((res: apiResponse) => {
       if (res.code === 200 && res.success === true) {
         this.genderList = res.result
         console.log('this.genderList: ', this.genderList);
@@ -159,7 +162,7 @@ export class ProductManagementComponent {
   }
 
   productList() {
-    this.product.getProductlist().subscribe((res) => {
+    this.product.getProductlist().subscribe((res: apiResponse) => {
       if (res.success === true || res.code === 200) {
         this.productData = res.result
       }
@@ -255,7 +258,7 @@ export class ProductManagementComponent {
         const dele = {
           ids: this.selectedUser.map((ite: { _id: any; }) => ite._id)
         }
-        this.product.deleteProducts(dele).subscribe((res: any) => {
+        this.product.deleteProducts(dele).subscribe((res: apiResponse) => {
           if (res.code === 200 && res.success === true) {
             this.toast.success(res.message);
             this.productList()
@@ -278,7 +281,7 @@ export class ProductManagementComponent {
         const dele = {
           ids: data._id
         }
-        this.product.deleteProducts(dele).subscribe((res: any) => {
+        this.product.deleteProducts(dele).subscribe((res: apiResponse) => {
           if (res.code === 200 && res.success === true) {
             this.toast.success(res.message);
             this.productList()
@@ -331,13 +334,13 @@ export class ProductManagementComponent {
       this.currentId = editTableDatas._id;
       this.productForm.patchValue({
         ...editTableDatas,
-        gender: editTableDatas.gender._id,
-        category: editTableDatas.category._id,
+        gender: editTableDatas?.gender?._id,
+        category: editTableDatas?.category?._id,
       });
 
-      const sizesArray = editTableDatas.sizeStock?.map((s: any) => s.size) || [];
+      const sizesArray = editTableDatas?.sizeStock?.map((s: any) => s.size) || [];
       this.productForm.get('sizes')?.setValue(sizesArray);
-      const sizeStockArray = this.productForm.get('sizeStock') as FormArray;
+      const sizeStockArray = this.productForm?.get('sizeStock') as FormArray;
       sizeStockArray.clear(); // Clear existing controls
       sizesArray.forEach((size: string) => {
         const stockObj = editTableDatas.sizeStock.find((item: any) => item.size === size);
@@ -364,6 +367,7 @@ export class ProductManagementComponent {
       const FormControlValues = this.productForm.value;
 
       formData.append('productName', FormControlValues.productName);
+       formData.append('warehouse', FormControlValues.warehouse);
       formData.append('productDescription', FormControlValues.productDescription);
       formData.append('gender', FormControlValues.gender);
       formData.append('warehouse', FormControlValues.warehouse);
@@ -396,7 +400,7 @@ export class ProductManagementComponent {
         }
       });
       if (this.mode === 'add') {
-        this.product.saveProducts(formData).subscribe((res: any) => {
+        this.product.saveProducts(formData).subscribe((res: apiResponse) => {
           if (res.code === 200 || res.success === true) {
             this.toast.success(res.message);
             this.productList();
@@ -418,7 +422,7 @@ export class ProductManagementComponent {
         return;
       }
       else if (this.mode === 'edit' && this.currentId) {
-        this.product.updateProducts(formData, this.currentId).subscribe((res: any) => {
+        this.product.updateProducts(formData, this.currentId).subscribe((res: apiResponse) => {
           if (res.code === 200 || res.success === true) {
             this.toast.success(res.message);
             this.productList();

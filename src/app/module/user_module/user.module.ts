@@ -6,6 +6,7 @@ import { ShopComponent } from './shop/shop.component';
 import { HomeComponent } from './home/home.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { UserWishlistComponent } from './user-wishlist/user-wishlist.component';
+import { UserCartComponent } from './user-cart/user-cart.component';
 
 
 @NgModule({
@@ -17,7 +18,8 @@ import { UserWishlistComponent } from './user-wishlist/user-wishlist.component';
         HomeComponent,
         UserProfileComponent,
         ShopComponent,
-        UserWishlistComponent
+        UserWishlistComponent,
+        UserCartComponent
     ]
 })
 export class UserModule { }

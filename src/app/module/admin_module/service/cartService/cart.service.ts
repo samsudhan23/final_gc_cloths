@@ -1,28 +1,35 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { enviornment } from '../../../../../environment/environment';
+import { apiResponse } from '../../../../shared/interface/response';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CartService {
 
+  public CartLength = new BehaviorSubject<number>(0);
+  updateCartLength$: Observable<number> = this.CartLength.asObservable();
+
   constructor(private http: HttpClient) { }
 
-  getCartList(): Observable<any[]> {
-    return this.http.get<any[]>(enviornment.url + `cart/get`);
+  getCartList(): Observable<apiResponse> {
+    return this.http.get<apiResponse>(enviornment.url + `cart/get`);
   }
 
-  postCart(data: any): Observable<any> {
-    return this.http.post(enviornment.url + "cart/add", data);
+  postCart(data: any): Observable<apiResponse> {
+    return this.http.post<apiResponse>(enviornment.url + "cart/add", data);
   }
 
-  updateCartItem(id: any, Data: any): Observable<any> {
-    return this.http.put(`${enviornment.url}cart/update/${id}`, Data);
+  updateCartItem(id: any, Data: any): Observable<apiResponse> {
+    return this.http.put<apiResponse>(`${enviornment.url}cart/update/${id}`, Data);
   }
 
-  deleteCartItem(id: { ids: string[] | number[] }): Observable<any> {
-    return this.http.post(`${enviornment.url}cart/delete`, id);
+  deleteCartItem(id: { ids: string[] | number[] }): Observable<apiResponse> {
+    return this.http.post<apiResponse>(`${enviornment.url}cart/delete`, id);
+  }
+  getLengthOfCart(length: number) {
+    this.CartLength.next(length)
   }
 }
