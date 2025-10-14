@@ -223,7 +223,7 @@
                                 <div class="col-lg-3 col-md-4 col-sm-6" *ngFor="let product of filteredProducts">
                                     <div class="product-card">
 
-                                        <div class="product-img cursor-pointer" (click)="viewDetails(product)">
+                                        <div class="product-img cursor-pointer" (click)="viewDetails(product ,'data')">
                                             <!-- Sale / New Badge -->
                                             <span *ngIf="product.discountPrice" class="badge sale-badge">Sale</span>
                                             <span *ngIf="!product.discountPrice" class="badge new-badge">New</span>
@@ -245,19 +245,19 @@
 
                                             <!-- Wishlist & Cart Icons -->
                                             <div class="product-icons">
-                                                <button class="icon-btn" (click)="toggleWishlist(product)">
+                                                <button class="icon-btn" (click)="toggleWishlist(product,$event)">
                                                     <i [ngClass]="{
-                  'bi bi-heart': !product.isWishlisted,
-                  'bi bi-heart-fill text-danger animate-bounce': product.isWishlisted
-                }"></i>
+                                                              'bi bi-heart': !product.isWishlisted,
+                                                              'bi bi-heart-fill text-danger animate-bounce': product.isWishlisted
+                                                            }"></i>
                                                 </button>
-                                                <button class="icon-btn" (click)="addToCart(product)">
+                                                <!-- <button class="icon-btn" (click)="addToCart(product)">
                                                     <i class="bi bi-cart"></i>
-                                                </button>
+                                                </button> -->
                                             </div>
 
                                             <!-- 👁 Quick View Button -->
-                                            <button class="quick-view-btn" (click)="openQuickView(product)"><i
+                                            <button class="quick-view-btn" (click)="openQuickView(product,$event)"><i
                                                     class="bi bi-eye me-1"></i> Quick View</button>
                                         </div>
 
@@ -362,7 +362,7 @@
             <div class="quick-view-gallery">
                 <!-- ✅ If gallery exists -->
                 <ng-container *ngIf="selectedProduct.gallery && selectedProduct.gallery.length > 0; else noImages">
-                    <div class="gallery-slider">
+                    <div class="grid grid-cols-2 gap-2">
                         <img *ngFor="let img of selectedProduct.gallery" [src]="img"
                             [alt]="selectedProduct.productName" />
                     </div>

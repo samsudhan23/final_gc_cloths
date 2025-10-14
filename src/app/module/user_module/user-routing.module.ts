@@ -7,6 +7,7 @@ import { ContactusComponent } from "./contactus/contactus.component";
 import { AboutComponent } from "./about/about.component";
 import { UserProfileComponent } from "./user-profile/user-profile.component";
 import { UserWishlistComponent } from "./user-wishlist/user-wishlist.component";
+import { UserCartComponent } from "./user-cart/user-cart.component";
 // import { UserLayoutComponent } from "./user-layout/user-layout.component";
 
 export const routes: Routes = [
@@ -21,6 +22,7 @@ export const routes: Routes = [
             { path: 'about', component: AboutComponent },
             { path: 'user-profile', component: UserProfileComponent },
             { path: 'wishlist', component: UserWishlistComponent },
+            { path: 'cart', component: UserCartComponent },
             {
                 path: 'shop',
                 loadComponent: () => import('./shop/shop.component').then(m => m.ShopComponent)

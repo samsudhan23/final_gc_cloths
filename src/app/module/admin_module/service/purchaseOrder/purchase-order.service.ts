@@ -11,7 +11,7 @@ export class PurchaseOrderService {
   constructor(private http: HttpClient) { }
     
       getPurchaseOrderList(): Observable<any[]> {
-        return this.http.get<any[]>(enviornment.url +"getPurchsaeOrderList");
+        return this.http.get<any[]>(enviornment.url +"getPurchaseOrderList");
       }
     
       getPurchaseOrderById(id: number): Observable<any> {
