@@ -195,9 +195,10 @@ export class HomeComponent implements OnInit {
     this.filterProducts();
   }
 
-  // addToCart(product: any) {
-  //   console.log("Added to cart:", product);
-  // }
+  addToCart(product: any,event:Event) {
+    console.log("Added to cart:", product);
+     event.stopPropagation();
+  }
 
   addToWishlist(product: any) {
     console.log("Added to wishlist:", product);
