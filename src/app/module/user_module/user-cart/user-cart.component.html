@@ -74,12 +74,12 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div class="lg:col-span-2">
-                @for(item of allCartList; track item._id){
+                @for(item of allCartList; track item._id; let i = $index){
                 <section aria-label="Cart items">
                     <div>
                         <div
                             class="relative rounded-xl p-4 md:p-6 transition-all duration-200 ease-in hover:scale-[1.02] hover:bg-neutral-50 mb-4 border border-border">
-                            <Button
+                            <Button (click)="deleteCart(item)"
                                 class="absolute top-2 right-2 bg-transparent text-neutral-600 hover:bg-neutral-200 hover:text-neutral-900"
                                 aria-label="Remove item">
                                 <p-button icon="pi pi-times" [rounded]="true" [text]="true" severity="danger" />
@@ -94,15 +94,15 @@
                                 <div class="flex-1 flex flex-col gap-3">
                                     <div>
                                         <h3 class="font-heading font-semibold text-lg text-foreground">
-                                           {{item?.productId?.productName}}
+                                            {{item?.productId?.productName}}
                                         </h3>
                                         <p class="text-base text-foreground mt-1">{{item?.productId?.productName}}</p>
                                     </div>
 
-                                    <a href="#"
+                                    <!-- <a
                                         class="text-secondary text-sm font-medium hover:underline transition-all duration-200 ease-in">
                                         Buy 2 Get 1 Free
-                                    </a>
+                                    </a> -->
 
                                     <div class="flex items-center gap-2 text-sm text-neutral-700">
 
@@ -110,39 +110,45 @@
                                         <span>Delivery by Dec 28</span>
                                     </div>
 
-                                    <div class="flex flex-col sm:flex-row gap-3 mt-2">
-                                        <div class="flex-1">
-                                            <label class="text-sm font-medium text-foreground mb-1 block">
-                                                Size
-                                            </label>
-                                            <p-select [options]="cities" [(ngModel)]="selectedCity" optionLabel="name"
-                                                placeholder="Select a Size" class="w-full md:w-56" />
-                                        </div>
+                                    <div>
+                                        <form [formGroup]="getFormGroup(i)"
+                                            class="flex flex-col sm:flex-row gap-3 mt-2">
+                                            <div class="flex-1">
+                                                <label class="text-sm font-medium text-foreground mb-1 block">
+                                                    Size
+                                                </label>
+                                                <p-select [options]="item?.productId?.sizeStock" formControlName="size"
+                                                    (onChange)="onSizeChange($event , i)" optionLabel="size"
+                                                    appendTo="body" placeholder="Select a Size"
+                                                    class="w-full md:w-56" />
+                                            </div>
 
-                                        <div class="flex-1">
-                                            <label class="text-sm font-medium text-foreground mb-1 block">
-                                                Quantity
-                                            </label>
-                                            <p-select [options]="quantity" optionLabel="value"
-                                                placeholder="Select a Quantity" class="w-full md:w-56" />
+                                            <div class="flex-1">
+                                                <label class="text-sm font-medium text-foreground mb-1 block">
+                                                    Quantity
+                                                </label>
+                                                <p-select [options]="quantity[i]" formControlName="quantity"
+                                                    optionLabel="value" appendTo="body" placeholder="Select a Quantity"
+                                                    class="w-full md:w-56" />
 
-                                        </div>
+                                            </div>
+                                        </form>
                                     </div>
 
                                     <div class="flex flex-wrap items-baseline gap-2 mt-2">
                                         <span class="text-2xl font-bold text-primary font-heading">
-                                            $29.99
+                                            <span class="text-black font-medium">₹</span> {{item?.productId?.price}}
                                         </span>
-                                        <span class="text-base text-neutral-500 line-through">
+                                        <!-- <span class="text-base text-neutral-500 line-through">
                                             $49.99
                                         </span>
                                         <span class="text-sm font-bold text-tertiary">
                                             Save $20.00
-                                        </span>
+                                        </span> -->
                                     </div>
                                 </div>
                             </div>
-                        <!-- } -->
+                            <!-- } -->
                         </div>
                     </div>
 
@@ -159,25 +165,25 @@
                     <div class="space-y-3">
                         <div class="flex justify-between text-base text-foreground">
                             <span>Subtotal</span>
-                            <span class="font-medium">$29.99</span>
+                            <span class="font-medium">₹ {{totalSelectedPrductCost.subtotal}}</span>
                         </div>
 
-                        <div class="flex justify-between text-base text-tertiary">
+                        <!-- <div class="flex justify-between text-base text-tertiary">
                             <span>Discount</span>
                             <span class="font-medium">-$20.00</span>
-                        </div>
+                        </div> -->
 
                         <div class="flex justify-between text-base text-foreground">
                             <span>Delivery</span>
                             <span class="font-medium">
-                                5.99
+                                {{deliveryCharge}}
                             </span>
                         </div>
 
                         <div class="border-t border-border pt-3 mt-3">
                             <div class="flex justify-between text-lg font-bold text-primary font-heading">
                                 <span>Total</span>
-                                <span>$35.98</span>
+                                <span>₹ {{totalSelectedPrductCost.totalCost}}</span>
                             </div>
                         </div>
                     </div>
