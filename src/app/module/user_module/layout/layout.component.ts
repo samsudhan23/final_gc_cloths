@@ -18,6 +18,7 @@ import { Popover, PopoverModule } from 'primeng/popover';
 import { Subscription } from 'rxjs';
 import { CartService } from '../../admin_module/service/cartService/cart.service';
 import { apiResponse } from '../../../shared/interface/response';
+import { WishlistService } from '../../admin_module/service/wishlistService/wishlist.service';
 
 @Component({
   selector: 'app-layout',
@@ -92,17 +93,23 @@ export class LayoutComponent {
   selectedMember = null;
   private sub!: Subscription;
   cartLength: any = 0;
+  WishlistLength: any = 0;
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object,
     private auth: AuthenticationService,
     private category: CategoryService,
     private router: Router,
-    private cart: CartService
+    private cart: CartService,
+    private wishlistService: WishlistService
   ) { }
 
   ngOnInit() {
     this.cart.updateCartLength$.subscribe((res: any) => {
       this.cartLength = res
+    })
+     this.wishlistService.updateWishlistLength$.subscribe((res: any) => {
+      this.WishlistLength = res
+      console.log('this.WishlistLength: ', this.WishlistLength);
     })
     this.sub = this.auth.currentUser$.subscribe(user => {
       if (user?.role === 'admin') {
@@ -141,7 +148,7 @@ export class LayoutComponent {
   }
   getCartLength() {
     this.cart.getCartList().subscribe((res: apiResponse) => {
-    this.cartLength = res.result.map(item => item.quantity).reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+      this.cartLength = res.result.map(item => item.quantity).reduce((accumulator, currentValue) => accumulator + currentValue, 0)
     })
   }
   ngOnDestroy() {
@@ -196,7 +203,9 @@ export class LayoutComponent {
     this.category.getGenderList().subscribe((res: apiResponse) => {
       if (res.code === 200 && res.success === true) {
         this.genderList = res.navData
-        this.maleList = res.navData.filter((item: Gender) => item._id === "680bd68af7f32e61016eb82f")
+        console.log('this.genderList: ', this.genderList);
+        // this.maleList = res.navData.filter((item: Gender) => item._id === "680bd68af7f32e61016eb82f")
+        // console.log('this.maleList: ', this.maleList);
       }
     })
   }
@@ -217,8 +226,9 @@ export class LayoutComponent {
     this.sidebarVisible = !this.sidebarVisible;
   }
 
-  openSubNav() {
+  openSubNav(item: any) {
     this.sideSubMenu = !this.sideSubMenu;
+    this.router.navigate(['user/categorywiseproduct', item.genderName]);
   }
   movedToMenuPages(pages: String) {
     if (pages === 'wishlist') {

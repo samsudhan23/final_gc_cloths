@@ -52,7 +52,7 @@
                                 <a class="m-menu-mobile__link">
                                     <span>Women</span>
                                 </a>
-                                <span (click)="openSubNav()" class="m-menu-mobile__toggle-button"
+                                <span (click)="openSubNav(items)" class="m-menu-mobile__toggle-button"
                                     data-toggle-submenu="1">
                                     <svg fill="currentColor" stroke="currentColor" xmlns="http://www.w3.org/2000/svg"
                                         viewBox="0 0 256 512">
@@ -64,7 +64,7 @@
                                 <div [ngClass]="{ 'open': sideSubMenu }"
                                     class="m-megamenu-mobile m-megamenu-mobile--level-1 open">
                                     <div class="m-megamenu-mobile__wrapper">
-                                        <button (click)="openSubNav()" class="m-menu-mobile__back-button"
+                                        <button (click)="openSubNav(items)" class="m-menu-mobile__back-button"
                                             data-level="1">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 17">
                                                 <path fill="currentColor"
@@ -207,8 +207,8 @@
                     <div class="m-header__center">
                         <div class="m-header__menu">
                             <ul class="m-menu">
-                                @for (item of maleList; track item._id) {
-                                <li (click)="openSubNav()"
+                                @for (item of genderList; track item._id) {
+                                <li (click)="openSubNav(item)"
                                     class="m-menu__item m-menu__item--parent m-menu__item--has-submenu m-menu__item--dropdown"
                                     data-index="1">
                                     <a class="m-menu__link m-menu__link--main">
@@ -324,7 +324,7 @@
                                         <span> <b>Wishlist</b> </span>
                                     </div>
                                 </ng-template>
-                                <p-overlaybadge value="4" severity="danger">
+                                <p-overlaybadge [value]="WishlistLength" severity="danger">
                                     <!-- <i class="pi pi-heart" style="font-size: 1.6rem"></i> -->
                                     <img width="31" height="33"
                                         src="../../../../assets/images/Avatar/icons8-heart-64.png" alt="">

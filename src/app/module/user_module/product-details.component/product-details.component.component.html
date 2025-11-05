@@ -92,8 +92,113 @@
                     (click)="goBack()"><i class="bi bi-arrow-left me-2"></i>Back
                     to Products</button> -->
             </div>
+
+            <!-- Share and Delivery Section -->
+            <div class="mt-8 border-t pt-5 space-y-6">
+
+                <!-- Share Icons -->
+                <div class="flex flex-wrap items-center gap-3">
+                    <span class="font-medium text-gray-800 text-base">Share</span>
+
+                    <div class="flex items-center gap-4">
+                        <a [href]="'https://wa.me/?text=Check this out: ' + currentUrl" target="_blank"
+                            class="text-green-500 hover:scale-110 transition">
+                            <i class="bi bi-whatsapp text-2xl"></i>
+                        </a>
+
+                        <a [href]="'https://www.facebook.com/sharer/sharer.php?u=' + currentUrl" target="_blank"
+                            class="text-blue-600 hover:scale-110 transition">
+                            <i class="bi bi-facebook text-2xl"></i>
+                        </a>
+
+                        <a [href]="'https://twitter.com/intent/tweet?url=' + currentUrl" target="_blank"
+                            class="text-sky-400 hover:scale-110 transition">
+                            <i class="bi bi-twitter-x text-2xl"></i>
+                        </a>
+
+                        <a href="https://www.instagram.com/" target="_blank"
+                            class="text-pink-500 hover:scale-110 transition">
+                            <i class="bi bi-instagram text-2xl"></i>
+                        </a>
+
+                        <!-- Copy Link -->
+                        <button (click)="copyLink()" class="relative text-gray-600 hover:scale-110 transition"
+                            title="Copy link">
+                            <i class="bi bi-link-45deg text-2xl"></i>
+                            <span *ngIf="linkCopied"
+                                class="absolute -top-6 left-1/2 -translate-x-1/2 bg-black text-white text-xs rounded px-2 py-1 opacity-90 animate-bounce">
+                                Link Copied!
+                            </span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Delivery Details -->
+                <div class="border-t pt-5">
+                    <h3 class="font-semibold text-lg text-gray-800 mb-3">Delivery Details</h3>
+
+                    <div class="flex flex-wrap items-center gap-3">
+                        <input type="text" [(ngModel)]="pincode" maxlength="6" placeholder="Enter Pincode"
+                            class="border rounded-md px-4 py-2 w-40 focus:outline-none focus:ring-2 focus:ring-teal-600 text-gray-800" />
+
+                        <button (click)="checkPincode()"
+                            class="text-teal-600 font-semibold hover:underline transition text-sm uppercase">
+                            {{ pincodeChecked ? 'Change' : 'Check' }}
+                        </button>
+                    </div>
+
+                    <!-- Animated delivery info -->
+                    <div [@slideToggle]="pincodeChecked ? 'open' : 'closed'"
+                        class="overflow-hidden transition-all duration-300 ease-in-out">
+                        <div class="mt-4 space-y-3 text-gray-700 text-sm sm:text-base">
+
+                            <div class="flex items-start gap-3">
+                                <i class="bi bi-cash-coin text-xl text-gray-800"></i>
+                                <p>Cash on delivery is available</p>
+                            </div>
+
+                            <div class="flex items-start gap-3">
+                                <i class="bi bi-truck text-xl text-gray-800"></i>
+                                <p>Estimated Delivery by <strong>{{ estimatedDelivery }}</strong></p>
+                            </div>
+
+                            <div class="flex items-start gap-3 border-t pt-3">
+                                <i class="bi bi-arrow-repeat text-xl text-gray-800"></i>
+                                <p class="text-gray-600">
+                                    This product is eligible for return or exchange under our 07-days return or exchange
+                                    policy.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
         </div>
     </div>
+
+    <div class="mt-10 space-y-4">
+        <div *ngFor="let section of productSections" class="border rounded-lg shadow-sm overflow-hidden bg-white">
+            <button (click)="toggleSection(section)"
+                class="w-full flex justify-between items-center px-5 py-3 bg-gray-50 hover:bg-gray-100 transition-all duration-300">
+                <span class="font-semibold text-gray-800 text-lg">
+                    {{ section.title }}
+                </span>
+                <i class="bi bi-chevron-down text-gray-600" [@rotateChevron]="section.open ? 'up' : 'down'"></i>
+            </button>
+
+            <div [@expandCollapse]="section.open ? 'open' : 'closed'" class="text-gray-700 text-sm leading-relaxed">
+                <div class="px-5 py-4">
+                    <p [innerHTML]="section.content"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
 
     <!-- Related Products -->
     <div class="related-products mt-5" *ngIf="relatedProducts.length > 0">
@@ -124,4 +229,7 @@
             </div>
         </div>
     </div>
+    
 </div>
+
+

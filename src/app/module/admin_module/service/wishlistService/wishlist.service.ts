@@ -1,12 +1,15 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { enviornment } from '../../../../../environment/environment';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class WishlistService {
+
+  public WishlistLength = new BehaviorSubject<number>(0);
+  updateWishlistLength$: Observable<number> = this.WishlistLength.asObservable();
 
   constructor(private http: HttpClient) { }
 
@@ -25,5 +28,13 @@ export class WishlistService {
 
   deleteWishList(id: { ids: string[] | number[] }): Observable<any> {
     return this.http.post(`${enviornment.url}wishList/delete`, id);
+  }
+
+  deleteWishLists(id: string): Observable<any> {
+    return this.http.post(`${enviornment.url}wishList/delete`, { ids: [id] });
+  }
+
+  getLengthOfWishlist(length: number) {
+    this.WishlistLength.next(length)
   }
 }

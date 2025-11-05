@@ -367,11 +367,11 @@ export class ProductManagementComponent {
       const FormControlValues = this.productForm.value;
 
       formData.append('productName', FormControlValues.productName);
-       formData.append('warehouse', FormControlValues.warehouse);
+      formData.append('warehouse', FormControlValues.warehouse);
       formData.append('productDescription', FormControlValues.productDescription);
       formData.append('gender', FormControlValues.gender);
-      formData.append('warehouse', FormControlValues.warehouse);
       formData.append('price', FormControlValues.price);
+      formData.append('careInstruction', FormControlValues.careInstruction);
       if (FormControlValues.discountPrice !== null && FormControlValues.discountPrice !== undefined && FormControlValues.discountPrice !== '') {
         formData.append('discountPrice', FormControlValues.discountPrice.toString());
       }
