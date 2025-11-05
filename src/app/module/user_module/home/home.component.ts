@@ -12,6 +12,7 @@ import { AdminProductService } from '../../admin_module/service/productService/a
 import { ToastrService } from 'ngx-toastr';
 import { TabsModule } from 'primeng/tabs';
 import { CategoryService } from '../../admin_module/service/category/category.service';
+import { WishlistService } from '../../admin_module/service/wishlistService/wishlist.service';
 
 declare function showAlert(): void;
 @Component({
@@ -35,7 +36,7 @@ export class HomeComponent implements OnInit {
     'assets/images/basic/home2.webp',
     'assets/images/basic/home3.webp'
   ];
-  animated: any[] = []
+  animated: any[] = [];
 
   categories = [
     { name: 'All', id: 'Tab 1' },
@@ -55,6 +56,7 @@ export class HomeComponent implements OnInit {
     private productService: AdminProductService,
     private toast: ToastrService,
     private category: CategoryService,
+    private wishlistService: WishlistService
   ) { }
   ngAfterViewInit(): void {
     showAlert();
@@ -93,18 +95,19 @@ export class HomeComponent implements OnInit {
       }
     ]
 
-    this.animated = [
-      { "id": 1, "name": "Bata Power Walk", "price": 45000, "image": "assets/images/Products/1 (1).avif" },
-      { "id": 2, "name": "Skechers Go Walk 1", "price": 67490, "image": "assets/images/Products/1 (2).avif" },
-      { "id": 3, "name": "Bata Power Walk", "price": 12000, "image": "assets/images/Products/1 (3).avif" },
-      { "id": 4, "name": "Skechers Flex Appeal", "price": 67490, "image": "assets/images/Products/2 (1).avif" },
-      { "id": 5, "name": "Fila Sport Max", "price": 12000, "image": "assets/images/Products/2 (2).avif" },
-      { "id": 6, "name": "Bata Power Walk", "price": 45000, "image": "assets/images/Products/2 (3).avif" },
-      { "id": 7, "name": "Skechers Go Walk 1", "price": 67490, "image": "assets/images/Products/1 (1).avif" },
-      { "id": 8, "name": "Bata Power Walk", "price": 12000, "image": "assets/images/Products/1 (2).avif" }
-    ]
+    // this.animated =
+    //   [
+    //     { "id": 1, "productName": "Bata Power Walk", "price": 45000, "images": "assets/images/Products/1 (1).avif" },
+    //     { "id": 2, "productName": "Skechers Go Walk 1", "price": 67490, "images": "assets/images/Products/1 (2).avif" },
+    //     { "id": 3, "productName": "Bata Power Walk", "price": 12000, "images": "assets/images/Products/1 (3).avif" },
+    //     { "id": 4, "productName": "Skechers Flex Appeal", "price": 67490, "images": "assets/images/Products/2 (1).avif" },
+    //     { "id": 5, "productName": "Fila Sport Max", "price": 12000, "images": "assets/images/Products/2 (2).avif" },
+    //     { "id": 6, "productName": "Bata Power Walk", "price": 45000, "images": "assets/images/Products/2 (3).avif" },
+    //     { "id": 7, "productName": "Skechers Go Walk 1", "price": 67490, "images": "assets/images/Products/1 (1).avif" },
+    //     { "id": 8, "productName": "Bata Power Walk", "price": 12000, "images": "assets/images/Products/1 (2).avif" }
+    //   ]
     // auto slide every 10s
-    this.interval = setInterval(() => this.next(), 5000);
+    // this.interval = setInterval(() => this.next(), 5000);
   }
 
   getPositionClass(i: number): string {
@@ -175,7 +178,13 @@ export class HomeComponent implements OnInit {
   getProduct() {
     this.productService.getProductlist().subscribe((res: any) => {
       this.productList = res.result;
-      this.filterProducts();
+      console.log('this.productList: ', this.productList);
+      if (this.productList && this.productList.length > 0) {
+        this.animated = this.productList;
+        this.interval = setInterval(() => this.next(), 5000);
+        this.filterProducts();
+        this.getWishlistdetails();
+      }
     }, (error: any) => {
       this.toast.warning(error.error.message);
     })
@@ -184,7 +193,6 @@ export class HomeComponent implements OnInit {
   filterProducts(): void {
     if (this.selectedCategory === 'All') {
       this.filteredProducts = this.productList;
-      console.log('this.filteredProducts: ', this.filteredProducts);
     } else {
       this.filteredProducts = this.productList.filter((product: any) => product.category.categoryName === this.selectedCategory);
     }
@@ -195,9 +203,34 @@ export class HomeComponent implements OnInit {
     this.filterProducts();
   }
 
-  addToCart(product: any,event:Event) {
+  wishListData: any[] = [];
+  getWishlistdetails() {
+    let storedUser: any = localStorage.getItem('role');
+    let user = JSON.parse(storedUser);
+    let userId = user.id || '';
+    this.wishlistService.getWishList().subscribe((res: any) => {
+      const allWishlist = res?.result || [];
+      console.log('allWishlist: ', allWishlist);
+      this.wishListData = allWishlist.filter(
+        (item: any) => item.userId?._id == userId
+      );
+      console.log('this.wishListData: ', this.wishListData);
+      this.wishlistService.getLengthOfWishlist(this.wishListData.length)
+      const wishlistedProductIds = this.wishListData.map(
+        (w: any) => w.productId?._id
+      );
+
+      // Merge wishlist state with product list
+      this.filteredProducts = this.productList.map((p: any) => ({
+        ...p,
+        isWishlisted: wishlistedProductIds.includes(p._id),
+      }));
+    });
+  }
+
+  addToCart(product: any, event: Event) {
     console.log("Added to cart:", product);
-     event.stopPropagation();
+    event.stopPropagation();
   }
 
   addToWishlist(product: any) {
@@ -205,17 +238,66 @@ export class HomeComponent implements OnInit {
     // your wishlist logic here
   }
 
-  toggleWishlist(product: any, event:Event) {
-    product.isWishlisted = !product.isWishlisted;
-    event.stopPropagation();
+  toggleWishlist(product: any, event: Event) {
+    console.log('product._id: ', product._id);
+    // product.isWishlisted = !product.isWishlisted;
+    if (localStorage.getItem('role') != null) {
+      let storedUser: any = localStorage.getItem('role');
+      let user = JSON.parse(storedUser);
+      let userId = user.id || '';
+      event.stopPropagation();
+
+      if (!userId) {
+        this.toast.warning('Please login to add items to wishlist');
+        return;
+      }
+
+      if (!product.isWishlisted) {
+        // Add to wishlist
+        const payload = {
+          userId: userId,
+          productId: product._id
+        };
+
+        this.wishlistService.postWishlist(payload).subscribe({
+          next: () => {
+            product.isWishlisted = true;
+            this.toast.success('Added to wishlist ❤️');
+            this.getWishlistdetails();
+          },
+          error: (err: any) => {
+            console.error(err);
+            this.toast.error('Failed to add to wishlist');
+          }
+        });
+      } else {
+        // Remove from wishlist
+        // Find existing wishlist entry for this product
+        const matchedItem = this.wishListData.find(
+          (w) => w.productId?._id == product._id
+        );
+        console.log('matchedItem: ', matchedItem);
+
+        this.wishlistService.deleteWishLists(matchedItem._id).subscribe({
+          next: () => {
+            product.isWishlisted = false;
+            this.toast.info('Removed from wishlist 💔');
+            this.getWishlistdetails();
+          },
+          error: (err: any) => {
+            console.error(err);
+            this.toast.error('Failed to remove from wishlist');
+          }
+        });
+      }
+    }
   }
 
   selectedProduct: any = null;
 
-  openQuickView(product: any,event:Event) {
+  openQuickView(product: any, event: Event) {
     this.selectedProduct = product;
     event.stopPropagation();
-    console.log('this.selectedProduct: ', this.selectedProduct);
   }
 
   closeQuickView() {
@@ -228,8 +310,9 @@ export class HomeComponent implements OnInit {
 
   viewDetails(product: any, data: string) {
     console.log('product: ', product);
-    if(data == 'data'){
-      this.router.navigate(['user/product-details'], { state: { product, allProducts: this.filteredProducts } });
+    if (data == 'data') {
+      // this.router.navigate(['user/categorywiseproduct', product._id]);  
+      this.router.navigate(['user/product-details', product._id], { state: { product, allProducts: this.filteredProducts } });
     }
   }
 

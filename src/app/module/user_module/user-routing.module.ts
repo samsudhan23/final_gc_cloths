@@ -8,6 +8,7 @@ import { AboutComponent } from "./about/about.component";
 import { UserProfileComponent } from "./user-profile/user-profile.component";
 import { UserWishlistComponent } from "./user-wishlist/user-wishlist.component";
 import { UserCartComponent } from "./user-cart/user-cart.component";
+import { CategorywiseproductComponent } from "./categorywiseproduct/categorywiseproduct.component";
 // import { UserLayoutComponent } from "./user-layout/user-layout.component";
 
 export const routes: Routes = [
@@ -17,12 +18,13 @@ export const routes: Routes = [
         children: [
             { path: '', redirectTo: 'home', pathMatch: 'full' },
             { path: 'home', component: HomeComponent },
-            { path: 'product-details', component: ProductDetailsComponent },
+            { path: 'product-details/:_id', component: ProductDetailsComponent },
             { path: 'contactus', component: ContactusComponent },
             { path: 'about', component: AboutComponent },
             { path: 'user-profile', component: UserProfileComponent },
             { path: 'wishlist', component: UserWishlistComponent },
             { path: 'cart', component: UserCartComponent },
+            { path: 'categorywiseproduct/:genderName', component: CategorywiseproductComponent },
             {
                 path: 'shop',
                 loadComponent: () => import('./shop/shop.component').then(m => m.ShopComponent)

@@ -104,4 +104,22 @@
 }
 
 
+button {
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+  transform: scale(1.01);
+}
+
+.border {
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+.border:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+
+
 
