@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
 import { CartService } from '../../admin_module/service/cartService/cart.service';
 import { FormsModule } from '@angular/forms';
 import { apiResponse } from '../../../shared/interface/response';
+import { AdminProductService } from '../../admin_module/service/productService/admin-product.service';
 import {
   trigger,
   state,
@@ -67,47 +68,46 @@ import {
   ]
 })
 export class ProductDetailsComponent implements OnInit {
-  product: any;
-  selectedImage: string = '';
+  product: any = null;
+  selectedImage: string | undefined = '';
   selectedSize: string | null = null;
   stock!: number
   relatedProducts: any[] = [];
   quantityValue: any = 1;
   cartLength!: number;
+  productList: any[] = [];
+  productID: number = 0;
   productSections: any[] = [];
   selectedId: any;
+  isGotoCart: boolean = false;;
+
   constructor(
     private router: Router,
     private toast: ToastrService,
     private cartService: CartService,
-    private route: ActivatedRoute
+    private productService: AdminProductService,
   ) {
-    const navigation = this.router.getCurrentNavigation();
-    this.product = navigation?.extras?.state?.['product'];
-    console.log('this.product: ', this.product);
-    const allProducts = navigation?.extras?.state?.['allProducts'] || [];
-
-    this.route.paramMap.subscribe(params => {
-      this.selectedId = params.get('_id') || '';
-      console.log('this.selectedId: ', this.selectedId);
-    });
-
-    if (this.product && allProducts.length) {
-      this.relatedProducts = allProducts.filter(
-        (p: any) => p.category?.categoryName === this.product?.category?.categoryName && p._id !== this.product?._id
-      );
-    }
   }
 
   ngOnInit() {
-    if (this.product) {
-      this.selectedImage = this.product?.images;
-      console.log('this.selectedImage: ', this.selectedImage);
-      this.buildProductSections(this.product);
-    }
-    this.currentUrl = window.location.href;
+    this.isGotoCart = false;
+    this.getProduct();
   }
-
+  getProduct() {
+    const prodID = sessionStorage.getItem('prodID');
+    this.productService.getProductlist().subscribe((res: any) => {
+      this.productList = res.result;
+      if (this.productList) {
+        this.product = this.productList.find((item: any) => item._id === prodID) //get specific product
+        this.buildProductSections(this.product);
+        this.relatedProducts = this.productList.filter(
+          (p: any) => p.category?.categoryName === this.product?.category?.categoryName && p._id !== this.product?._id
+        );
+      }
+    }, (error: any) => {
+      this.toast.warning(error.error.message);
+    })
+  }
   changeImage(img: any) {
     this.selectedImage = img;
   }
@@ -127,34 +127,85 @@ export class ProductDetailsComponent implements OnInit {
       this.toast.warning('Please select a size first!');
       return;
     }
-    const parse = JSON.parse(localStorage.getItem('role') || '')
-    const prodDetails = product?.sizeStock.filter((item: any) => item?.size == this.selectedSize)
-    const cartData = {
-      userId: parse?.id,
-      productId: product?._id,
+
+    const roleString = localStorage.getItem('role');
+    const parse = roleString ? JSON.parse(roleString) : null;
+    const prodDetails = product?.sizeStock.filter(
+      (item: any) => item?.size == this.selectedSize
+    );
+
+    const cartItem = {
+      _id: product?._id,
       quantity: this.quantityValue,
-      selectedSize: prodDetails[0]?.size
+      selectedSize: prodDetails[0]?.size,
+      productId: product, // keep entire product for localStorage display
+    };
+
+    // ✅ Case 1: Logged-in user → Save to backend
+    if (parse && parse?.id) {
+      const cartData = {
+        userId: parse.id,
+        productId: product._id,
+        quantity: this.quantityValue,
+        selectedSize: prodDetails[0]?.size,
+      };
+
+      this.cartService.postCart(cartData).subscribe(
+        (res: apiResponse) => {
+          if (res?.code === 200 && res?.success === true) {
+            this.toast.success(res?.message);
+            this.getCartLength();
+            this.isGotoCart = true;
+          } else {
+            this.toast.error(res?.message);
+          }
+        },
+        (error) => {
+          this.toast.error(error.error.message);
+        }
+      );
+    } else {
+      // ✅ Case 2: Guest user → Save to localStorage
+      const existingCart = JSON.parse(localStorage.getItem('guestCart') || '[]');
+
+      // check if same product + size exists already
+      const existingItemIndex = existingCart.findIndex(
+        (item: any) =>
+          item._id === cartItem._id &&
+          item.selectedSize === cartItem.selectedSize
+      );
+
+      if (existingItemIndex >= 0) {
+        existingCart[existingItemIndex].quantity += this.quantityValue;
+        this.toast.info('Updated item quantity in cart!');
+      } else {
+        existingCart.push(cartItem);
+        this.toast.success('Product added to cart!');
+      }
+
+      localStorage.setItem('guestCart', JSON.stringify(existingCart));
+      this.getCartLength();
     }
-    this.cartService.postCart(cartData).subscribe((res: apiResponse) => {
-      if (res?.code === 200 && res?.success === true) {
-        this.toast.success(res?.message);
-        this.getCartLength();
-      }
-      else {
-        this.toast.error(res?.message);
-      }
-    }, (error) => {
-      this.toast.error(error.error.message);
-    })
   }
+
   // Cart Length
   getCartLength() {
-    this.cartService.getCartList().subscribe((res: apiResponse) => {
-      if (res?.code === 200 && res?.success === true) {
-        this.cartLength = res.result.map(item => item?.quantity).reduce((accumulator, currentValue) => accumulator + currentValue, 0)
-        this.cartService.getLengthOfCart(this.cartLength) //using service to pass lenght of cart
-      }
-    })
+    const roleString = localStorage.getItem('role');
+    const parse = roleString ? JSON.parse(roleString) : null;
+    if (parse && parse?.id) {
+      this.cartService.getCartList().subscribe((res: apiResponse) => {
+        if (res?.code === 200 && res?.success === true) {
+          this.cartLength = res.result.map(item => item?.quantity).reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+          this.cartService.getLengthOfCart(this.cartLength) //using service to pass lenght of cart
+        }
+      })
+    }
+    else {
+      const guestCart = JSON.parse(localStorage.getItem('guestCart') || '[]');
+      this.cartLength = guestCart;
+      this.cartLength = guestCart.map((item: any) => item?.quantity).reduce((accumulator: any, currentValue: any) => accumulator + currentValue, 0)
+      this.cartService.getLengthOfCart(this.cartLength)
+    }
   }
   quantityAdding(event: String) {
     if (event === 'add') {
@@ -196,7 +247,7 @@ export class ProductDetailsComponent implements OnInit {
 
     // keep only same-category items
     this.relatedProducts = this.relatedProducts.filter(
-      (p) => p.category.categoryName === this.product.category.categoryName && p._id !== this.product._id
+      (p) => p.category.categoryName === this.product?.category?.categoryName && p._id !== this.product?._id
     );
 
     // Rebuild the product sections dynamically
@@ -342,4 +393,7 @@ export class ProductDetailsComponent implements OnInit {
     this.router.navigate(['user/home']);
   }
 
+  goToCart() {
+    this.router.navigate(['user/cart']);
+  }
 }

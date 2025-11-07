@@ -94,6 +94,7 @@ export class LayoutComponent {
   private sub!: Subscription;
   cartLength: any = 0;
   WishlistLength: any = 0;
+  allCartList: any[] = [];
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object,
     private auth: AuthenticationService,
@@ -107,7 +108,7 @@ export class LayoutComponent {
     this.cart.updateCartLength$.subscribe((res: any) => {
       this.cartLength = res
     })
-     this.wishlistService.updateWishlistLength$.subscribe((res: any) => {
+    this.wishlistService.updateWishlistLength$.subscribe((res: any) => {
       this.WishlistLength = res
       console.log('this.WishlistLength: ', this.WishlistLength);
     })
@@ -147,9 +148,18 @@ export class LayoutComponent {
     this.getCartLength();
   }
   getCartLength() {
-    this.cart.getCartList().subscribe((res: apiResponse) => {
-      this.cartLength = res.result.map(item => item.quantity).reduce((accumulator, currentValue) => accumulator + currentValue, 0)
-    })
+    const roleString = localStorage.getItem('role');
+    const parse = roleString ? JSON.parse(roleString) : null;
+    if (parse?.id) {
+      this.cart.getCartList().subscribe((res: apiResponse) => {
+        this.cartLength = res.result.map(item => item.quantity).reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+      })
+    } else {
+      const guestCart = JSON.parse(localStorage.getItem('guestCart') || '[]');
+      this.allCartList = guestCart;
+      console.log('guestCart: ', guestCart);
+      this.cartLength = this.allCartList.map(item => item.quantity).reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+    }
   }
   ngOnDestroy() {
     if (this.sub) this.sub.unsubscribe();
@@ -203,7 +213,6 @@ export class LayoutComponent {
     this.category.getGenderList().subscribe((res: apiResponse) => {
       if (res.code === 200 && res.success === true) {
         this.genderList = res.navData
-        console.log('this.genderList: ', this.genderList);
         // this.maleList = res.navData.filter((item: Gender) => item._id === "680bd68af7f32e61016eb82f")
         // console.log('this.maleList: ', this.maleList);
       }

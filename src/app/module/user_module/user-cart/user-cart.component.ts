@@ -7,6 +7,8 @@ import { CartService } from '../../admin_module/service/cartService/cart.service
 import { apiResponse } from '../../../shared/interface/response';
 import { CartItem } from '../../../shared/interface/cart.model';
 import { ToastrService } from 'ngx-toastr';
+import { Router } from '@angular/router';
+import { AdminProductService } from '../../admin_module/service/productService/admin-product.service';
 
 @Component({
   selector: 'app-user-cart',
@@ -16,7 +18,7 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class UserCartComponent {
   selectedCity: any | undefined = '';
-  deliveryCharge: number = 5.99;
+  deliveryCharge: any = 5.99;
   cart: any = [];
   totalSelectedPrductCost: any = {};
   indicators: any[] = [
@@ -44,54 +46,131 @@ export class UserCartComponent {
   constructor(
     private cartService: CartService,
     private toast: ToastrService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private router: Router,
+    private productService: AdminProductService,
   ) {
 
   }
   ngOnInit() {
-    this.getCartList();
     this.cartFormArray = this.fb.array([]);
+    this.getCartList();
+  }
+  trackByCartItem(index: number, item: any): string {
+    // Combine both productId and size to make a unique key
+    return `${item.productId?._id || item._id}_${item.selectedSize || 'NA'}`;
   }
 
 
   getCartList() {
-    this.cartService.getCartList().subscribe((res: apiResponse) => {
-      console.log('res: ', res);
-      if (res?.code === 200 && res?.success === true) {
-        this.allCartList = res?.result;
-         this.cartLength = res.result.map(item => item?.quantity).reduce((accumulator, currentValue) => accumulator + currentValue, 0)
-         console.log('this.cartLength: ', this.cartLength);
-        this.cartService.getLengthOfCart(this.cartLength) //using service to pass lenght of cart
-        this.allCartList.forEach((item, i) => {
-          this.totalSelectedPrductCost = this.addTotalPrice(item?.productId?.price, this.deliveryCharge)
-          // find size object
-          const sizeObj = item.productId.sizeStock.find(
-            (s: any) => s.size === item.selectedSize
-          );
+    const roleString = localStorage.getItem('role');
+    const parse = roleString ? JSON.parse(roleString) : null;
+    if (parse?.id) {
+      this.cartService.getCartList().subscribe(
+        (res: apiResponse) => {
+          if (res?.code === 200 && res?.success === true) {
+            this.allCartList = res?.result;
 
-          // generate quantity options based on stock
-          this.quantity[i] = this.generateQuantityArray(sizeObj?.stock || 10);
-          const selectedQuantityObj = { value: item.quantity || 1 };
-          // push form group
-          const group = this.fb.group({
-            size: [sizeObj],
-            quantity: [selectedQuantityObj],
-          });
+            // total items count
+            this.cartLength = res.result
+              .map(item => item?.quantity)
+              .reduce((acc, cur) => acc + cur, 0);
+            this.cartService.getLengthOfCart(this.cartLength);
 
-          this.cartFormArray.push(group);
+            // form array setup
+            this.cartFormArray.clear(); // clear before reassigning
+            this.allCartList.forEach((item, i) => {
+              const sizeObj = item.productId.sizeStock.find(
+                (s: any) => s.size === item.selectedSize
+              );
+
+              this.quantity[i] = this.generateQuantityArray(sizeObj?.stock || 10);
+              const selectedQuantityObj = { value: item.quantity || 1 };
+
+              const group = this.fb.group({
+                size: [sizeObj],
+                quantity: [selectedQuantityObj],
+              });
+              this.cartFormArray.push(group);
+            });
+            // ✅ calculate totals after building the cart
+            this.calculateTotal();
+          }
+        },
+        (error) => {
+          this.toast.error(error.error.message);
+        }
+      );
+    }
+    else {
+      const guestCart = JSON.parse(localStorage.getItem('guestCart') || '[]');
+      console.log('guestCart: ', guestCart);
+      this.allCartList = guestCart;
+
+      this.cartLength = guestCart
+        .map((item: any) => item?.quantity)
+        .reduce((acc: any, cur: any) => acc + cur, 0);
+      this.cartService.getLengthOfCart(this.cartLength);
+
+      // form array setup
+      this.cartFormArray.clear(); // clear before reassigning
+      this.allCartList.forEach((item, i) => {
+        const sizeObj = item.productId.sizeStock.find(
+          (s: any) => s.size === item.selectedSize
+        );
+
+        this.quantity[i] = this.generateQuantityArray(sizeObj?.stock || 10);
+        const selectedQuantityObj = { value: item.quantity || 1 };
+
+        const group = this.fb.group({
+          size: [sizeObj],
+          quantity: [selectedQuantityObj],
         });
+        this.cartFormArray.push(group);
+      });
+      // ✅ calculate totals after building the cart
+      this.calculateTotal();
+    }
+  }
+
+  calculateTotal() {
+    let subtotal = 0;
+
+    this.allCartList.forEach((item) => {
+      const price = item.productId?.price || 0;
+      const quantity = item.quantity || 1;
+      subtotal += price * quantity;
+    });
+
+    this.totalSelectedPrductCost = {
+      subtotal: subtotal,
+      totalCost: subtotal + this.deliveryCharge,
+    };
+
+    console.log('Calculated Totals:', this.totalSelectedPrductCost);
+  }
+  onQuantityChange(event?: any, cartData?: any) {
+    console.log('event: ', event);
+    this.updateCart(event?.value?.value, cartData)
+  }
+  updateCart(quantity: any, cartData: any) {
+    let data = {
+      userId: cartData?.userId._id,
+      productId: cartData?.productId._id,
+      quantity: quantity,
+      selectedSize: cartData?.selectedSize
+    }
+    this.cartService.updateCartItem(cartData?._id, data).subscribe((res: any) => {
+      if (res.code === 200 && res.success === true) {
+        // this.toast.success(res.message);
+        this.getCartList();
+      }
+      else {
+        this.toast.error(res.message);
       }
     }, (error) => {
-      this.toast.error(error.error.message)
-    })
-  }
-  addTotalPrice(price: number, delivery: number) {
-    const sumOfPrice = price + price
-    const totalCost = sumOfPrice + delivery
-    return {
-      "subtotal": sumOfPrice,
-      "totalCost": totalCost
-    }
+      this.toast.error(error.error.message);
+    });
   }
 
   onSizeChange(event: any, i: number) {
@@ -103,6 +182,10 @@ export class UserCartComponent {
 
     // reset the quantity value to 1
     this.cartFormArray.at(i).get('quantity')?.setValue(1);
+    this.totalSelectedPrductCost = {
+      subtotal: 0,
+      totalCost: 0,
+    };
   }
   //Generate quantity array value based on size stock
   generateQuantityArray(stock: number) {
@@ -113,21 +196,64 @@ export class UserCartComponent {
     return this.cartFormArray.at(index) as FormGroup;
   }
 
-
   deleteCart(data: any) {
-    const dele = {
-      ids: data._id
-    }
-    this.cartService.deleteCartItem(dele).subscribe((res: any) => {
-      if (res.code === 200 && res.success === true) {
-        this.toast.success('Cart Removed Successfully');
-        this.getCartList();
-      } else {
-        this.toast.error(res.message);
-      }
-    }, (error) => {
-      this.toast.error(error.error.message);
-    });
+    const user = JSON.parse(localStorage.getItem('role') || 'null');
 
+    // 🧾 CASE 1: User is logged in → Use API
+    if (user && user.id) {
+      const dele = { ids: data._id };
+      this.cartService.deleteCartItem(dele).subscribe(
+        (res: any) => {
+          if (res.code === 200 && res.success === true) {
+            this.toast.success('Cart Removed Successfully');
+            this.getCartList(); // refresh from backend
+          } else {
+            this.toast.error(res.message);
+          }
+        },
+        (error) => {
+          this.toast.error(error.error.message);
+        }
+      );
+    }
+    // 🧾 CASE 2: Guest user → LocalStorage removal
+    else {
+      let localCart: any[] = JSON.parse(localStorage.getItem('guestCart') || '[]');
+
+      // Remove based on productId + selectedSize to ensure uniqueness
+      localCart = localCart.filter(
+        (item) =>
+          !(
+            item._id === data._id &&
+            item.selectedSize === data.selectedSize
+          )
+      );
+
+      localStorage.setItem('guestCart', JSON.stringify(localCart));
+      this.allCartList = localCart;
+      this.toast.success('Cart Removed Successfully');
+      this.getCartLength();
+    }
+  }
+
+  // Cart Length for without login
+  getCartLength() {
+    const roleString = localStorage.getItem('role');
+    const parse = roleString ? JSON.parse(roleString) : null;
+    if (!parse && !parse?.id) {
+      const guestCart = JSON.parse(localStorage.getItem('guestCart') || '[]');
+      this.cartLength = guestCart;
+      this.cartLength = guestCart.map((item: any) => item?.quantity).reduce((accumulator: any, currentValue: any) => accumulator + currentValue, 0)
+      this.cartService.getLengthOfCart(this.cartLength)
+    }
+  }
+
+  goToProductShoping() {
+    this.router.navigate(['user/home'])
+  }
+
+  goToProduct(product: any) {
+    this.productService.setSelectedProdID(product._id)
+    this.router.navigate(['user/product-details'])
   }
 }

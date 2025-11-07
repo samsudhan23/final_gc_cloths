@@ -6,7 +6,7 @@
         <!-- Gallery -->
         <div class="col-md-6">
             <div class="main-img text-center mb-3">
-                <img [src]="selectedImage" alt="{{product.productName}}" class="img-fluid rounded shadow">
+                <img [src]="product.images" alt="{{product.productName}}" class="img-fluid rounded shadow">
             </div>
             <div class="thumb-gallery d-flex justify-content-center gap-2">
                 <img *ngFor="let img of product.gallery" [src]="img" alt="{{product.productName}}" class="thumb-img"
@@ -78,10 +78,17 @@
                 <button class="btn buy-now-btn px-4 rounded-pill shadow-sm hover-scale" (click)="buyNow(product)">
                     <i class="bi bi-bag-check-fill me-2"></i>Buy Now
                 </button>
+                @if(!isGotoCart){
                 <button class="btn btn-outline-secondary px-4 rounded-pill shadow-sm hover-scales"
                     (click)="addToCart(product)">
                     <i class="bi bi-cart me-2"></i>Add to Cart
                 </button>
+                }
+                @if(isGotoCart){
+                <button class="btn buy-now-btn px-4 rounded-pill shadow-sm hover-scales" (click)="goToCart()">
+                    <i class="bi bi-cart me-2"></i>Go to Cart
+                </button>
+                }
                 <button class="btn btn-outline-danger px-4 rounded-pill shadow-sm hover-scale"
                     (click)="toggleWishlist(product)">
                     <i
@@ -229,7 +236,5 @@
             </div>
         </div>
     </div>
-    
+
 </div>
-
-

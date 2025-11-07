@@ -1,8 +1,11 @@
+import { Gender } from "./gender";
+
 export interface Products {
+  isWishlisted: any;
   _id?: string;
 
-  category: string; 
-  gender: string;   
+  category: any;
+  gender: Gender;
   warehouse: string;
 
   productName: string;
