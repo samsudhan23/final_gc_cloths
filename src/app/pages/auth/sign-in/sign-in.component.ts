@@ -25,6 +25,7 @@ import { TagModule } from 'primeng/tag';
 import { TextareaModule } from 'primeng/textarea';
 import { ToastModule } from 'primeng/toast';
 import { ToolbarModule } from 'primeng/toolbar';
+import { CartService } from '../../../module/admin_module/service/cartService/cart.service';
 
 @Component({
   selector: 'app-sign-in',
@@ -50,7 +51,7 @@ import { ToolbarModule } from 'primeng/toolbar';
   styleUrl: './sign-in.component.scss'
 })
 export class SignInComponent {
-  loading:boolean = false;
+  loading: boolean = false;
   isLogin: boolean = true;
   signupForm: FormGroup;
   loginForm: FormGroup;
@@ -67,7 +68,13 @@ export class SignInComponent {
   private timerSubscription: Subscription | null = null;
   @ViewChildren('otp1, otp2, otp3, otp4, otp5, otp6') otpInputs!: QueryList<ElementRef>;
 
-  constructor(private fb: FormBuilder, private router: Router, private toast: ToastrService, private http: HttpClient, private auth: AuthenticationService) {
+  constructor(private fb: FormBuilder,
+    private router: Router,
+    private toast: ToastrService,
+    private http: HttpClient,
+    private auth: AuthenticationService,
+    private cartService: CartService
+  ) {
     this.signupForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
@@ -231,7 +238,8 @@ export class SignInComponent {
         if (res.success === true || res.code === 200) {
           console.log('res: ', res.result);
           this.toast.success(res.message);
-          const role = res.result.role;
+          const role = res?.result?.role;
+          this.mergeGuestCart(res?.result?.id);
 
           // Redirect based on role
           if (role === 'admin') {
@@ -309,6 +317,24 @@ export class SignInComponent {
         this.timerSubscription.unsubscribe();
       }
     });
+  }
+
+  // When the user logs in successfully, you can merge guest cart into server cart:
+  mergeGuestCart(userId: string) {
+    const guestCart = JSON.parse(localStorage.getItem('guestCart') || '[]');
+    if (guestCart.length === 0) return;
+
+    guestCart.forEach((item: any) => {
+      const cartData = {
+        userId: userId,
+        productId: item._id,
+        quantity: item.quantity,
+        selectedSize: item.selectedSize,
+      };
+      this.cartService.postCart(cartData).subscribe();
+    });
+
+    localStorage.removeItem('guestCart');
   }
 
 }

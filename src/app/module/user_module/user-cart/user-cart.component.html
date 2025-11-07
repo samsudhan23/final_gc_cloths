@@ -44,7 +44,8 @@
     </div>
 
 </div> -->
-<div *ngIf="!allCartList" class="min-h-screen bg-white">
+@if(allCartList.length == 0){
+<div class="min-h-screen bg-white">
     <div class="container mx-auto px-4 py-8 md:py-16">
         <div class="flex flex-col items-center justify-center py-16 px-4 text-center">
             <img src="https://c.animaapp.com/mgfcgz6sqvonyu/img/ai_3.png" alt="empty cart illustration"
@@ -56,11 +57,12 @@
             <p class="text-base text-neutral-600 mb-6 max-w-md">
                 Looks like you haven't added anything to your cart yet. Start shopping to fill it up!
             </p>
-            <p-button class="" label="Start Shopping" icon="pi pi-shopping-cart" />
+            <p-button class="" label="Start Shopping" icon="pi pi-shopping-cart" (click)="goToProductShoping()" />
         </div>
     </div>
 </div>
-
+}
+@if(allCartList.length > 0){
 <div class="min-h-screen bg-white">
     <div class="container mx-auto px-4 py-8 md:py-16">
         <header class="mb-8">
@@ -74,8 +76,8 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div class="lg:col-span-2">
-                @for(item of allCartList; track item._id; let i = $index){
-                <section aria-label="Cart items">
+                <!-- @for(item of allCartList; track trackByCartItem; let i = $index){ -->
+                <section aria-label="Cart items" *ngFor="let item of allCartList; let i = index">
                     <div>
                         <div
                             class="relative rounded-xl p-4 md:p-6 transition-all duration-200 ease-in hover:scale-[1.02] hover:bg-neutral-50 mb-4 border border-border">
@@ -93,7 +95,8 @@
 
                                 <div class="flex-1 flex flex-col gap-3">
                                     <div>
-                                        <h3 class="font-heading font-semibold text-lg text-foreground">
+                                        <h3 (click)="goToProduct(item?.productId)"
+                                            class="cursor-pointer font-heading font-semibold text-lg text-foreground hover:text-blue-700 ">
                                             {{item?.productId?.productName}}
                                         </h3>
                                         <p class="text-base text-foreground mt-1">{{item?.productId?.productName}}</p>
@@ -127,7 +130,8 @@
                                                 <label class="text-sm font-medium text-foreground mb-1 block">
                                                     Quantity
                                                 </label>
-                                                <p-select [options]="quantity[i]" formControlName="quantity"
+                                                <p-select (onChange)="onQuantityChange($event , item)"
+                                                    [options]="quantity[i]" formControlName="quantity"
                                                     optionLabel="value" appendTo="body" placeholder="Select a Quantity"
                                                     class="w-full md:w-56" />
 
@@ -139,10 +143,13 @@
                                         <span class="text-2xl font-bold text-primary font-heading">
                                             <span class="text-black font-medium">₹</span> {{item?.productId?.price}}
                                         </span>
+                                        <span class="text-base text-neutral-500 line-through">
+                                            ₹{{item?.productId?.discountPrice}}
+                                        </span>
                                         <!-- <span class="text-base text-neutral-500 line-through">
                                             $49.99
-                                        </span>
-                                        <span class="text-sm font-bold text-tertiary">
+                                        </span> -->
+                                        <!-- <span class="text-sm font-bold text-tertiary">
                                             Save $20.00
                                         </span> -->
                                     </div>
@@ -153,9 +160,9 @@
                     </div>
 
                 </section>
-                }
+                <!-- } -->
             </div>
-
+            <!-- @if(allCartList.length > 0){ -->
             <div class="lg:col-span-1">
                 <div class="p-6 top-4 border border-border bg-card rounded-xl">
                     <h2 class="font-heading font-semibold text-xl text-foreground mb-4">
@@ -165,7 +172,7 @@
                     <div class="space-y-3">
                         <div class="flex justify-between text-base text-foreground">
                             <span>Subtotal</span>
-                            <span class="font-medium">₹ {{totalSelectedPrductCost.subtotal}}</span>
+                            <span class="font-medium">₹ {{totalSelectedPrductCost.subtotal ?? 0}}</span>
                         </div>
 
                         <!-- <div class="flex justify-between text-base text-tertiary">
@@ -176,14 +183,14 @@
                         <div class="flex justify-between text-base text-foreground">
                             <span>Delivery</span>
                             <span class="font-medium">
-                                {{deliveryCharge}}
+                                ₹ {{deliveryCharge ?? 0}}
                             </span>
                         </div>
 
                         <div class="border-t border-border pt-3 mt-3">
                             <div class="flex justify-between text-lg font-bold text-primary font-heading">
                                 <span>Total</span>
-                                <span>₹ {{totalSelectedPrductCost.totalCost}}</span>
+                                <span>₹ {{totalSelectedPrductCost.totalCost ?? 0}}</span>
                             </div>
                         </div>
                     </div>
@@ -201,12 +208,13 @@
 
                 </div>
             </div>
+            <!-- } -->
         </div>
 
-        <div class="mt-12">
+        <!-- <div class="mt-12">
             <img src="https://c.animaapp.com/mgfcgz6sqvonyu/img/ai_2.png" alt="secure payment illustration"
                 class="w-full max-w-2xl mx-auto h-auto rounded-lg" loading="lazy" />
-        </div>
+        </div> -->
 
         <!-- <TrustIndicators />  @for(indicator of indicators; track item){}-->
         <section class="mt-12 py-8 px-4 md:px-8 bg-neutral-50 rounded-lg border border-border">
@@ -231,3 +239,4 @@
         </section>
     </div>
 </div>
+}

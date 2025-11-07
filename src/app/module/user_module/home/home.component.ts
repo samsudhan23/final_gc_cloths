@@ -207,7 +207,7 @@ export class HomeComponent implements OnInit {
   getWishlistdetails() {
     let storedUser: any = localStorage.getItem('role');
     let user = JSON.parse(storedUser);
-    let userId = user.id || '';
+    let userId = user?.id || '';
     this.wishlistService.getWishList().subscribe((res: any) => {
       const allWishlist = res?.result || [];
       console.log('allWishlist: ', allWishlist);
@@ -228,7 +228,7 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  addToCart(product: any, event: Event) {
+  addToCart(product: any,  event:  Event) {
     console.log("Added to cart:", product);
     event.stopPropagation();
   }
@@ -238,7 +238,7 @@ export class HomeComponent implements OnInit {
     // your wishlist logic here
   }
 
-  toggleWishlist(product: any, event: Event) {
+  toggleWishlist(product: any, event:  Event) {
     console.log('product._id: ', product._id);
     // product.isWishlisted = !product.isWishlisted;
     if (localStorage.getItem('role') != null) {
@@ -311,8 +311,10 @@ export class HomeComponent implements OnInit {
   viewDetails(product: any, data: string) {
     console.log('product: ', product);
     if (data == 'data') {
-      // this.router.navigate(['user/categorywiseproduct', product._id]);  
-      this.router.navigate(['user/product-details', product._id], { state: { product, allProducts: this.filteredProducts } });
+      this.productService.setSelectedProdID(product._id)
+      // sessionStorage.setItem('prodID', product._id)
+      // this.router.navigate(['user/product-details'], { state: { product, allProducts: this.filteredProducts } });
+      this.router.navigate(['user/product-details']);
     }
   }
 

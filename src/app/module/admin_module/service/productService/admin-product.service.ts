@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { enviornment } from '../../../../../environment/environment';
 import { apiResponse } from '../../../../shared/interface/response';
 
@@ -10,6 +10,9 @@ import { apiResponse } from '../../../../shared/interface/response';
 export class AdminProductService {
 
   constructor(private http: HttpClient) { }
+
+  private productID = new BehaviorSubject<string>('');
+  selectedProdID$ = this.productID.asObservable();
 
   getProductlist(): Observable<apiResponse> {
     return this.http.get<apiResponse>(enviornment.url + "getProducts");
@@ -24,6 +27,15 @@ export class AdminProductService {
   }
 
   deleteProducts(id: { ids: string[] | number[] }): Observable<apiResponse> {
-    return this.http.post<apiResponse>(`${enviornment.url}deleteProducts`, id);  
+    return this.http.post<apiResponse>(`${enviornment.url}deleteProducts`, id);
+  }
+
+  geyProductsById(id: any): Observable<apiResponse> {
+    return this.http.get<apiResponse>(enviornment.url + "getByIDProducts/" + id);
+  }
+
+  setSelectedProdID(id: string) {
+    sessionStorage.setItem('prodID', id)
+    this.productID.next(id)
   }
 }
