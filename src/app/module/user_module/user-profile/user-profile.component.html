@@ -4,6 +4,299 @@
     </div>
 
     <div *ngIf="!isLoggedIn">
-        zfczc
+        <div class="profile-shell">
+            <div class="account-page">
+                <aside class="sidebar" aria-label="Account navigation">
+                    <div class="welcome">
+                        <button class="avatar editable" type="button" (click)="openProfileEditor()"
+                            title="Edit profile">
+                            <img *ngIf="user.avatarUrl; else initialsTmpl" [src]="user.avatarUrl"
+                                (error)="onAvatarError()" [alt]="user.name" />
+                            <ng-template #initialsTmpl>
+                                {{ user.initials }}
+                            </ng-template>
+                            <span class="avatar-edit-indicator">✎</span>
+                        </button>
+                        <div class="greetings">
+                            <p class="hello">Welcome,</p>
+                            <h2 class="name">{{ user.name }}</h2>
+                            <p class="email">{{ user.email }}</p>
+                        </div>
+                    </div>
+
+                    <nav class="menu">
+                        <button *ngFor="let item of menuItems" class="menu-item"
+                            [class.active]="activeMenu === item.key" (click)="setActiveMenu(item.key)"
+                            [attr.aria-current]="activeMenu === item.key ? 'page' : null" type="button">
+                            <span class="label">{{ item.label }}</span>
+                        </button>
+                    </nav>
+                </aside>
+
+                <main class="content">
+                    <section *ngIf="activeMenu === 'orders'" class="orders-section">
+                        <header class="section-header">
+                            <h3>Orders</h3>
+                            <input class="search" type="search" placeholder="Search order # or product" />
+                        </header>
+
+                        <div class="orders-list">
+                            <article class="order-card" *ngFor="let order of orders">
+                                <div class="order-meta">
+                                    <div class="row">
+                                        <span class="meta-label">Order number</span>
+                                        <span class="meta-value">#{{ order.orderNumber }}</span>
+                                    </div>
+                                    <div class="row">
+                                        <span class="meta-label">Shipped date</span>
+                                        <span class="meta-value">{{ order.shippedDate | date: 'mediumDate' }}</span>
+                                    </div>
+                                    <div class="row">
+                                        <span class="meta-label">Total</span>
+                                        <span class="meta-value">{{ order.total | currency: 'USD' }}</span>
+                                    </div>
+                                    <div class="row">
+                                        <span class="meta-label">Status</span>
+                                        <span class="status" [class]="'status ' + getStatusClass(order.status)">
+                                            {{ order.status }}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="order-actions">
+                                    <button class="btn outline" *ngIf="order.status === 'Delivered'" type="button">
+                                        View order
+                                    </button>
+                                    <button class="btn primary" *ngIf="order.status === 'Out for delivery'"
+                                        type="button">
+                                        Track order
+                                    </button>
+                                    <button class="btn outline" *ngIf="order.status === 'Processing'" type="button">
+                                        View order
+                                    </button>
+                                    <button class="btn danger ghost" *ngIf="order.cancellable" type="button">
+                                        Cancel order
+                                    </button>
+                                </div>
+                            </article>
+                        </div>
+                    </section>
+
+                    <section *ngIf="activeMenu === 'personal'" class="personal-section">
+                        <header class="section-header">
+                            <!-- <button *ngIf="isPersonalReadOnly" class="btn outline" type="button"
+                                (click)="startEditPersonal()" title="Edit profile">Edit</button> -->
+                            <p-button class="text-right" icon="pi pi-pencil" label="Edit"
+                                (click)="startEditPersonal()"></p-button>
+                        </header>
+
+                        <form [formGroup]="personalForm" class="personal-form" (ngSubmit)="submitPersonal()">
+                            <div class="form-grid">
+                                <div class="form-col-span-2 subheading">🧍‍♂️ Personal Information</div>
+                                <label class="form-field">
+                                    <span class="form-label">Full name</span>
+                                    <input class="form-input" type="text" formControlName="fullName"
+                                        placeholder="John Doe" />
+                                </label>
+                                <div class="form-field avatar-upload">
+                                    <span class="form-label">Profile picture</span>
+                                    <div class="avatar-preview">
+                                        <img [src]="user.avatarUrl || 'https://via.placeholder.com/80?text=Avatar'"
+                                            alt="avatar" />
+                                    </div>
+                                    <input type="file" accept="image/*" (change)="onProfileImageSelected($event)"
+                                        [disabled]="isPersonalReadOnly" />
+                                </div>
+                                <label class="form-field">
+                                    <span class="form-label">First name</span>
+                                    <input class="form-input" type="text" formControlName="firstName"
+                                        placeholder="John" />
+                                    <span class="error"
+                                        *ngIf="personalForm.get('firstName')?.touched && personalForm.get('firstName')?.invalid">First
+                                        name is required</span>
+                                </label>
+                                <label class="form-field">
+                                    <span class="form-label">Last name</span>
+                                    <input class="form-input" type="text" formControlName="lastName"
+                                        placeholder="Doe" />
+                                    <span class="error"
+                                        *ngIf="personalForm.get('lastName')?.touched && personalForm.get('lastName')?.invalid">Last
+                                        name is required</span>
+                                </label>
+                                <label class="form-field">
+                                    <span class="form-label">Gender</span>
+                                    <select class="form-input" formControlName="gender">
+                                        <option>Male</option>
+                                        <option>Female</option>
+                                        <option>Other</option>
+                                    </select>
+                                </label>
+                                <label class="form-field">
+                                    <span class="form-label">Date of birth</span>
+                                    <input class="form-input" type="date" formControlName="dob"
+                                        placeholder="DD/MM/YYYY" />
+                                </label>
+
+                                <div class="form-col-span-2 subheading">🏠 Address Details</div>
+                                <label class="form-field form-col-span-2">
+                                    <span class="form-label">House No / Building name</span>
+                                    <input class="form-input" type="text" formControlName="addressLine1"
+                                        placeholder="Flat 12B, Blue Tower" />
+                                </label>
+                                <label class="form-field form-col-span-2">
+                                    <span class="form-label">Street / Locality</span>
+                                    <input class="form-input" type="text" formControlName="streetLocality"
+                                        placeholder="MG Road" />
+                                </label>
+                                <label class="form-field form-col-span-2">
+                                    <span class="form-label">Landmark</span>
+                                    <input class="form-input" type="text" formControlName="addressLine2"
+                                        placeholder="Near Metro Station" />
+                                </label>
+                                <label class="form-field">
+                                    <span class="form-label">City</span>
+                                    <input class="form-input" type="text" formControlName="city"
+                                        placeholder="Chennai" />
+                                </label>
+                                <label class="form-field">
+                                    <span class="form-label">State</span>
+                                    <input class="form-input" type="text" formControlName="state"
+                                        placeholder="Tamil Nadu" />
+                                </label>
+                                <label class="form-field">
+                                    <span class="form-label">Pincode / ZIP Code</span>
+                                    <input class="form-input" type="text" formControlName="pincode"
+                                        placeholder="600001" />
+                                </label>
+                                <label class="form-field">
+                                    <span class="form-label">Country</span>
+                                    <select class="form-input" formControlName="country">
+                                        <option>India</option>
+                                        <option>United States</option>
+                                        <option>United Kingdom</option>
+                                        <option>Canada</option>
+                                        <option>Australia</option>
+                                        <option>Other</option>
+                                    </select>
+                                </label>
+
+                                <div class="form-col-span-2 subheading">📞 Contact Information</div>
+                                <label class="form-field">
+                                    <span class="form-label">Phone number</span>
+                                    <input class="form-input" type="tel" formControlName="phoneNumber"
+                                        placeholder="+91 9876543210" />
+                                    <span class="error"
+                                        *ngIf="personalForm.get('phoneNumber')?.touched && personalForm.get('phoneNumber')?.invalid">Enter
+                                        a valid phone number</span>
+                                </label>
+                                <label class="form-field">
+                                    <span class="form-label">Alternate phone number</span>
+                                    <input class="form-input" type="tel" formControlName="altPhoneNumber"
+                                        placeholder="Optional" />
+                                    <span class="error"
+                                        *ngIf="personalForm.get('altPhoneNumber')?.touched && personalForm.get('altPhoneNumber')?.invalid">Enter
+                                        a valid phone number</span>
+                                </label>
+                                <label class="form-field form-col-span-2">
+                                    <span class="form-label">Email address</span>
+                                    <input class="form-input" type="email" formControlName="email" [readonly]="true"
+                                        placeholder="john.doe@example.com" />
+                                </label>
+                            </div>
+
+                            <div class="form-actions" *ngIf="!isPersonalReadOnly">
+                                <button class="btn outline" type="button" (click)="resetPersonal()">Cancel</button>
+                                <button class="btn primary" type="submit">Save info</button>
+                            </div>
+                        </form>
+                    </section>
+
+                    <section *ngIf="activeMenu === 'addresses'" class="addresses-section">
+                        <header class="section-header">
+                            <button class="btn primary" type="button" (click)="addNewAddress()">Add new address</button>
+                        </header>
+
+                        <div class="address-list">
+                            <article class="address-card" *ngFor="let addr of addresses">
+                                <div class="address-body">
+                                    <div class="address-name">
+                                        {{ addr.firstName }} {{ addr.lastName }}
+                                        <span class="badge" *ngIf="addr.isDefault">Default</span>
+                                    </div>
+                                    <div class="address-line">{{ addr.addressLine1 }}</div>
+                                    <div class="address-line" *ngIf="addr.addressLine2">{{ addr.addressLine2 }}</div>
+                                    <div class="address-line">Phone: {{ addr.phoneNumber }}<span
+                                            *ngIf="addr.altPhoneNumber"> / {{ addr.altPhoneNumber }}</span></div>
+                                </div>
+                                <div class="address-actions">
+                                    <button class="btn outline" type="button" (click)="editAddress(addr)">Edit</button>
+                                    <button class="btn outline" type="button" (click)="setDefaultAddress(addr.id)"
+                                        [disabled]="addr.isDefault">Make default</button>
+                                    <button class="btn danger ghost" type="button"
+                                        (click)="deleteAddress(addr.id)">Delete</button>
+                                </div>
+                            </article>
+                        </div>
+
+                        <form [formGroup]="addressForm" class="address-form" (ngSubmit)="saveAddress()">
+                            <div class="form-grid">
+                                <label class="form-field">
+                                    <span class="form-label">First name</span>
+                                    <input class="form-input" type="text" formControlName="firstName" />
+                                </label>
+                                <label class="form-field">
+                                    <span class="form-label">Last name</span>
+                                    <input class="form-input" type="text" formControlName="lastName" />
+                                </label>
+                                <label class="form-field form-col-span-2">
+                                    <span class="form-label">House No / Building name</span>
+                                    <input class="form-input" type="text" formControlName="addressLine1" />
+                                </label>
+                                <label class="form-field form-col-span-2">
+                                    <span class="form-label">Landmark (optional)</span>
+                                    <input class="form-input" type="text" formControlName="addressLine2" />
+                                </label>
+                                <label class="form-field">
+                                    <span class="form-label">Phone number</span>
+                                    <input class="form-input" type="tel" formControlName="phoneNumber" />
+                                </label>
+                                <label class="form-field">
+                                    <span class="form-label">Alternate phone number</span>
+                                    <input class="form-input" type="tel" formControlName="altPhoneNumber" />
+                                </label>
+                                <label class="form-field">
+                                    <span class="form-label">Set as default</span>
+                                    <input type="checkbox" formControlName="isDefault" />
+                                </label>
+                            </div>
+                            <div class="form-actions">
+                                <button class="btn primary" type="submit">{{ editingAddressId != null ? 'Update address'
+                                    : 'Save address' }}</button>
+                            </div>
+                        </form>
+                    </section>
+
+                    <section *ngIf="activeMenu === 'signout'" class="signout-section">
+                        <div class="modal-backdrop" aria-hidden="true"></div>
+                        <div class="modal" role="dialog" aria-modal="true" aria-label="Logout confirmation">
+                            <div class="signout-card square">
+                                <h3>Logout confirmation</h3>
+                                <p>Are you sure you want to log out?</p>
+                                <div class="form-actions centered">
+                                    <button class="btn outline" type="button"
+                                        (click)="setActiveMenu('orders')">Cancel</button>
+                                    <button class="btn danger" type="button" (click)="logOut()">Confirm</button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section *ngIf="activeMenu !== 'orders' && activeMenu !== 'signout'" class="placeholder">
+                        <!-- <h3>{{ getActiveMenuLabel() }}</h3> -->
+                    </section>
+                </main>
+            </div>
+        </div>
+        <div class="toast" *ngIf="toastVisible">{{ toastMessage }}</div>
     </div>
 </div>

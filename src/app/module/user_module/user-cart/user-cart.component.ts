@@ -42,6 +42,7 @@ export class UserCartComponent {
   allCartList: CartItem[] = [];
   cartFormArray!: FormArray;
   cartLength!: number;
+  selectedSize:string ='';
 
   constructor(
     private cartService: CartService,
@@ -158,11 +159,12 @@ export class UserCartComponent {
       userId: cartData?.userId._id,
       productId: cartData?.productId._id,
       quantity: quantity,
-      selectedSize: cartData?.selectedSize
+      selectedSize: this.selectedSize ? this.selectedSize : cartData?.selectedSize
     }
+    console.log(this.cartFormArray, ' this.cartFormArray');
     this.cartService.updateCartItem(cartData?._id, data).subscribe((res: any) => {
       if (res.code === 200 && res.success === true) {
-        // this.toast.success(res.message);
+        this.toast.success(res.message);
         this.getCartList();
       }
       else {
@@ -175,6 +177,7 @@ export class UserCartComponent {
 
   onSizeChange(event: any, i: number) {
     const selectedSize = event.value; // size object
+    this.selectedSize = event?.value?.size
     const stock = selectedSize?.stock || 1;
 
     // regenerate quantity options for this specific item
@@ -182,6 +185,7 @@ export class UserCartComponent {
 
     // reset the quantity value to 1
     this.cartFormArray.at(i).get('quantity')?.setValue(1);
+    console.log('this.cartFormArray.at(i): ', this.cartFormArray.at(i).get('size')?.value);
     this.totalSelectedPrductCost = {
       subtotal: 0,
       totalCost: 0,
