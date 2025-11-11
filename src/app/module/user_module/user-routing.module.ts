@@ -9,6 +9,7 @@ import { UserProfileComponent } from "./user-profile/user-profile.component";
 import { UserWishlistComponent } from "./user-wishlist/user-wishlist.component";
 import { UserCartComponent } from "./user-cart/user-cart.component";
 import { CategorywiseproductComponent } from "./categorywiseproduct/categorywiseproduct.component";
+import { ViewOrderPageComponent } from "./view-order-page/view-order-page.component";
 // import { UserLayoutComponent } from "./user-layout/user-layout.component";
 
 export const routes: Routes = [
@@ -22,6 +23,7 @@ export const routes: Routes = [
             { path: 'contactus', component: ContactusComponent },
             { path: 'about', component: AboutComponent },
             { path: 'user-profile', component: UserProfileComponent },
+            { path: 'view-order/:orderId', component: ViewOrderPageComponent },
             { path: 'wishlist', component: UserWishlistComponent },
             { path: 'cart', component: UserCartComponent },
             { path: 'categorywiseproduct/:genderName', component: CategorywiseproductComponent },
