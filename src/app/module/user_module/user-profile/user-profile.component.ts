@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
+import { DeliveryaddressComponent } from '../deliveryaddress/deliveryaddress.component';
 
 interface UserProfileSummary {
   name: string;
@@ -41,7 +42,7 @@ interface Address {
 
 @Component({
   selector: 'app-user-profile',
-  imports: [SignInComponent, CommonModule, ReactiveFormsModule,ButtonModule],
+  imports: [SignInComponent, CommonModule, ReactiveFormsModule,ButtonModule, DeliveryaddressComponent],
   templateUrl: './user-profile.component.html',
   styleUrls: ['./user-profile.component.scss']
 })
@@ -160,6 +161,10 @@ export class UserProfileComponent {
 
   setActiveMenu(menuKey: string): void {
     this.activeMenu = menuKey;
+  }
+
+  viewOrder(orderNumber: string): void {
+    this.router.navigate(['/user/view-order', orderNumber]);
   }
 
   getStatusClass(status: OrderStatus): string {
