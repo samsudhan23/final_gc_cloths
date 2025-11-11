@@ -1,0 +1,164 @@
+<section class="addresses-section">
+    <p-confirmDialog></p-confirmDialog>
+    <p-toast></p-toast>
+
+    <header class="section-header">
+        <h3>Delivery Addresses</h3>
+        <p-button label="Add new address" icon="pi pi-plus" (click)="addNewAddress()" severity="primary"></p-button>
+    </header>
+
+    <div class="address-list" *ngIf="addresses.length > 0">
+        <article class="address-card" *ngFor="let addr of addresses">
+            <div class="address-body">
+                <div class="address-name">
+                    {{ addr.firstName }} {{ addr.lastName }}
+                    <span class="badge" *ngIf="addr.isDefault">Default</span>
+                </div>
+                <div class="address-line">{{ addr.addressLine1 }}</div>
+                <div class="address-line" *ngIf="addr.addressLine2">{{ addr.addressLine2 }}</div>
+                <div class="address-line" *ngIf="addr.city || addr.state || addr.pincode">
+                    {{ addr.city }}{{ addr.city && addr.state ? ', ' : '' }}{{ addr.state }}{{ (addr.city || addr.state) && addr.pincode ? ' - ' : '' }}{{ addr.pincode }}
+                </div>
+                <div class="address-line" *ngIf="addr.country">{{ addr.country }}</div>
+                <div class="address-line">Phone: {{ addr.phoneNumber }}<span
+                        *ngIf="addr.altPhoneNumber"> / {{ addr.altPhoneNumber }}</span></div>
+            </div>
+            <div class="address-actions">
+                <p-button label="Edit" icon="pi pi-pencil" (click)="editAddress(addr)" severity="secondary"
+                    [outlined]="true" size="small"></p-button>
+                <p-button label="Make default" icon="pi pi-check-circle" (click)="setDefaultAddress(addr.id)"
+                    [disabled]="addr.isDefault" severity="secondary" [outlined]="true" size="small"></p-button>
+                <p-button label="Delete" icon="pi pi-trash" (click)="deleteAddress(addr.id)" severity="danger"
+                    [text]="true" size="small"></p-button>
+            </div>
+        </article>
+    </div>
+
+    <div class="no-addresses" *ngIf="addresses.length === 0">
+        <p>No addresses found. Click "Add new address" to create one.</p>
+    </div>
+
+    <form [formGroup]="addressForm" class="address-form" (ngSubmit)="saveAddress()" *ngIf="showForm">
+        <h4>{{ editingAddressId != null ? 'Edit Address' : 'Add New Address' }}</h4>
+        <div class="form-grid">
+            <div class="form-field">
+                <label for="firstName" class="form-label">First name <span class="required">*</span></label>
+                <input pInputText id="firstName" type="text" formControlName="firstName" 
+                    [class.ng-invalid]="isFieldInvalid('firstName')" 
+                    placeholder="Enter first name" />
+                <div class="error-message-container">
+                    <p-message severity="error" text="{{ getFieldError('firstName') }}" 
+                        *ngIf="isFieldInvalid('firstName')"></p-message>
+                </div>
+            </div>
+
+            <div class="form-field">
+                <label for="lastName" class="form-label">Last name <span class="required">*</span></label>
+                <input pInputText id="lastName" type="text" formControlName="lastName" 
+                    [class.ng-invalid]="isFieldInvalid('lastName')" 
+                    placeholder="Enter last name" />
+                <div class="error-message-container">
+                    <p-message severity="error" text="{{ getFieldError('lastName') }}" 
+                        *ngIf="isFieldInvalid('lastName')"></p-message>
+                </div>
+            </div>
+
+            <div class="form-field form-col-span-2">
+                <label for="addressLine1" class="form-label">House No / Building name <span class="required">*</span></label>
+                <input pInputText id="addressLine1" type="text" formControlName="addressLine1" 
+                    [class.ng-invalid]="isFieldInvalid('addressLine1')" 
+                    placeholder="Flat 12B, Blue Tower" />
+                <div class="error-message-container">
+                    <p-message severity="error" text="{{ getFieldError('addressLine1') }}" 
+                        *ngIf="isFieldInvalid('addressLine1')"></p-message>
+                </div>
+            </div>
+
+            <div class="form-field form-col-span-2">
+                <label for="addressLine2" class="form-label">Landmark (optional)</label>
+                <input pInputText id="addressLine2" type="text" formControlName="addressLine2" 
+                    placeholder="Near Metro Station" />
+            </div>
+
+            <div class="form-field">
+                <label for="city" class="form-label">City <span class="required">*</span></label>
+                <input pInputText id="city" type="text" formControlName="city" 
+                    [class.ng-invalid]="isFieldInvalid('city')" 
+                    placeholder="Chennai" />
+                <div class="error-message-container">
+                    <p-message severity="error" text="{{ getFieldError('city') }}" 
+                        *ngIf="isFieldInvalid('city')"></p-message>
+                </div>
+            </div>
+
+            <div class="form-field">
+                <label for="state" class="form-label">State <span class="required">*</span></label>
+                <input pInputText id="state" type="text" formControlName="state" 
+                    [class.ng-invalid]="isFieldInvalid('state')" 
+                    placeholder="Tamil Nadu" />
+                <div class="error-message-container">
+                    <p-message severity="error" text="{{ getFieldError('state') }}" 
+                        *ngIf="isFieldInvalid('state')"></p-message>
+                </div>
+            </div>
+
+            <div class="form-field">
+                <label for="pincode" class="form-label">Pincode / ZIP Code <span class="required">*</span></label>
+                <input pInputText id="pincode" type="text" formControlName="pincode" 
+                    [class.ng-invalid]="isFieldInvalid('pincode')" 
+                    placeholder="600001" maxlength="10" />
+                <div class="error-message-container">
+                    <p-message severity="error" text="{{ getFieldError('pincode') }}" 
+                        *ngIf="isFieldInvalid('pincode')"></p-message>
+                </div>
+            </div>
+
+            <div class="form-field">
+                <label for="country" class="form-label">Country <span class="required">*</span></label>
+                <p-dropdown id="country" formControlName="country" [options]="countries" 
+                    placeholder="Select country" [class.ng-invalid]="isFieldInvalid('country')"
+                    styleClass="w-full"></p-dropdown>
+                <div class="error-message-container">
+                    <p-message severity="error" text="{{ getFieldError('country') }}" 
+                        *ngIf="isFieldInvalid('country')"></p-message>
+                </div>
+            </div>
+
+            <div class="form-field">
+                <label for="phoneNumber" class="form-label">Phone number <span class="required">*</span></label>
+                <input pInputText id="phoneNumber" type="tel" formControlName="phoneNumber" 
+                    [class.ng-invalid]="isFieldInvalid('phoneNumber')" 
+                    placeholder="9876543210" maxlength="15" />
+                <div class="error-message-container">
+                    <p-message severity="error" text="{{ getFieldError('phoneNumber') }}" 
+                        *ngIf="isFieldInvalid('phoneNumber')"></p-message>
+                </div>
+            </div>
+
+            <div class="form-field">
+                <label for="altPhoneNumber" class="form-label">Alternate phone number</label>
+                <input pInputText id="altPhoneNumber" type="tel" formControlName="altPhoneNumber" 
+                    [class.ng-invalid]="isFieldInvalid('altPhoneNumber')" 
+                    placeholder="Optional" maxlength="15" />
+                <div class="error-message-container">
+                    <p-message severity="error" text="{{ getFieldError('altPhoneNumber') }}" 
+                        *ngIf="isFieldInvalid('altPhoneNumber')"></p-message>
+                </div>
+            </div>
+
+            <div class="form-field form-col-span-2">
+                <div class="checkbox-field">
+                    <p-checkbox formControlName="isDefault" inputId="isDefault" 
+                        [binary]="true"></p-checkbox>
+                    <label for="isDefault" class="checkbox-label">Set as default address</label>
+                </div>
+            </div>
+        </div>
+        <div class="form-actions">
+            <p-button label="Cancel" icon="pi pi-times" (click)="cancelForm()" severity="secondary" 
+                [outlined]="true" type="button"></p-button>
+            <p-button [label]="editingAddressId != null ? 'Update address' : 'Save address'" 
+                icon="pi pi-check" type="submit" severity="primary"></p-button>
+        </div>
+    </form>
+</section>

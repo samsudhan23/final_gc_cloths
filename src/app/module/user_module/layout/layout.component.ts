@@ -114,10 +114,23 @@ export class LayoutComponent {
     })
     this.sub = this.auth.currentUser$.subscribe(user => {
       if (user?.role === 'admin') {
-        this.router.navigate(['/admin']);
+        // Only navigate if not already on admin route
+        if (!this.router.url.startsWith('/admin')) {
+          this.router.navigate(['/admin']);
+        }
       } else if (user?.role === 'user') {
-        this.router.navigate(['/user']);
-        this.members.push({ name: 'Logout', image: '../../../../assets/images/Avatar/logout.png' })
+        // Only navigate if not already on user route (prevents redirect on page refresh)
+        if (!this.router.url.startsWith('/user')) {
+          this.router.navigate(['/user']);
+        }
+        // Add logout option if not already present
+        if (!this.members.some((m: any) => m.name === 'Logout')) {
+          this.members.push({ name: 'Logout', image: '../../../../assets/images/Avatar/logout.png' })
+        }
+        // Refresh cart length after login
+        setTimeout(() => {
+          this.getCartLength();
+        }, 500); // Small delay to ensure guest cart merge completes
       }
     });
     if (isPlatformBrowser(this.platformId)) {
@@ -153,12 +166,16 @@ export class LayoutComponent {
     if (parse?.id) {
       this.cart.getCartList().subscribe((res: apiResponse) => {
         this.cartLength = res.result.map(item => item.quantity).reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+        // Update the BehaviorSubject so other components can subscribe
+        this.cart.getLengthOfCart(this.cartLength);
       })
     } else {
       const guestCart = JSON.parse(localStorage.getItem('guestCart') || '[]');
       this.allCartList = guestCart;
       console.log('guestCart: ', guestCart);
       this.cartLength = this.allCartList.map(item => item.quantity).reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+      // Update the BehaviorSubject for guest cart as well
+      this.cart.getLengthOfCart(this.cartLength);
     }
   }
   ngOnDestroy() {

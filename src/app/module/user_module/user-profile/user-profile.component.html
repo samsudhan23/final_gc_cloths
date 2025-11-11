@@ -64,14 +64,16 @@
                                 </div>
 
                                 <div class="order-actions">
-                                    <button class="btn outline" *ngIf="order.status === 'Delivered'" type="button">
+                                    <button class="btn outline" *ngIf="order.status === 'Delivered'" type="button"
+                                        (click)="viewOrder(order.orderNumber)">
                                         View order
                                     </button>
                                     <button class="btn primary" *ngIf="order.status === 'Out for delivery'"
-                                        type="button">
+                                        type="button" (click)="viewOrder(order.orderNumber)">
                                         Track order
                                     </button>
-                                    <button class="btn outline" *ngIf="order.status === 'Processing'" type="button">
+                                    <button class="btn outline" *ngIf="order.status === 'Processing'" type="button"
+                                        (click)="viewOrder(order.orderNumber)">
                                         View order
                                     </button>
                                     <button class="btn danger ghost" *ngIf="order.cancellable" type="button">
@@ -211,69 +213,8 @@
                         </form>
                     </section>
 
-                    <section *ngIf="activeMenu === 'addresses'" class="addresses-section">
-                        <header class="section-header">
-                            <button class="btn primary" type="button" (click)="addNewAddress()">Add new address</button>
-                        </header>
-
-                        <div class="address-list">
-                            <article class="address-card" *ngFor="let addr of addresses">
-                                <div class="address-body">
-                                    <div class="address-name">
-                                        {{ addr.firstName }} {{ addr.lastName }}
-                                        <span class="badge" *ngIf="addr.isDefault">Default</span>
-                                    </div>
-                                    <div class="address-line">{{ addr.addressLine1 }}</div>
-                                    <div class="address-line" *ngIf="addr.addressLine2">{{ addr.addressLine2 }}</div>
-                                    <div class="address-line">Phone: {{ addr.phoneNumber }}<span
-                                            *ngIf="addr.altPhoneNumber"> / {{ addr.altPhoneNumber }}</span></div>
-                                </div>
-                                <div class="address-actions">
-                                    <button class="btn outline" type="button" (click)="editAddress(addr)">Edit</button>
-                                    <button class="btn outline" type="button" (click)="setDefaultAddress(addr.id)"
-                                        [disabled]="addr.isDefault">Make default</button>
-                                    <button class="btn danger ghost" type="button"
-                                        (click)="deleteAddress(addr.id)">Delete</button>
-                                </div>
-                            </article>
-                        </div>
-
-                        <form [formGroup]="addressForm" class="address-form" (ngSubmit)="saveAddress()">
-                            <div class="form-grid">
-                                <label class="form-field">
-                                    <span class="form-label">First name</span>
-                                    <input class="form-input" type="text" formControlName="firstName" />
-                                </label>
-                                <label class="form-field">
-                                    <span class="form-label">Last name</span>
-                                    <input class="form-input" type="text" formControlName="lastName" />
-                                </label>
-                                <label class="form-field form-col-span-2">
-                                    <span class="form-label">House No / Building name</span>
-                                    <input class="form-input" type="text" formControlName="addressLine1" />
-                                </label>
-                                <label class="form-field form-col-span-2">
-                                    <span class="form-label">Landmark (optional)</span>
-                                    <input class="form-input" type="text" formControlName="addressLine2" />
-                                </label>
-                                <label class="form-field">
-                                    <span class="form-label">Phone number</span>
-                                    <input class="form-input" type="tel" formControlName="phoneNumber" />
-                                </label>
-                                <label class="form-field">
-                                    <span class="form-label">Alternate phone number</span>
-                                    <input class="form-input" type="tel" formControlName="altPhoneNumber" />
-                                </label>
-                                <label class="form-field">
-                                    <span class="form-label">Set as default</span>
-                                    <input type="checkbox" formControlName="isDefault" />
-                                </label>
-                            </div>
-                            <div class="form-actions">
-                                <button class="btn primary" type="submit">{{ editingAddressId != null ? 'Update address'
-                                    : 'Save address' }}</button>
-                            </div>
-                        </form>
+                    <section *ngIf="activeMenu === 'addresses'">
+                        <app-deliveryaddress></app-deliveryaddress>
                     </section>
 
                     <section *ngIf="activeMenu === 'signout'" class="signout-section">

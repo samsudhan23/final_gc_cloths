@@ -10,9 +10,27 @@ export class PlaceOrderService {
 
   constructor(private http: HttpClient) { }
 
-
   getOrderslist(): Observable<any> {
     return this.http.get<any>(enviornment.url + "get/orders");
+  }
+
+  getOrderById(orderId: string | number): Observable<any> {
+    return this.http.get<any>(`${enviornment.url}get/order/${orderId}`);
+  }
+
+  getUserOrders(userId?: string | number): Observable<any> {
+    const url = userId 
+      ? `${enviornment.url}get/user/orders/${userId}`
+      : `${enviornment.url}get/user/orders`;
+    return this.http.get<any>(url);
+  }
+
+  cancelOrder(orderId: string | number): Observable<any> {
+    return this.http.post<any>(`${enviornment.url}cancel/order`, { orderId });
+  }
+
+  trackOrder(orderId: string | number): Observable<any> {
+    return this.http.get<any>(`${enviornment.url}track/order/${orderId}`);
   }
 
 }

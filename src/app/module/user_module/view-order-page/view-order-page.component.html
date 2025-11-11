@@ -1,0 +1,189 @@
+<div class="view-order-page">
+    <p-confirmDialog></p-confirmDialog>
+
+    <div class="page-header">
+        <div class="header-content">
+            <button pButton type="button" icon="pi pi-arrow-left" label="Back to Orders" 
+                (click)="goBack()" severity="secondary" [outlined]="true" class="back-button"></button>
+            <h1>Order Details</h1>
+        </div>
+    </div>
+
+    <div class="order-container" *ngIf="orderDetails && !loading">
+        <!-- Order Summary Card -->
+        <p-card class="order-summary-card">
+            <ng-template pTemplate="header">
+                <div class="card-header">
+                    <div>
+                        <h2>Order #{{ orderDetails.orderNumber }}</h2>
+                        <p class="order-date">Placed on {{ orderDetails.orderDate | date: 'medium' }}</p>
+                    </div>
+                    <p-tag [value]="orderDetails.status" [severity]="getStatusSeverity(orderDetails.status)"></p-tag>
+                </div>
+            </ng-template>
+            <div class="order-summary-content">
+                <div class="summary-row">
+                    <span class="label">Order Total:</span>
+                    <span class="value total">{{ orderDetails.total | currency: 'USD' }}</span>
+                </div>
+                <div class="summary-row" *ngIf="orderDetails.trackingNumber">
+                    <span class="label">Tracking Number:</span>
+                    <span class="value">{{ orderDetails.trackingNumber }}</span>
+                </div>
+                <div class="summary-row" *ngIf="orderDetails.estimatedDelivery">
+                    <span class="label">Estimated Delivery:</span>
+                    <span class="value">{{ orderDetails.estimatedDelivery | date: 'mediumDate' }}</span>
+                </div>
+            </div>
+        </p-card>
+
+        <!-- Order Items -->
+        <p-card class="order-items-card">
+            <ng-template pTemplate="header">
+                <h3>Order Items ({{ orderDetails.items.length }})</h3>
+            </ng-template>
+            <div class="order-items">
+                <div class="order-item" *ngFor="let item of orderDetails.items">
+                    <div class="item-image">
+                        <img [src]="item.productImage" [alt]="item.productName" />
+                    </div>
+                    <div class="item-details">
+                        <h4 class="item-name">{{ item.productName }}</h4>
+                        <div class="item-attributes" *ngIf="item.size || item.color">
+                            <span *ngIf="item.size" class="attribute">Size: {{ item.size }}</span>
+                            <span *ngIf="item.color" class="attribute">Color: {{ item.color }}</span>
+                            <span *ngIf="item.variant" class="attribute">{{ item.variant }}</span>
+                        </div>
+                        <div class="item-quantity">Quantity: {{ item.quantity }}</div>
+                    </div>
+                    <div class="item-price">
+                        <span class="price">{{ (item.price * item.quantity) | currency: 'USD' }}</span>
+                        <span class="unit-price">${{ item.price }} each</span>
+                    </div>
+                </div>
+            </div>
+        </p-card>
+
+        <!-- Order Timeline -->
+        <p-card class="timeline-card">
+            <ng-template pTemplate="header">
+                <h3>Order Timeline</h3>
+            </ng-template>
+            <p-timeline [value]="orderDetails.timeline" align="alternate">
+                <ng-template pTemplate="marker" let-event>
+                    <span class="timeline-marker" [class.active]="true">
+                        <i [class]="event.icon"></i>
+                    </span>
+                </ng-template>
+                <ng-template pTemplate="content" let-event>
+                    <p-card>
+                        <div class="timeline-content">
+                            <h4>{{ event.status }}</h4>
+                            <p>{{ event.description }}</p>
+                            <small>{{ event.date | date: 'medium' }}</small>
+                        </div>
+                    </p-card>
+                </ng-template>
+            </p-timeline>
+        </p-card>
+
+        <!-- Shipping & Payment Info -->
+        <div class="info-grid">
+            <!-- Shipping Address -->
+            <p-card class="info-card">
+                <ng-template pTemplate="header">
+                    <h3>Shipping Address</h3>
+                </ng-template>
+                <div class="address-details">
+                    <p class="address-name">{{ orderDetails.shippingAddress.firstName }} {{ orderDetails.shippingAddress.lastName }}</p>
+                    <p class="address-line">{{ orderDetails.shippingAddress.addressLine1 }}</p>
+                    <p class="address-line" *ngIf="orderDetails.shippingAddress.addressLine2">
+                        {{ orderDetails.shippingAddress.addressLine2 }}
+                    </p>
+                    <p class="address-line">
+                        {{ orderDetails.shippingAddress.city }}, {{ orderDetails.shippingAddress.state }} {{ orderDetails.shippingAddress.pincode }}
+                    </p>
+                    <p class="address-line">{{ orderDetails.shippingAddress.country }}</p>
+                    <p class="address-phone">Phone: {{ orderDetails.shippingAddress.phoneNumber }}</p>
+                </div>
+            </p-card>
+
+            <!-- Payment Information -->
+            <p-card class="info-card">
+                <ng-template pTemplate="header">
+                    <h3>Payment Information</h3>
+                </ng-template>
+                <div class="payment-details">
+                    <div class="payment-row">
+                        <span class="label">Payment Method:</span>
+                        <span class="value">{{ orderDetails.paymentInfo.method }}</span>
+                    </div>
+                    <div class="payment-row">
+                        <span class="label">Transaction ID:</span>
+                        <span class="value">{{ orderDetails.paymentInfo.transactionId }}</span>
+                    </div>
+                    <div class="payment-row">
+                        <span class="label">Paid Amount:</span>
+                        <span class="value">{{ orderDetails.paymentInfo.paidAmount | currency: 'USD' }}</span>
+                    </div>
+                    <div class="payment-row">
+                        <span class="label">Payment Date:</span>
+                        <span class="value">{{ orderDetails.paymentInfo.paidDate | date: 'medium' }}</span>
+                    </div>
+                </div>
+            </p-card>
+        </div>
+
+        <!-- Price Breakdown -->
+        <p-card class="price-breakdown-card">
+            <ng-template pTemplate="header">
+                <h3>Price Breakdown</h3>
+            </ng-template>
+            <div class="price-breakdown">
+                <div class="price-row">
+                    <span class="label">Subtotal:</span>
+                    <span class="value">{{ orderDetails.subtotal | currency: 'USD' }}</span>
+                </div>
+                <div class="price-row" *ngIf="orderDetails.shippingCharges > 0">
+                    <span class="label">Shipping Charges:</span>
+                    <span class="value">{{ orderDetails.shippingCharges | currency: 'USD' }}</span>
+                </div>
+                <div class="price-row" *ngIf="orderDetails.tax > 0">
+                    <span class="label">Tax:</span>
+                    <span class="value">{{ orderDetails.tax | currency: 'USD' }}</span>
+                </div>
+                <div class="price-row discount" *ngIf="orderDetails.discount > 0">
+                    <span class="label">Discount:</span>
+                    <span class="value">-{{ orderDetails.discount | currency: 'USD' }}</span>
+                </div>
+                <p-divider></p-divider>
+                <div class="price-row total">
+                    <span class="label">Total:</span>
+                    <span class="value">{{ orderDetails.total | currency: 'USD' }}</span>
+                </div>
+            </div>
+        </p-card>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <p-button label="Download Invoice" icon="pi pi-download" 
+                (click)="downloadInvoice()" severity="secondary" [outlined]="true"></p-button>
+            <p-button label="Track Order" icon="pi pi-map-marker" 
+                (click)="trackOrder()" severity="info" [outlined]="true" 
+                *ngIf="orderDetails.trackingNumber"></p-button>
+            <!-- <p-button label="Reorder" icon="pi pi-shopping-cart" 
+                (click)="reorder()" severity="success" [outlined]="true"></p-button>
+            <p-button label="Return Order" icon="pi pi-undo" 
+                (click)="returnOrder()" [outlined]="true"
+                *ngIf="orderDetails.returnable"></p-button> -->
+            <p-button label="Cancel Order" icon="pi pi-times" 
+                (click)="cancelOrder()" severity="danger" [outlined]="true"
+                *ngIf="orderDetails.cancellable"></p-button>
+        </div>
+    </div>
+
+    <div class="loading-container" *ngIf="loading">
+        <p>Loading order details...</p>
+    </div>
+</div>
+
