@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
@@ -6,10 +6,12 @@ import { CardModule } from 'primeng/card';
 import { TagModule } from 'primeng/tag';
 import { DividerModule } from 'primeng/divider';
 import { TimelineModule } from 'primeng/timeline';
+import { DialogModule } from 'primeng/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { ConfirmationService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { PlaceOrderService } from '../../admin_module/service/place_orders/place-order.service';
+import { InvoiceService, InvoiceData } from '../../../pages/service/invoice.service';
 
 interface OrderItem {
   id: number;
@@ -48,6 +50,24 @@ interface OrderTimeline {
   icon: string;
 }
 
+interface TrackingEvent {
+  status: string;
+  location?: string;
+  timestamp: Date;
+  description: string;
+  icon: string;
+}
+
+interface TrackingInfo {
+  trackingNumber: string;
+  currentStatus: string;
+  estimatedDelivery?: Date;
+  carrier?: string;
+  events: TrackingEvent[];
+  currentLocation?: string;
+  lastUpdated?: Date;
+}
+
 interface OrderDetails {
   orderNumber: string;
   orderDate: Date;
@@ -77,23 +97,30 @@ interface OrderDetails {
     TagModule,
     DividerModule,
     TimelineModule,
-    ConfirmDialogModule
+    ConfirmDialogModule,
+    DialogModule
   ],
   providers: [ConfirmationService],
   templateUrl: './view-order-page.component.html',
   styleUrls: ['./view-order-page.component.scss']
 })
-export class ViewOrderPageComponent implements OnInit {
+export class ViewOrderPageComponent implements OnInit, OnDestroy {
   orderId: string | null = null;
   orderDetails: OrderDetails | null = null;
   loading: boolean = false;
+  trackingDialogVisible: boolean = false;
+  trackingInfo: TrackingInfo | null = null;
+  trackingLoading: boolean = false;
+  private trackingRefreshInterval: any = null;
+  private readonly TRACKING_REFRESH_INTERVAL = 30000; // 30 seconds
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private toast: ToastrService,
     private confirmationService: ConfirmationService,
-    private orderService: PlaceOrderService
+    private orderService: PlaceOrderService,
+    private invoiceService: InvoiceService
   ) {}
 
   ngOnInit() {
@@ -396,29 +423,319 @@ export class ViewOrderPageComponent implements OnInit {
   }
 
   downloadInvoice() {
-    if (!this.orderDetails) return;
-    // Generate and download invoice
-    this.toast.info('Invoice download started');
+    if (!this.orderDetails) {
+      this.toast.error('Order details not available');
+      return;
+    }
+
+    try {
+      // Prepare invoice data
+      const invoiceData: InvoiceData = {
+        // Invoice Header
+        invoiceNumber: `INV-${this.orderDetails.orderNumber}`,
+        invoiceDate: new Date(),
+        
+        // Company/Store Details (You can move these to environment or config)
+        companyName: 'GC CLOTHS',
+        companyAddress: '123 Fashion Street',
+        companyCity: 'Chennai',
+        companyState: 'Tamil Nadu',
+        companyPincode: '600001',
+        companyCountry: 'India',
+        companyPhone: '+91 9876543210',
+        companyEmail: 'support@gccloths.com',
+        companyGST: 'GSTIN123456789',
+        
+        // Customer Details
+        customerName: `${this.orderDetails.shippingAddress.firstName} ${this.orderDetails.shippingAddress.lastName}`,
+        customerAddress: this.orderDetails.shippingAddress.addressLine1,
+        customerCity: this.orderDetails.shippingAddress.city || '',
+        customerState: this.orderDetails.shippingAddress.state || '',
+        customerPincode: this.orderDetails.shippingAddress.pincode || '',
+        customerCountry: this.orderDetails.shippingAddress.country || '',
+        customerPhone: this.orderDetails.shippingAddress.phoneNumber,
+        
+        // Order Details
+        orderNumber: this.orderDetails.orderNumber,
+        orderDate: this.orderDetails.orderDate,
+        orderStatus: this.orderDetails.status,
+        
+        // Shipping Address
+        shippingAddress: {
+          name: `${this.orderDetails.shippingAddress.firstName} ${this.orderDetails.shippingAddress.lastName}`,
+          address: this.orderDetails.shippingAddress.addressLine1 + (this.orderDetails.shippingAddress.addressLine2 ? `, ${this.orderDetails.shippingAddress.addressLine2}` : ''),
+          city: this.orderDetails.shippingAddress.city || '',
+          state: this.orderDetails.shippingAddress.state || '',
+          pincode: this.orderDetails.shippingAddress.pincode || '',
+          country: this.orderDetails.shippingAddress.country || '',
+          phone: this.orderDetails.shippingAddress.phoneNumber
+        },
+        
+        // Items
+        items: this.orderDetails.items.map(item => ({
+          productName: item.productName,
+          quantity: item.quantity,
+          unitPrice: item.price,
+          total: item.price * item.quantity,
+          size: item.size,
+          color: item.color
+        })),
+        
+        // Pricing
+        subtotal: this.orderDetails.subtotal,
+        tax: this.orderDetails.tax,
+        shippingCharges: this.orderDetails.shippingCharges,
+        discount: this.orderDetails.discount,
+        total: this.orderDetails.total,
+        
+        // Payment Info
+        paymentMethod: this.orderDetails.paymentInfo.method,
+        transactionId: this.orderDetails.paymentInfo.transactionId,
+        paymentDate: this.orderDetails.paymentInfo.paidDate,
+        
+        // Additional Info
+        trackingNumber: this.orderDetails.trackingNumber,
+        notes: `Order placed on ${this.formatDate(this.orderDetails.orderDate)}. ${this.orderDetails.status === 'Delivered' ? 'Order has been delivered successfully.' : `Order status: ${this.orderDetails.status}`}`
+      };
+      
+      // Generate and download invoice
+      this.invoiceService.generateInvoice(invoiceData);
+      this.toast.success('Invoice downloaded successfully');
+    } catch (error) {
+      console.error('Error generating invoice:', error);
+      this.toast.error('Failed to generate invoice. Please try again.');
+    }
+  }
+
+  private formatDate(date: Date): string {
+    return new Date(date).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
   }
 
   trackOrder() {
-    if (!this.orderDetails?.trackingNumber || !this.orderId) return;
+    if (!this.orderDetails?.trackingNumber || !this.orderId) {
+      this.toast.warning('Tracking number not available for this order');
+      return;
+    }
     
-    // Fetch real-time tracking information
+    this.trackingDialogVisible = true;
+    this.fetchTrackingInfo();
+    
+    // Start auto-refresh when dialog opens
+    this.startAutoRefresh();
+  }
+
+  public fetchTrackingInfo() {
+    if (!this.orderId) return;
+    
+    this.trackingLoading = true;
+    
+    // Fetch real-time tracking information from API
     this.orderService.trackOrder(this.orderId).subscribe({
       next: (response: any) => {
+        this.trackingLoading = false;
         if (response.code === 200 || response.success === true) {
-          const trackingInfo = response.result || response.data;
-          this.toast.info(`Tracking: ${trackingInfo.status || this.orderDetails?.trackingNumber}`);
-          // You can open a modal or navigate to tracking page here
+          const trackingData = response.result || response.data;
+          this.trackingInfo = this.transformTrackingData(trackingData);
+          console.log('this.trackingInfo: ', this.trackingInfo);
+          // Show success message only on first load or manual refresh
+          if (!this.trackingRefreshInterval) {
+            this.toast.success('Tracking information updated');
+          }
         } else {
-          this.toast.info(`Tracking Number: ${this.orderDetails?.trackingNumber}`);
+          // Fallback to mock data if API doesn't return proper structure
+          this.trackingInfo = this.getMockTrackingInfo();
+          if (!this.trackingRefreshInterval) {
+            this.toast.info('Using default tracking information');
+          }
         }
       },
       error: (error: any) => {
-        this.toast.info(`Tracking Number: ${this.orderDetails?.trackingNumber}`);
+        this.trackingLoading = false;
+        // Fallback to mock data on error
+        this.trackingInfo = this.getMockTrackingInfo();
+        if (!this.trackingRefreshInterval) {
+          this.toast.warning('Unable to fetch real-time tracking. Showing available information.');
+        }
+        console.error('Error fetching tracking info:', error);
       }
     });
+  }
+
+  private startAutoRefresh() {
+    // Clear any existing interval
+    this.stopAutoRefresh();
+    
+    // Set up auto-refresh every 30 seconds while dialog is open
+    this.trackingRefreshInterval = setInterval(() => {
+      if (this.trackingDialogVisible && this.orderId) {
+        this.fetchTrackingInfo();
+      } else {
+        // Stop if dialog is closed
+        this.stopAutoRefresh();
+      }
+    }, this.TRACKING_REFRESH_INTERVAL);
+  }
+
+  private stopAutoRefresh() {
+    if (this.trackingRefreshInterval) {
+      clearInterval(this.trackingRefreshInterval);
+      this.trackingRefreshInterval = null;
+    }
+  }
+
+  private transformTrackingData(data: any): TrackingInfo {
+    // Transform API response to TrackingInfo format
+    return {
+      trackingNumber: data.trackingNumber || this.orderDetails?.trackingNumber || '',
+      currentStatus: data.currentStatus || data.status || this.orderDetails?.status || 'Unknown',
+      estimatedDelivery: data.estimatedDelivery ? new Date(data.estimatedDelivery) : this.orderDetails?.estimatedDelivery,
+      carrier: data.carrier || 'Standard Shipping',
+      currentLocation: data.currentLocation || data.location || 'In transit',
+      lastUpdated: data.lastUpdated ? new Date(data.lastUpdated) : new Date(),
+      events: this.buildTrackingEvents(data.events || data.timeline || [])
+    };
+  }
+
+  private buildTrackingEvents(events: any[]): TrackingEvent[] {
+    if (events && events.length > 0) {
+      return events.map((event: any) => ({
+        status: event.status || event.title || 'Update',
+        location: event.location || '',
+        timestamp: event.timestamp ? new Date(event.timestamp) : (event.date ? new Date(event.date) : new Date()),
+        description: event.description || event.message || event.status || 'Order update',
+        icon: this.getTrackingIcon(event.status || event.title || '')
+      }));
+    }
+    
+    // Build events from order timeline if available
+    if (this.orderDetails?.timeline && this.orderDetails.timeline.length > 0) {
+      return this.orderDetails.timeline.map(timeline => ({
+        status: timeline.status,
+        timestamp: timeline.date,
+        description: timeline.description,
+        icon: timeline.icon
+      }));
+    }
+    
+    // Default events based on order status
+    return this.getDefaultTrackingEvents();
+  }
+
+  private getDefaultTrackingEvents(): TrackingEvent[] {
+    const events: TrackingEvent[] = [];
+    const orderDate = this.orderDetails?.orderDate || new Date();
+    
+    events.push({
+      status: 'Order Placed',
+      timestamp: orderDate,
+      description: 'Your order has been placed successfully',
+      icon: 'pi pi-shopping-cart'
+    });
+
+    if (this.orderDetails?.status === 'Processing' || 
+        this.orderDetails?.status === 'Shipped' || 
+        this.orderDetails?.status === 'Out for delivery' ||
+        this.orderDetails?.status === 'Delivered') {
+      const processingDate = new Date(orderDate);
+      processingDate.setDate(processingDate.getDate() + 1);
+      events.push({
+        status: 'Processing',
+        timestamp: processingDate,
+        description: 'Your order is being prepared for shipment',
+        icon: 'pi pi-cog'
+      });
+    }
+
+    if (this.orderDetails?.status === 'Shipped' || 
+        this.orderDetails?.status === 'Out for delivery' ||
+        this.orderDetails?.status === 'Delivered') {
+      const shippedDate = new Date(orderDate);
+      shippedDate.setDate(shippedDate.getDate() + 2);
+      events.push({
+        status: 'Shipped',
+        location: 'Warehouse',
+        timestamp: shippedDate,
+        description: 'Your order has been shipped',
+        icon: 'pi pi-send'
+      });
+    }
+
+    if (this.orderDetails?.status === 'Out for delivery' ||
+        this.orderDetails?.status === 'Delivered') {
+      const outForDeliveryDate = new Date(orderDate);
+      outForDeliveryDate.setDate(outForDeliveryDate.getDate() + 3);
+      events.push({
+        status: 'Out for Delivery',
+        location: this.orderDetails?.shippingAddress?.city || 'Local facility',
+        timestamp: outForDeliveryDate,
+        description: 'Your order is out for delivery',
+        icon: 'pi pi-truck'
+      });
+    }
+
+    if (this.orderDetails?.status === 'Delivered') {
+      const deliveredDate = this.orderDetails.estimatedDelivery || new Date(orderDate);
+      deliveredDate.setDate(deliveredDate.getDate() + 4);
+      events.push({
+        status: 'Delivered',
+        location: this.orderDetails?.shippingAddress?.addressLine1 || 'Delivery address',
+        timestamp: deliveredDate,
+        description: 'Your order has been delivered',
+        icon: 'pi pi-check-circle'
+      });
+    }
+
+    return events.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+  }
+
+  private getTrackingIcon(status: string): string {
+    const statusLower = status.toLowerCase();
+    if (statusLower.includes('placed') || statusLower.includes('order')) return 'pi pi-shopping-cart';
+    if (statusLower.includes('processing') || statusLower.includes('preparing')) return 'pi pi-cog';
+    if (statusLower.includes('shipped') || statusLower.includes('dispatched')) return 'pi pi-send';
+    if (statusLower.includes('transit') || statusLower.includes('transport')) return 'pi pi-truck';
+    if (statusLower.includes('delivery') || statusLower.includes('out for')) return 'pi pi-map-marker';
+    if (statusLower.includes('delivered')) return 'pi pi-check-circle';
+    if (statusLower.includes('cancelled') || statusLower.includes('canceled')) return 'pi pi-times-circle';
+    return 'pi pi-info-circle';
+  }
+
+  private getMockTrackingInfo(): TrackingInfo {
+    return {
+      trackingNumber: this.orderDetails?.trackingNumber || 'TRK123456789',
+      currentStatus: this.orderDetails?.status || 'In Transit',
+      estimatedDelivery: this.orderDetails?.estimatedDelivery,
+      carrier: 'Standard Shipping',
+      currentLocation: 'In transit to delivery facility',
+      lastUpdated: new Date(),
+      events: this.getDefaultTrackingEvents()
+    };
+  }
+
+  closeTrackingDialog() {
+    this.trackingDialogVisible = false;
+    this.trackingInfo = null;
+    // Stop auto-refresh when dialog closes
+    this.stopAutoRefresh();
+  }
+
+  ngOnDestroy() {
+    // Clean up interval on component destroy
+    this.stopAutoRefresh();
+  }
+
+  getTrackingStatusSeverity(status: string): string {
+    const statusLower = status.toLowerCase();
+    if (statusLower.includes('delivered')) return 'success';
+    if (statusLower.includes('delivery') || statusLower.includes('out for')) return 'info';
+    if (statusLower.includes('shipped') || statusLower.includes('transit')) return 'warning';
+    if (statusLower.includes('processing')) return 'secondary';
+    if (statusLower.includes('cancelled') || statusLower.includes('canceled')) return 'danger';
+    return 'secondary';
   }
 
   goBack() {

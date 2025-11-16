@@ -19,7 +19,7 @@ export const routes: Routes = [
         children: [
             { path: '', redirectTo: 'home', pathMatch: 'full' },
             { path: 'home', component: HomeComponent },
-            { path: 'product-details', component: ProductDetailsComponent },
+            { path: 'product-details/:productId', component: ProductDetailsComponent },
             { path: 'contactus', component: ContactusComponent },
             { path: 'about', component: AboutComponent },
             { path: 'user-profile', component: UserProfileComponent },
