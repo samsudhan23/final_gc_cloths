@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
 import { CartService } from '../../admin_module/service/cartService/cart.service';
 import { FormsModule } from '@angular/forms';
 import { apiResponse } from '../../../shared/interface/response';
 import { AdminProductService } from '../../admin_module/service/productService/admin-product.service';
+import { EncryptionService } from '../../../shared/service/encryption.service';
 import {
   trigger,
   state,
@@ -83,9 +84,11 @@ export class ProductDetailsComponent implements OnInit {
 
   constructor(
     private router: Router,
+    private route: ActivatedRoute,
     private toast: ToastrService,
     private cartService: CartService,
     private productService: AdminProductService,
+    private encryptionService: EncryptionService
   ) {
   }
 
@@ -93,20 +96,59 @@ export class ProductDetailsComponent implements OnInit {
     this.isGotoCart = false;
     this.getProduct();
   }
+
   getProduct() {
-    const prodID = sessionStorage.getItem('prodID');
-    this.productService.getProductlist().subscribe((res: any) => {
-      this.productList = res.result;
-      if (this.productList) {
-        this.product = this.productList.find((item: any) => item._id === prodID) //get specific product
-        this.buildProductSections(this.product);
-        this.relatedProducts = this.productList.filter(
-          (p: any) => p.category?.categoryName === this.product?.category?.categoryName && p._id !== this.product?._id
-        );
+    // Get encrypted product ID from route parameter
+    const encryptedProductId = this.route.snapshot.paramMap.get('productId');
+    
+    if (!encryptedProductId) {
+      this.toast.error('Product ID not found in URL');
+      this.router.navigate(['user/home']);
+      return;
+    }
+
+    // Decrypt the product ID
+    let productId: string;
+    try {
+      productId = this.encryptionService.decrypt(encryptedProductId);
+    } catch (error) {
+      console.error('Error decrypting product ID:', error);
+      this.toast.error('Invalid product link');
+      this.router.navigate(['user/home']);
+      return;
+    }
+
+    // Fetch product by ID using the API
+    this.productService.geyProductsById(productId).subscribe({
+      next: (res: apiResponse) => {
+        if (res?.code === 200 && res?.success === true) {
+          this.product = res.result;
+          console.log('this.product: ', this.product);
+          if (this.product) {
+            this.buildProductSections(this.product);
+            // Fetch all products for related products
+            this.productService.getProductlist().subscribe((productListRes: any) => {
+              this.productList = productListRes.result || [];
+              console.log(' this.productList: ',  this.productList);
+              this.relatedProducts = this.productList.filter(
+                (p: any) => p.category?.categoryName === this.product?.category?.categoryName && p._id !== this.product?._id
+              );
+            });
+          } else {
+            this.toast.error('Product not found');
+            this.router.navigate(['user/home']);
+          }
+        } else {
+          this.toast.error(res?.message || 'Failed to load product');
+          this.router.navigate(['user/home']);
+        }
+      },
+      error: (error: any) => {
+        console.error('Error fetching product:', error);
+        this.toast.error(error.error?.message || 'Failed to load product details');
+        this.router.navigate(['user/home']);
       }
-    }, (error: any) => {
-      this.toast.warning(error.error.message);
-    })
+    });
   }
   changeImage(img: any) {
     this.selectedImage = img;

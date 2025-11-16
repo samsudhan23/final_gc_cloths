@@ -9,6 +9,7 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { TabsModule } from 'primeng/tabs';
 import * as AOS from 'aos';
+import { EncryptionService } from '../../../shared/service/encryption.service';
 
 @Component({
   selector: 'app-categorywiseproduct',
@@ -25,6 +26,7 @@ export class CategorywiseproductComponent {
   selectedGender: string = 'Male';
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object, private productService: AdminProductService,
+    private encryptionService: EncryptionService,
     private toast: ToastrService, private router: Router,
     private route: ActivatedRoute
   ) {
@@ -104,7 +106,9 @@ export class CategorywiseproductComponent {
 
   viewDetails(product: any) {
     console.log('product: ', product);
-    this.router.navigate(['user/product-details'], { state: { product, allProducts: this.filteredProducts } });
+    // Encrypt product ID and pass it in URL
+    const encryptedId = this.encryptionService.encrypt(product._id);
+    this.router.navigate(['user/product-details', encryptedId]);
   }
 
   goBack() {

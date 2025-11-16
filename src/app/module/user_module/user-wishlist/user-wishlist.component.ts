@@ -10,6 +10,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { TabsModule } from 'primeng/tabs';
 import * as AOS from 'aos';
 import { WishlistService } from '../../admin_module/service/wishlistService/wishlist.service';
+import { EncryptionService } from '../../../shared/service/encryption.service';
 
 @Component({
   selector: 'app-user-wishlist',
@@ -25,6 +26,7 @@ export class UserWishlistComponent {
   selectedGender: string = 'Male';
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object, private productService: AdminProductService,
+    private encryptionService: EncryptionService,
     private toast: ToastrService, private router: Router,
     private route: ActivatedRoute,
     private wishlistService: WishlistService
@@ -121,7 +123,9 @@ export class UserWishlistComponent {
 
   viewDetails(product: any) {
     console.log('product: ', product);
-    this.router.navigate(['user/product-details', product._id], { state: { product, allProducts: this.filteredProducts } });
+    // Encrypt product ID and pass it in URL
+    const encryptedId = this.encryptionService.encrypt(product._id);
+    this.router.navigate(['user/product-details', encryptedId]);
   }
 
   goBack() {

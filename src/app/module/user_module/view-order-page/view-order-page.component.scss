@@ -367,8 +367,193 @@
     color: #6b7280;
 }
 
-// PrimeNG Card overrides
+// Tracking Dialog Styles
+.tracking-dialog-content {
+    padding: 8px 0;
+
+    .tracking-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 24px;
+        margin-bottom: 24px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #e5e7eb;
+
+        .tracking-number-section {
+            flex: 1;
+
+            label {
+                display: block;
+                font-size: 12px;
+                color: #6b7280;
+                margin-bottom: 8px;
+                font-weight: 500;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+            .tracking-number-value {
+                font-size: 20px;
+                font-weight: 700;
+                color: #0f172a;
+                font-family: 'Courier New', monospace;
+                letter-spacing: 1px;
+            }
+        }
+
+        .current-status-section {
+            label {
+                display: block;
+                font-size: 12px;
+                color: #6b7280;
+                margin-bottom: 8px;
+                font-weight: 500;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+        }
+    }
+
+    .tracking-info-row {
+        margin-bottom: 16px;
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #f9fafb;
+            border-radius: 8px;
+            border-left: 3px solid #3b82f6;
+
+            i {
+                font-size: 18px;
+                color: #3b82f6;
+            }
+
+            span {
+                color: #0f172a;
+                font-size: 14px;
+            }
+        }
+    }
+
+    .tracking-timeline-section {
+        margin-top: 24px;
+
+        h4 {
+            margin: 0 0 20px 0;
+            font-size: 18px;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .timeline-event {
+            padding: 12px 0;
+
+            .event-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 8px;
+
+                .event-status {
+                    font-weight: 600;
+                    font-size: 16px;
+                    color: #0f172a;
+                }
+
+                .event-date {
+                    font-size: 12px;
+                    color: #6b7280;
+                }
+            }
+
+            .event-description {
+                color: #6b7280;
+                font-size: 14px;
+                margin-bottom: 8px;
+                line-height: 1.5;
+            }
+
+            .event-location {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                font-size: 13px;
+                color: #9ca3af;
+                margin-top: 4px;
+
+                i {
+                    font-size: 12px;
+                }
+            }
+        }
+    }
+
+    .last-updated {
+        margin-top: 24px;
+        padding-top: 16px;
+        border-top: 1px solid #e5e7eb;
+        text-align: center;
+        color: #9ca3af;
+        font-size: 12px;
+
+        i {
+            margin-right: 6px;
+        }
+    }
+}
+
+.tracking-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    gap: 16px;
+    color: #6b7280;
+
+    p {
+        margin: 0;
+        font-size: 14px;
+    }
+}
+
+// PrimeNG Timeline Custom Styles
 ::ng-deep {
+    .custom-timeline {
+        .p-timeline-event-marker {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: #3b82f6;
+            border: 3px solid #fff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            .custom-marker {
+                width: 100%;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #fff;
+
+                i {
+                    font-size: 20px;
+                }
+            }
+        }
+
+        .p-timeline-event-connector {
+            background: #e5e7eb;
+        }
+    }
+
     .p-card {
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         border-radius: 12px;
@@ -377,6 +562,62 @@
 
     .p-card-body {
         padding: 20px;
+    }
+
+    // Dialog styles
+    .p-dialog {
+        .p-dialog-header {
+            padding: 20px 24px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e5e7eb;
+
+            .p-dialog-title {
+                font-size: 20px;
+                font-weight: 600;
+                color: #0f172a;
+            }
+        }
+
+        .p-dialog-content {
+            padding: 24px;
+        }
+
+        .p-dialog-footer {
+            padding: 16px 24px;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+
+            .dialog-footer-left {
+                .auto-refresh-indicator {
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
+                    color: #6b7280;
+                    font-size: 12px;
+
+                    i {
+                        animation: spin 2s linear infinite;
+                    }
+                }
+            }
+
+            .dialog-footer-right {
+                display: flex;
+                gap: 12px;
+            }
+        }
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
     }
 }
 

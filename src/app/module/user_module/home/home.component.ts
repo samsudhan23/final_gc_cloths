@@ -13,6 +13,7 @@ import { ToastrService } from 'ngx-toastr';
 import { TabsModule } from 'primeng/tabs';
 import { CategoryService } from '../../admin_module/service/category/category.service';
 import { WishlistService } from '../../admin_module/service/wishlistService/wishlist.service';
+import { EncryptionService } from '../../../shared/service/encryption.service';
 
 declare function showAlert(): void;
 @Component({
@@ -56,7 +57,8 @@ export class HomeComponent implements OnInit {
     private productService: AdminProductService,
     private toast: ToastrService,
     private category: CategoryService,
-    private wishlistService: WishlistService
+    private wishlistService: WishlistService,
+    private encryptionService: EncryptionService
   ) { }
   ngAfterViewInit(): void {
     showAlert();
@@ -311,10 +313,9 @@ export class HomeComponent implements OnInit {
   viewDetails(product: any, data: string) {
     console.log('product: ', product);
     if (data == 'data') {
-      this.productService.setSelectedProdID(product._id)
-      // sessionStorage.setItem('prodID', product._id)
-      // this.router.navigate(['user/product-details'], { state: { product, allProducts: this.filteredProducts } });
-      this.router.navigate(['user/product-details']);
+      // Encrypt product ID and pass it in URL
+      const encryptedId = this.encryptionService.encrypt(product._id);
+      this.router.navigate(['user/product-details', encryptedId]);
     }
   }
 
