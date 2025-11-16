@@ -76,6 +76,17 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div class="lg:col-span-2">
+                <!-- Select All Checkbox -->
+                <div class="mb-4 flex items-center gap-2 p-3 bg-neutral-50 rounded-lg border border-border">
+                    <p-checkbox [(ngModel)]="selectAll" 
+                                (onChange)="onSelectAll($event.checked)"
+                                [binary]="true"
+                                inputId="selectAll"></p-checkbox>
+                    <label for="selectAll" class="font-medium text-foreground cursor-pointer">
+                        Select All ({{selectedItems.size}} of {{allCartList.length}} selected)
+                    </label>
+                </div>
+                
                 <!-- @for(item of allCartList; track trackByCartItem; let i = $index){ -->
                 <section aria-label="Cart items" *ngFor="let item of allCartList; let i = index">
                     <div>
@@ -88,6 +99,14 @@
                             </Button>
                             <!-- @for(ite of item; track ite){ -->
                             <div class="flex flex-col md:flex-row gap-4 md:gap-6">
+                                <!-- Checkbox on the left -->
+                                <div class="flex items-start pt-2">
+                                    <p-checkbox [ngModel]="isItemSelected(item)"
+                                                (onChange)="onItemSelect(item, $event.checked)"
+                                                [binary]="true"
+                                                [inputId]="'item-' + i"></p-checkbox>
+                                </div>
+                                
                                 <div class="w-full md:w-[30%] flex-shrink-0">
                                     <img [src]="item?.productId?.images" class="w-full h-auto rounded-lg object-cover"
                                         loading="lazy" />
@@ -197,11 +216,15 @@
                 </div>
 
                 <div class="mt-8">
-                    <Button
-                        class="w-full text-white rounded-xl py-6 text-base font-normal bg-sky-900 text-secondary-foreground hover:bg-secondary/90 transition-all duration-200 ease-in"
-                        size="lg">
-                        Proceed to Checkout
-                    </Button>
+                    <p-button
+                        label="Proceed to Checkout ({{selectedItems.size}} items)"
+                        icon="pi pi-shopping-bag"
+                        class="w-full"
+                        (onClick)="proceedToCheckout()"
+                        [disabled]="selectedItems.size === 0"
+                        severity="info"
+                        styleClass="w-full py-6 text-base font-normal">
+                    </p-button>
                     <!-- <p-button
                         class="w-full py-6 text-base font-normal bg-secondary text-secondary-foreground hover:bg-secondary/90 transition-all duration-200 ease-in"
                         label=" Proceed to Checkout" severity="info" /> -->

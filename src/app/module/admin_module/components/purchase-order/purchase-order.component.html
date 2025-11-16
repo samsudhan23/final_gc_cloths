@@ -58,14 +58,11 @@
             <td class="sticky-left" style="width: 3rem">
                 <p-tableCheckbox [value]="user" />
             </td>
-            <td style="min-width: 8rem">{{ user?.category.categoryName }}</td>
+            <td style="min-width: 8rem">{{ user?.supplierId?.supplierName }}</td>
             <td style="min-width: 8rem">{{ user?.purchaseItem }}</td>
-            <td style="min-width: 8rem">{{ user?.productVariantDescription }}</td>
-            <!-- <td>{{ user.createdAt | date:'yyyy-MM-dd HH:MM:SS'  }}</td> -->
-            <td>
-                <p-tag [value]="user?.isBlocked == true ? 'Active':'Active'"
-                    [ngClass]="{'inactive': user?.isBlocked, 'active': !user?.isBlocked}" />
-            </td>
+            <td style="min-width: 8rem">{{ user?.orderDate }}</td>
+            <td style="min-width: 8rem">{{ user?.expextedDate }}</td>
+            <td style="min-width: 8rem">{{ user?.status }}</td>
             <td class="sticky-right">
                 <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true"
                     (click)="editUser(user,'Edit')" />

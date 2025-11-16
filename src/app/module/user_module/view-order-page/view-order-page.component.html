@@ -187,3 +187,105 @@
     </div>
 </div>
 
+<!-- Tracking Dialog -->
+<p-dialog 
+    [(visible)]="trackingDialogVisible" 
+    [modal]="true" 
+    [style]="{width: '90vw', maxWidth: '800px'}"
+    [closable]="true"
+    [draggable]="false"
+    [resizable]="false"
+    header="Track Your Order"
+    (onHide)="closeTrackingDialog()">
+    
+    <div class="tracking-dialog-content" *ngIf="trackingInfo">
+        <!-- Tracking Number & Status -->
+        <div class="tracking-header">
+            <div class="tracking-number-section">
+                <label>Tracking Number:</label>
+                <div class="tracking-number-value">{{ trackingInfo.trackingNumber }}</div>
+            </div>
+            <div class="current-status-section">
+                <label>Current Status:</label>
+                <p-tag [value]="trackingInfo.currentStatus" 
+                       [severity]="getTrackingStatusSeverity(trackingInfo.currentStatus)"></p-tag>
+            </div>
+        </div>
+
+        <!-- Estimated Delivery -->
+        <div class="tracking-info-row" *ngIf="trackingInfo.estimatedDelivery">
+            <div class="info-item">
+                <i class="pi pi-calendar"></i>
+                <span><strong>Estimated Delivery:</strong> {{ trackingInfo.estimatedDelivery | date: 'fullDate' }}</span>
+            </div>
+        </div>
+
+        <!-- Current Location -->
+        <div class="tracking-info-row" *ngIf="trackingInfo.currentLocation">
+            <div class="info-item">
+                <i class="pi pi-map-marker"></i>
+                <span><strong>Current Location:</strong> {{ trackingInfo.currentLocation }}</span>
+            </div>
+        </div>
+
+        <!-- Carrier -->
+        <div class="tracking-info-row" *ngIf="trackingInfo.carrier">
+            <div class="info-item">
+                <i class="pi pi-truck"></i>
+                <span><strong>Carrier:</strong> {{ trackingInfo.carrier }}</span>
+            </div>
+        </div>
+
+        <p-divider></p-divider>
+
+        <!-- Tracking Timeline -->
+        <div class="tracking-timeline-section">
+            <h4>Tracking History</h4>
+            <p-timeline [value]="trackingInfo.events" align="vertical" styleClass="custom-timeline">
+                <ng-template pTemplate="content" let-event>
+                    <div class="timeline-event">
+                        <div class="event-header">
+                            <span class="event-status">{{ event.status }}</span>
+                            <span class="event-date">{{ event.timestamp | date: 'short' }}</span>
+                        </div>
+                        <div class="event-description">{{ event.description }}</div>
+                        <div class="event-location" *ngIf="event.location">
+                            <i class="pi pi-map-marker"></i> {{ event.location }}
+                        </div>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="marker" let-event>
+                    <span class="custom-marker" [class]="'p-shadow-2'">
+                        <i [class]="event.icon"></i>
+                    </span>
+                </ng-template>
+            </p-timeline>
+        </div>
+
+        <!-- Last Updated -->
+        <div class="last-updated" *ngIf="trackingInfo.lastUpdated">
+            <small><i class="pi pi-clock"></i> Last updated: {{ trackingInfo.lastUpdated | date: 'short' }}</small>
+        </div>
+    </div>
+
+    <div class="tracking-loading" *ngIf="trackingLoading">
+        <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+        <p>Loading tracking information...</p>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <div class="dialog-footer-left">
+            <small class="auto-refresh-indicator" *ngIf="trackingDialogVisible">
+                <i class="pi pi-sync"></i> Auto-refreshing every 30 seconds
+            </small>
+        </div>
+        <div class="dialog-footer-right">
+            <p-button label="Close" icon="pi pi-times" (click)="closeTrackingDialog()" 
+                      severity="secondary" [outlined]="true"></p-button>
+            <p-button label="Refresh Now" icon="pi pi-refresh" (click)="fetchTrackingInfo()" 
+                      severity="primary" [outlined]="true" *ngIf="trackingInfo" 
+                      [loading]="trackingLoading"></p-button>
+        </div>
+    </ng-template>
+</p-dialog>
+
