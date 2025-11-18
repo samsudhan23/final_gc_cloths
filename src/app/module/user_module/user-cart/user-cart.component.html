@@ -1,49 +1,4 @@
-<!-- <div class=" py-5" style="    max-width: 1500px;
-    margin: auto;
-    min-height: 491px;">
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-        <div class="col-span-2 bg-white shadow-md rounded-md">
-            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-2 p-2">
-                <div class="">
-                    <img class="h-[250px] rounded-md" src="../../../../assets/images/Products/1 (1).avif" alt="">
-                </div>
-                <div class="col-span-2">
-                    <div class="flex justify-between items-center pb-2">
-                        <span class="font-bold text-3xl">Black panther</span>
-                        <span class="mr-[10%] font-bold text-3xl">$233</span>
-                    </div>
-                    <div class="pb-3">
-                        <span class="text-lg">Category: <strong class="text-xl">T-Shirt</strong></span>
-                        <br>
-                        <span class="text-lg">Gender: <strong class="text-xl">Male</strong></span>
-                        <br>
-                        <span class="text-lg">Size: <strong class="text-xl">XL</strong></span>
-                    </div>
-                    <div class="grid grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 pt-4">
-                        <div >
-                            <span class="bg-gray-800 shadow-md rounded-md" style="padding: 15px 8px 15px 7px; !important">
-                                <p-button icon="pi pi-plus" [outlined]="true"></p-button>
-                                <span class="px-2 text-white"> 4 </span>
-                                <p-button icon="pi pi-minus" [outlined]="true"></p-button>
-                            </span>
-                        </div>
-                        <div class="text-end p-2">
-                            <p-button [raised]="true" label="Remove" icon="pi pi-trash" severity="danger" />
-                        </div>
-                    </div>
 
-                </div>
-            </div>
-        </div>
-
-
-
-        <div class="bg-white shadow-md rounded-md p-5">
-            sdfdsf
-        </div>
-    </div>
-
-</div> -->
 @if(allCartList.length == 0){
 <div class="min-h-screen bg-white">
     <div class="container mx-auto px-4 py-8 md:py-16">
@@ -262,4 +217,71 @@
         </section>
     </div>
 </div>
+
+<!-- Checkout Dialog -->
+<p-dialog 
+    [(visible)]="checkoutDialogVisible" 
+    [modal]="true" 
+    [style]="{width: '90vw', maxWidth: '900px'}"
+    [closable]="true"
+    [draggable]="false"
+    [resizable]="false"
+    header="Checkout"
+    (onHide)="closeCheckoutDialog()">
+    
+    <!-- Address Selection Step -->
+    <div *ngIf="checkoutStep === 'address'" class="checkout-step">
+        <h3 class="step-title">Select Delivery Address</h3>
+        <app-deliveryaddress 
+            [selectMode]="true"
+            [selectedAddressId]="selectedAddress?.id"
+            (addressSelected)="onAddressSelected($event)">
+        </app-deliveryaddress>
+        
+        <div class="checkout-actions" *ngIf="selectedAddress">
+            <p-card>
+                <div class="selected-address-summary">
+                    <h4>Selected Address:</h4>
+                    <p><strong>{{ selectedAddress.firstName }} {{ selectedAddress.lastName }}</strong></p>
+                    <p>{{ selectedAddress.addressLine1 }}</p>
+                    <p *ngIf="selectedAddress.addressLine2">{{ selectedAddress.addressLine2 }}</p>
+                    <p>{{ selectedAddress.city }}, {{ selectedAddress.state }} - {{ selectedAddress.pincode }}</p>
+                    <p>{{ selectedAddress.country }}</p>
+                    <p>Phone: {{ selectedAddress.phoneNumber }}</p>
+                </div>
+            </p-card>
+        </div>
+    </div>
+
+    <!-- Payment Step -->
+    <div *ngIf="checkoutStep === 'payment'" class="checkout-step">
+        <app-payment 
+            [selectedAddress]="selectedAddress"
+            [orderSummary]="totalSelectedPrductCost"
+            [selectedItems]="getSelectedCartItems()"
+            (paymentSuccess)="onPaymentSuccess($event)"
+            (paymentError)="onPaymentError($event)"
+            (goBack)="backToAddress()">
+        </app-payment>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <div class="dialog-footer" *ngIf="checkoutStep === 'address'">
+            <p-button 
+                label="Cancel" 
+                icon="pi pi-times" 
+                (click)="closeCheckoutDialog()" 
+                severity="secondary" 
+                [outlined]="true">
+            </p-button>
+            <p-button 
+                label="Continue to Payment" 
+                icon="pi pi-arrow-right" 
+                (click)="proceedToPayment()" 
+                [disabled]="!selectedAddress"
+                severity="primary">
+            </p-button>
+        </div>
+    </ng-template>
+</p-dialog>
 }

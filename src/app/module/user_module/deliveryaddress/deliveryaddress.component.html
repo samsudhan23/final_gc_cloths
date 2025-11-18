@@ -8,7 +8,15 @@
     </header>
 
     <div class="address-list" *ngIf="addresses.length > 0">
-        <article class="address-card" *ngFor="let addr of addresses">
+        <article class="address-card" *ngFor="let addr of addresses" 
+                 [class.selected]="selectMode && isAddressSelected(addr.id)">
+            <!-- Radio button for selection mode -->
+            <div class="address-radio" *ngIf="selectMode">
+                <p-radioButton [value]="addr.id" 
+                              [inputId]="'addr-' + addr.id"
+                              [(ngModel)]="selectedAddressId"
+                              (onClick)="selectAddress(addr)"></p-radioButton>
+            </div>
             <div class="address-body">
                 <div class="address-name">
                     {{ addr.firstName }} {{ addr.lastName }}

@@ -1,12 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputMaskModule } from 'primeng/inputmask';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ButtonModule } from 'primeng/button';
 import { MessageModule } from 'primeng/message';
 import { DropdownModule } from 'primeng/dropdown';
+import { RadioButtonModule } from 'primeng/radiobutton';
 import { ToastrService } from 'ngx-toastr';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
@@ -32,6 +33,7 @@ interface Address {
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    FormsModule,
     InputTextModule,
     InputMaskModule,
     CheckboxModule,
@@ -39,13 +41,18 @@ interface Address {
     MessageModule,
     DropdownModule,
     ConfirmDialogModule,
-    ToastModule
+    ToastModule,
+    RadioButtonModule
   ],
   providers: [ConfirmationService, MessageService],
   templateUrl: './deliveryaddress.component.html',
   styleUrls: ['./deliveryaddress.component.scss']
 })
 export class DeliveryaddressComponent implements OnInit {
+  @Input() selectMode: boolean = false; // Enable address selection mode
+  @Input() selectedAddressId: number | null = null; // Currently selected address ID
+  @Output() addressSelected = new EventEmitter<Address>(); // Emit selected address
+  
   addressForm!: FormGroup;
   addresses: Address[] = [
     {
@@ -224,6 +231,19 @@ export class DeliveryaddressComponent implements OnInit {
   setDefaultAddress(id: number): void {
     this.addresses = this.addresses.map(a => ({ ...a, isDefault: a.id === id }));
     this.toast.success('Default address updated successfully');
+  }
+
+  // Select address (for checkout mode)
+  selectAddress(address: Address): void {
+    if (this.selectMode) {
+      this.selectedAddressId = address.id;
+      this.addressSelected.emit(address);
+    }
+  }
+
+  // Check if address is selected
+  isAddressSelected(addressId: number): boolean {
+    return this.selectedAddressId === addressId;
   }
 
   getFieldError(fieldName: string): string {

@@ -33,4 +33,15 @@ export class PlaceOrderService {
     return this.http.get<any>(`${enviornment.url}track/order/${orderId}`);
   }
 
+  placeOrder(orderData: any): Observable<any> {
+    return this.http.post<any>(`${enviornment.url}place/order`, orderData);
+  }
+
+  createRazorpayOrder(orderData: any): Observable<any> {
+    return this.http.post<any>(`${enviornment.url}create/razorpay/order`, orderData);
+  }
+
+  verifyPayment(paymentData: any): Observable<any> {
+    return this.http.post<any>(`${enviornment.url}verify/payment`, paymentData);
+  }
 }
