@@ -4,6 +4,10 @@ import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } f
 import { ButtonModule } from 'primeng/button';
 import { Select } from 'primeng/select';
 import { CheckboxModule } from 'primeng/checkbox';
+import { DialogModule } from 'primeng/dialog';
+import { RadioButtonModule } from 'primeng/radiobutton';
+import { CardModule } from 'primeng/card';
+import { DividerModule } from 'primeng/divider';
 import { CartService } from '../../admin_module/service/cartService/cart.service';
 import { apiResponse } from '../../../shared/interface/response';
 import { CartItem } from '../../../shared/interface/cart.model';
@@ -11,10 +15,25 @@ import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { AdminProductService } from '../../admin_module/service/productService/admin-product.service';
 import { EncryptionService } from '../../../shared/service/encryption.service';
+import { DeliveryaddressComponent } from '../deliveryaddress/deliveryaddress.component';
+import { PaymentComponent } from '../payment/payment.component';
 
 @Component({
   selector: 'app-user-cart',
-  imports: [CommonModule, ButtonModule, FormsModule, Select, ReactiveFormsModule, CheckboxModule],
+  imports: [
+    CommonModule, 
+    ButtonModule, 
+    FormsModule, 
+    Select, 
+    ReactiveFormsModule, 
+    CheckboxModule,
+    DialogModule,
+    RadioButtonModule,
+    CardModule,
+    DividerModule,
+    DeliveryaddressComponent,
+    PaymentComponent
+  ],
   templateUrl: './user-cart.component.html',
   styleUrl: './user-cart.component.scss'
 })
@@ -47,6 +66,11 @@ export class UserCartComponent {
   selectedSize:string ='';
   selectedItems: Set<string> = new Set(); // Track selected cart items by their unique ID
   selectAll: boolean = false;
+  
+  // Checkout modal properties
+  checkoutDialogVisible: boolean = false;
+  selectedAddress: any = null;
+  checkoutStep: 'address' | 'payment' = 'address';
 
   constructor(
     private cartService: CartService,
@@ -235,11 +259,46 @@ export class UserCartComponent {
       this.toast.warning('Please select at least one item to proceed to checkout');
       return;
     }
-    // TODO: Navigate to checkout page with selected items
-    
-    this.toast.success(`${selectedItems.length} item(s) selected for checkout`);
-    // Navigate to checkout page or process order
-    // this.router.navigate(['user/checkout'], { state: { selectedItems } });
+    this.checkoutDialogVisible = true;
+    this.checkoutStep = 'address';
+    this.selectedAddress = null;
+  }
+
+  // Close checkout dialog
+  closeCheckoutDialog() {
+    this.checkoutDialogVisible = false;
+    this.checkoutStep = 'address';
+    this.selectedAddress = null;
+  }
+
+  // Handle address selection from deliveryaddress component
+  onAddressSelected(address: any) {
+    this.selectedAddress = address;
+  }
+
+  // Proceed to payment after address selection
+  proceedToPayment() {
+    if (!this.selectedAddress) {
+      this.toast.warning('Please select a delivery address');
+      return;
+    }
+    this.checkoutStep = 'payment';
+  }
+
+  // Go back to address selection
+  backToAddress() {
+    this.checkoutStep = 'address';
+  }
+
+  // Handle payment success
+  onPaymentSuccess(response: any) {
+    this.closeCheckoutDialog();
+    this.getCartList(); // Refresh cart
+  }
+
+  // Handle payment error
+  onPaymentError(error: any) {
+    // Error handling is done in payment component
   }
   onQuantityChange(event?: any, cartData?: any) {
     
