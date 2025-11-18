@@ -1,0 +1,54 @@
+<div class="payment-component">
+    <h3 class="step-title">Payment</h3>
+    
+    <div class="order-summary">
+        <p-card>
+            <h4>Order Summary</h4>
+            <p-divider></p-divider>
+            <div class="summary-row">
+                <span>Subtotal:</span>
+                <span>₹ {{ orderSummary.subtotal ?? 0 }}</span>
+            </div>
+            <div class="summary-row">
+                <span>Delivery Charge:</span>
+                <span>₹ {{ orderSummary.deliveryCharge ?? 0 }}</span>
+            </div>
+            <p-divider></p-divider>
+            <div class="summary-row total-row">
+                <span><strong>Total:</strong></span>
+                <span><strong>₹ {{ orderSummary.totalCost ?? 0 }}</strong></span>
+            </div>
+        </p-card>
+    </div>
+
+    <div class="payment-method">
+        <p-card>
+            <h4>Payment Method</h4>
+            <p-divider></p-divider>
+            <div class="razorpay-info">
+                <i class="pi pi-shield" style="font-size: 2rem; color: #3b82f6;"></i>
+                <p><strong>Secure Payment via Razorpay</strong></p>
+                <p class="text-muted">Your payment information is encrypted and secure</p>
+            </div>
+        </p-card>
+    </div>
+
+    <div class="payment-actions">
+        <p-button 
+            label="Back" 
+            icon="pi pi-arrow-left" 
+            (click)="onGoBack()" 
+            severity="secondary" 
+            [outlined]="true">
+        </p-button>
+        <p-button 
+            label="Pay Now" 
+            icon="pi pi-credit-card" 
+            (click)="processPayment()" 
+            [loading]="paymentProcessing"
+            [disabled]="paymentProcessing"
+            severity="success">
+        </p-button>
+    </div>
+</div>
+

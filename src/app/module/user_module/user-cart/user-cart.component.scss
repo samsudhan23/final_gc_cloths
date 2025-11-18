@@ -422,3 +422,153 @@
         font-size: 1.5rem;
     }
 }
+
+// Checkout Dialog Styles
+.checkout-step {
+    padding: 8px 0;
+    
+    .step-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 20px;
+        color: #0f172a;
+    }
+}
+
+.address-summary-card {
+    margin-bottom: 24px;
+    
+    h4 {
+        margin: 0 0 12px 0;
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #0f172a;
+    }
+    
+    .address-summary {
+        padding: 16px 0;
+        
+        p {
+            margin: 4px 0;
+            color: #475569;
+            font-size: 0.95rem;
+        }
+    }
+}
+
+.checkout-actions {
+    margin-top: 24px;
+    
+    .selected-address-summary {
+        padding: 16px;
+        
+        h4 {
+            margin: 0 0 12px 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #0f172a;
+        }
+        
+        p {
+            margin: 4px 0;
+            color: #475569;
+            font-size: 0.95rem;
+        }
+    }
+}
+
+.order-summary {
+    margin-bottom: 24px;
+    
+    h4 {
+        margin: 0 0 12px 0;
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #0f172a;
+    }
+    
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        font-size: 0.95rem;
+        color: #475569;
+        
+        &.total-row {
+            margin-top: 8px;
+            padding-top: 12px;
+            border-top: 1px solid #e5e7eb;
+            font-size: 1.1rem;
+            color: #0f172a;
+        }
+    }
+}
+
+.payment-method {
+    margin-top: 24px;
+    
+    h4 {
+        margin: 0 0 12px 0;
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #0f172a;
+    }
+    
+    .razorpay-info {
+        text-align: center;
+        padding: 24px;
+        
+        i {
+            margin-bottom: 12px;
+        }
+        
+        p {
+            margin: 8px 0;
+            
+            &.text-muted {
+                color: #6b7280;
+                font-size: 0.9rem;
+            }
+        }
+    }
+}
+
+.dialog-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    
+    .footer-right {
+        display: flex;
+        gap: 12px;
+    }
+}
+
+::ng-deep {
+    .p-dialog {
+        .p-dialog-header {
+            padding: 20px 24px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e5e7eb;
+            
+            .p-dialog-title {
+                font-size: 1.5rem;
+                font-weight: 600;
+                color: #0f172a;
+            }
+        }
+        
+        .p-dialog-content {
+            padding: 24px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+        
+        .p-dialog-footer {
+            padding: 16px 24px;
+            border-top: 1px solid #e5e7eb;
+        }
+    }
+}

@@ -1,0 +1,78 @@
+.payment-component {
+    padding: 8px 0;
+    
+    .step-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 20px;
+        color: #0f172a;
+    }
+}
+
+.payment-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.order-summary {
+    margin-bottom: 24px;
+    
+    h4 {
+        margin: 0 0 12px 0;
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #0f172a;
+    }
+    
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        font-size: 0.95rem;
+        color: #475569;
+        
+        &.total-row {
+            margin-top: 8px;
+            padding-top: 12px;
+            border-top: 1px solid #e5e7eb;
+            font-size: 1.1rem;
+            color: #0f172a;
+        }
+    }
+}
+
+.payment-method {
+    margin-top: 24px;
+    
+    h4 {
+        margin: 0 0 12px 0;
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #0f172a;
+    }
+    
+    .razorpay-info {
+        text-align: center;
+        padding: 24px;
+        
+        i {
+            margin-bottom: 12px;
+        }
+        
+        p {
+            margin: 8px 0;
+            
+            &.text-muted {
+                color: #6b7280;
+                font-size: 0.9rem;
+            }
+        }
+    }
+}
+
