@@ -1,0 +1,183 @@
+<p-toolbar styleClass="mb-6">
+    <ng-template #start>
+        <p-button label="New" icon="pi pi-plus" severity="secondary" class="mr-2" (onClick)="openNew()" />
+        <p-button severity="secondary" label="Delete" icon="pi pi-trash" outlined (onClick)="deleteSelectedAddresses()"
+            [disabled]="!selectedAddress || !selectedAddress.length" />
+    </ng-template>
+</p-toolbar>
+
+<p-table #dt [value]="addressList" [rows]="10" [columns]="cols" [paginator]="true" dataKey="_id"
+    [globalFilterFields]="['fullName', 'addressLine', 'city', 'state', 'postalCode', 'phone']" [tableStyle]="{ 'min-width': '75rem' }"
+    [(selection)]="selectedAddress" [rowHover]="true"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Delivery Addresses" [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[10, 20, 30]">
+    <ng-template #caption>
+        <div class="flex items-center justify-between">
+            <h5 class="m-0">Manage Delivery Addresses</h5>
+            <p-iconfield>
+                <p-inputicon styleClass="pi pi-search" />
+                <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search..." />
+            </p-iconfield>
+        </div>
+    </ng-template>
+    <ng-template #header>
+        <tr>
+            <th class="sticky-left" style="width: 3rem">
+                <p-tableHeaderCheckbox />
+            </th>
+            <th pSortableColumn="fullName" style="min-width:12rem">
+                Full Name
+                <p-sortIcon field="fullName" />
+            </th>
+            <th pSortableColumn="addressLine" style="min-width: 16rem">
+                Address
+                <p-sortIcon field="addressLine" />
+            </th>
+            <th pSortableColumn="city" style="min-width: 8rem">
+                City
+                <p-sortIcon field="city" />
+            </th>
+            <th pSortableColumn="state" style="min-width: 8rem">
+                State
+                <p-sortIcon field="state" />
+            </th>
+            <th pSortableColumn="postalCode" style="min-width: 8rem">
+                Postal Code
+                <p-sortIcon field="postalCode" />
+            </th>
+            <th pSortableColumn="phone" style="min-width: 10rem">
+                Phone
+                <p-sortIcon field="phone" />
+            </th>
+            <th pSortableColumn="isDefault" style="min-width: 8rem">
+                Default
+                <p-sortIcon field="isDefault" />
+            </th>
+            <th class="sticky-right" style="min-width: 12rem">Action</th>
+        </tr>
+    </ng-template>
+    <ng-template #body let-address>
+        <tr>
+            <td class="sticky-left" style="width: 3rem">
+                <p-tableCheckbox [value]="address" />
+            </td>
+            <td style="min-width: 12rem">{{ address?.fullName }}</td>
+            <td style="min-width: 16rem">
+                <div>{{ address?.addressLine }}</div>
+                <div *ngIf="address?.landmark" class="text-sm text-gray-500">{{ address?.landmark }}</div>
+            </td>
+            <td>{{ address?.city }}</td>
+            <td>{{ address?.state }}</td>
+            <td>{{ address?.postalCode }}</td>
+            <td>
+                <div>{{ address?.phone }}</div>
+                <div *ngIf="address?.alternatePhoneNumber" class="text-sm text-gray-500">{{ address?.alternatePhoneNumber }}</div>
+            </td>
+            <td>
+                <p-tag [value]="address?.isDefault == true ? 'Default' : 'No'"
+                    [ngClass]="{'inactive': !address?.isDefault, 'active': address?.isDefault}" />
+            </td>
+            <td class="sticky-right">
+                <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true"
+                    (click)="editAddress(address,'Edit')" />
+                <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true"
+                    (click)="deleteAddress(address)" />
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
+
+<p-dialog [(visible)]="addressDialog" class="userModel" header="Delivery Address Details" [modal]="true" (onHide)="onDialogHide()">
+    <ng-template #content>
+        <form [formGroup]="addressForm">
+            <div class="grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 grid-cols-1 gap-4">
+                <div>
+                    <label for="userId" class="block font-bold mb-3">User</label>
+                    <p-select inputId="userId" formControlName="userId" [options]="usersList" optionLabel="name"
+                        optionValue="_id" placeholder="Select a User" fluid />
+                    <small class="text-red-500"
+                        *ngIf="addressForm.get('userId')?.invalid && addressForm.get('userId')?.touched">User is required.</small>
+                </div>
+                <div>
+                    <label for="fullName" class="block font-bold mb-3">Full Name</label>
+                    <input type="text" formControlName="fullName" pInputText id="fullName" required autofocus fluid />
+                    <small class="text-red-500"
+                        *ngIf="addressForm.get('fullName')?.invalid && addressForm.get('fullName')?.touched">Full Name is required.</small>
+                </div>
+                <div>
+                    <label for="addressLine" class="block font-bold mb-3">Address Line</label>
+                    <input type="text" formControlName="addressLine" pInputText id="addressLine" required fluid />
+                    <small class="text-red-500"
+                        *ngIf="addressForm.get('addressLine')?.invalid && addressForm.get('addressLine')?.touched">Address Line is required.</small>
+                </div>
+                <div>
+                    <label for="landmark" class="block font-bold mb-3">Landmark</label>
+                    <input type="text" formControlName="landmark" pInputText id="landmark" fluid />
+                </div>
+                <div>
+                    <label for="city" class="block font-bold mb-3">City</label>
+                    <input type="text" formControlName="city" pInputText id="city" required fluid />
+                    <small class="text-red-500"
+                        *ngIf="addressForm.get('city')?.invalid && addressForm.get('city')?.touched">City is required.</small>
+                </div>
+                <div>
+                    <label for="state" class="block font-bold mb-3">State</label>
+                    <input type="text" formControlName="state" pInputText id="state" required fluid />
+                    <small class="text-red-500"
+                        *ngIf="addressForm.get('state')?.invalid && addressForm.get('state')?.touched">State is required.</small>
+                </div>
+                <div>
+                    <label for="postalCode" class="block font-bold mb-3">Postal Code</label>
+                    <input type="text" formControlName="postalCode" pInputText id="postalCode" required fluid />
+                    <small class="text-red-500"
+                        *ngIf="addressForm.get('postalCode')?.touched && addressForm.get('postalCode')?.errors">
+                        <span *ngIf="addressForm.get('postalCode')?.errors?.['required']">
+                            Postal Code is required.
+                        </span>
+                        <span *ngIf="addressForm.get('postalCode')?.errors?.['pattern']">
+                            Enter a valid 6-digit postal code.
+                        </span>
+                    </small>
+                </div>
+                <div>
+                    <label for="country" class="block font-bold mb-3">Country</label>
+                    <input type="text" formControlName="country" pInputText id="country" required fluid />
+                    <small class="text-red-500"
+                        *ngIf="addressForm.get('country')?.invalid && addressForm.get('country')?.touched">Country is required.</small>
+                </div>
+                <div>
+                    <label for="phone" class="block font-bold mb-3">Phone Number</label>
+                    <input type="text" formControlName="phone" pInputText id="phone" required fluid />
+                    <small class="text-red-500"
+                        *ngIf="addressForm.get('phone')?.touched && addressForm.get('phone')?.errors">
+                        <span *ngIf="addressForm.get('phone')?.errors?.['required']">
+                            Phone Number is required.
+                        </span>
+                        <span *ngIf="addressForm.get('phone')?.errors?.['pattern']">
+                            Enter a valid 10-digit phone number (starting with 6-9).
+                        </span>
+                    </small>
+                </div>
+                <div>
+                    <label for="alternatePhoneNumber" class="block font-bold mb-3">Alternate Phone Number</label>
+                    <input type="text" formControlName="alternatePhoneNumber" pInputText id="alternatePhoneNumber" fluid />
+                    <small class="text-red-500"
+                        *ngIf="addressForm.get('alternatePhoneNumber')?.touched && addressForm.get('alternatePhoneNumber')?.errors?.['pattern']">
+                        Enter a valid 10-digit phone number (starting with 6-9).
+                    </small>
+                </div>
+            </div>
+            <div class="flex items-center mt-4">
+                <p-checkbox formControlName="isDefault" inputId="isDefault" binary="true" />
+                <label for="isDefault" class="ml-2">Set as Default Address</label>
+            </div>
+        </form>
+    </ng-template>
+
+    <ng-template #footer>
+        <p-button label="Cancel" icon="pi pi-times" variant="text" severity="danger" (click)="hideDialog()" />
+        <p-button label="Save" icon="pi pi-check" (click)="saveAddress()" />
+    </ng-template>
+</p-dialog>
+
+<p-confirmdialog [style]="{ width: '450px' }" />

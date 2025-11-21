@@ -14,8 +14,11 @@ export class WishlistService {
   constructor(private http: HttpClient) { }
 
 
-  getWishList(): Observable<any[]> {
-    return this.http.get<any[]>(enviornment.url + "wishList/get");
+  getWishList(userId?: string): Observable<any[]> {
+    const url = userId 
+      ? `${enviornment.url}wishList/get?userId=${userId}`
+      : `${enviornment.url}wishList/get`;
+    return this.http.get<any[]>(url);
   }
 
   postWishlist(data: any): Observable<any> {

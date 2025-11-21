@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { CardModule } from 'primeng/card';
 import { DividerModule } from 'primeng/divider';
 import { ButtonModule } from 'primeng/button';
+import { RadioButtonModule } from 'primeng/radiobutton';
+import { FormsModule } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { RazorpayService } from '../../../shared/service/razorpay.service';
 import { PlaceOrderService } from '../../admin_module/service/place_orders/place-order.service';
@@ -20,9 +22,11 @@ export interface PaymentData {
   selector: 'app-payment',
   imports: [
     CommonModule,
+    FormsModule,
     CardModule,
     DividerModule,
-    ButtonModule
+    ButtonModule,
+    RadioButtonModule
   ],
   templateUrl: './payment.component.html',
   styleUrls: ['./payment.component.scss']
@@ -39,6 +43,7 @@ export class PaymentComponent {
   @Output() paymentError = new EventEmitter<any>();
   @Output() goBack = new EventEmitter<void>();
 
+  paymentMethod: 'online' | 'cod' = 'online';
   paymentProcessing: boolean = false;
 
   constructor(
@@ -59,6 +64,72 @@ export class PaymentComponent {
       return;
     }
 
+    if (this.paymentMethod === 'cod') {
+      this.placeCODOrder();
+    } else {
+      this.processOnlinePayment();
+    }
+  }
+
+  placeCODOrder(): void {
+    this.paymentProcessing = true;
+
+    // Get user info
+    const user = JSON.parse(localStorage.getItem('role') || '{}');
+    const orderData = {
+      userId: user?.id,
+      items: this.selectedItems.map(item => ({
+        productId: item.productId?._id || item.productId,
+        quantity: item.quantity,
+        selectedSize: item.selectedSize,
+        price: item.productId?.price || 0
+      })),
+      shippingAddress: {
+        firstName: this.selectedAddress.firstName,
+        lastName: this.selectedAddress.lastName,
+        addressLine1: this.selectedAddress.addressLine1,
+        addressLine2: this.selectedAddress.addressLine2,
+        city: this.selectedAddress.city,
+        state: this.selectedAddress.state,
+        pincode: this.selectedAddress.pincode,
+        country: this.selectedAddress.country,
+        phoneNumber: this.selectedAddress.phoneNumber,
+        altPhoneNumber: this.selectedAddress.altPhoneNumber
+      },
+      totalAmount: this.orderSummary.totalCost,
+      subtotal: this.orderSummary.subtotal,
+      deliveryCharge: this.orderSummary.deliveryCharge,
+      paymentMethod: 'COD',
+      paymentStatus: 'Pending'
+    };
+
+    // Place COD order directly
+    this.placeOrderService.placeOrder(orderData).subscribe({
+      next: (response: any) => {
+        this.paymentProcessing = false;
+        if (response.code === 200 && response.success) {
+          this.toast.success('Order placed successfully! Pay cash on delivery.');
+          this.paymentSuccess.emit(response);
+          // Navigate to order confirmation page
+          if (response.result?.orderNumber) {
+            this.router.navigate(['/user/view-order', response.result.orderNumber]);
+          } else {
+            this.router.navigate(['/user/user-profile']);
+          }
+        } else {
+          this.toast.error(response.message || 'Failed to place order');
+          this.paymentError.emit(response);
+        }
+      },
+      error: (error: any) => {
+        this.paymentProcessing = false;
+        this.toast.error(error.error?.message || 'Failed to place order');
+        this.paymentError.emit(error);
+      }
+    });
+  }
+
+  processOnlinePayment(): void {
     this.paymentProcessing = true;
 
     // Get user info

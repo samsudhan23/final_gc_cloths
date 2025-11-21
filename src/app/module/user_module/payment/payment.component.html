@@ -23,12 +23,69 @@
 
     <div class="payment-method">
         <p-card>
-            <h4>Payment Method</h4>
+            <h4>Select Payment Method</h4>
             <p-divider></p-divider>
-            <div class="razorpay-info">
-                <i class="pi pi-shield" style="font-size: 2rem; color: #3b82f6;"></i>
-                <p><strong>Secure Payment via Razorpay</strong></p>
-                <p class="text-muted">Your payment information is encrypted and secure</p>
+            
+            <div class="payment-options">
+                <!-- Online Payment Option -->
+                <div class="payment-option" 
+                     [class.selected]="paymentMethod === 'online'"
+                     (click)="paymentMethod = 'online'">
+                    <div class="option-header">
+                        <p-radioButton 
+                            [value]="'online'"
+                            [(ngModel)]="paymentMethod"
+                            inputId="online-payment">
+                        </p-radioButton>
+                        <div class="option-content">
+                            <div class="option-title">
+                                <i class="pi pi-credit-card"></i>
+                                <span>Online Payment</span>
+                            </div>
+                            <p class="option-description">Pay securely with Razorpay (Credit/Debit Card, UPI, Net Banking)</p>
+                        </div>
+                    </div>
+                    <div class="option-features" *ngIf="paymentMethod === 'online'">
+                        <div class="feature-item">
+                            <i class="pi pi-shield"></i>
+                            <span>100% Secure & Encrypted</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="pi pi-check-circle"></i>
+                            <span>Instant Order Confirmation</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- COD Option -->
+                <div class="payment-option" 
+                     [class.selected]="paymentMethod === 'cod'"
+                     (click)="paymentMethod = 'cod'">
+                    <div class="option-header">
+                        <p-radioButton 
+                            [value]="'cod'"
+                            [(ngModel)]="paymentMethod"
+                            inputId="cod-payment">
+                        </p-radioButton>
+                        <div class="option-content">
+                            <div class="option-title">
+                                <i class="pi pi-money-bill"></i>
+                                <span>Cash on Delivery (COD)</span>
+                            </div>
+                            <p class="option-description">Pay cash when your order is delivered</p>
+                        </div>
+                    </div>
+                    <div class="option-features" *ngIf="paymentMethod === 'cod'">
+                        <div class="feature-item">
+                            <i class="pi pi-info-circle"></i>
+                            <span>Pay ₹{{ orderSummary.totalCost ?? 0 }} on delivery</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="pi pi-truck"></i>
+                            <span>No advance payment required</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </p-card>
     </div>
@@ -42,12 +99,12 @@
             [outlined]="true">
         </p-button>
         <p-button 
-            label="Pay Now" 
-            icon="pi pi-credit-card" 
+            [label]="paymentMethod === 'cod' ? 'Place Order (COD)' : 'Pay Now'" 
+            [icon]="paymentMethod === 'cod' ? 'pi pi-shopping-cart' : 'pi pi-credit-card'" 
             (click)="processPayment()" 
             [loading]="paymentProcessing"
             [disabled]="paymentProcessing"
-            severity="success">
+            [severity]="paymentMethod === 'cod' ? 'info' : 'success'">
         </p-button>
     </div>
 </div>
