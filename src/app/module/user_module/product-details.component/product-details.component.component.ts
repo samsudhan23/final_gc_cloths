@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { apiResponse } from '../../../shared/interface/response';
 import { AdminProductService } from '../../admin_module/service/productService/admin-product.service';
 import { EncryptionService } from '../../../shared/service/encryption.service';
+import { WishlistService } from '../../admin_module/service/wishlistService/wishlist.service';
 import {
   trigger,
   state,
@@ -82,19 +83,23 @@ export class ProductDetailsComponent implements OnInit {
   selectedId: any;
   isGotoCart: boolean = false;;
 
+  wishListData: any[] = [];
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private toast: ToastrService,
     private cartService: CartService,
     private productService: AdminProductService,
-    private encryptionService: EncryptionService
+    private encryptionService: EncryptionService,
+    private wishlistService: WishlistService
   ) {
   }
 
   ngOnInit() {
     this.isGotoCart = false;
     this.getProduct();
+    this.checkWishlistStatus();
   }
 
   getProduct() {
@@ -126,6 +131,8 @@ export class ProductDetailsComponent implements OnInit {
           console.log('this.product: ', this.product);
           if (this.product) {
             this.buildProductSections(this.product);
+            // Check wishlist status for this product
+            this.checkProductWishlistStatus(this.product);
             // Fetch all products for related products
             this.productService.getProductlist().subscribe((productListRes: any) => {
               this.productList = productListRes.result || [];
@@ -133,6 +140,10 @@ export class ProductDetailsComponent implements OnInit {
               this.relatedProducts = this.productList.filter(
                 (p: any) => p.category?.categoryName === this.product?.category?.categoryName && p._id !== this.product?._id
               );
+              // Check wishlist status for related products
+              this.relatedProducts.forEach(product => {
+                this.checkProductWishlistStatus(product);
+              });
             });
           } else {
             this.toast.error('Product not found');
@@ -234,10 +245,13 @@ export class ProductDetailsComponent implements OnInit {
   getCartLength() {
     const roleString = localStorage.getItem('role');
     const parse = roleString ? JSON.parse(roleString) : null;
-    if (parse && parse?.id) {
-      this.cartService.getCartList().subscribe((res: apiResponse) => {
+    const userId = parse?.id || parse?._id;
+    
+    if (userId) {
+      // Logged-in user: Get from API with userId filter
+      this.cartService.getCartList(userId).subscribe((res: apiResponse) => {
         if (res?.code === 200 && res?.success === true) {
-          this.cartLength = res.result.map(item => item?.quantity).reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+          this.cartLength = (res.result || []).map((item: any) => item?.quantity || 0).reduce((accumulator: number, currentValue: number) => accumulator + currentValue, 0)
           this.cartService.getLengthOfCart(this.cartLength) //using service to pass lenght of cart
         }
       })
@@ -263,8 +277,154 @@ export class ProductDetailsComponent implements OnInit {
     }
   }
 
+  // Check if user is logged in
+  isUserLoggedIn(): boolean {
+    const userData = localStorage.getItem('role');
+    if (userData) {
+      const user = JSON.parse(userData);
+      return !!(user && (user._id || user.id));
+    }
+    return false;
+  }
+
+  // Get current user ID
+  getCurrentUserId(): string | null {
+    const userData = localStorage.getItem('role');
+    if (userData) {
+      const user = JSON.parse(userData);
+      return user._id || user.id || null;
+    }
+    return null;
+  }
+
+  // Check wishlist status for a product
+  checkProductWishlistStatus(product: any) {
+    if (!product || !product._id) return;
+
+    if (this.isUserLoggedIn()) {
+      // Check from API wishlist data
+      const isWishlisted = this.wishListData.some(
+        (w: any) => w.productId?._id === product._id || w.productId === product._id
+      );
+      product.isWishlisted = isWishlisted;
+    } else {
+      // Check from localStorage
+      const guestWishlist = JSON.parse(localStorage.getItem('guestWishlist') || '[]');
+      const isWishlisted = guestWishlist.some(
+        (item: any) => item.productId === product._id || item._id === product._id
+      );
+      product.isWishlisted = isWishlisted;
+    }
+  }
+
+  // Load wishlist data (for logged-in users)
+  checkWishlistStatus() {
+    if (this.isUserLoggedIn()) {
+      this.wishlistService.getWishList().subscribe((res: any) => {
+        const allWishlist = res?.result || [];
+        const userId = this.getCurrentUserId();
+        this.wishListData = allWishlist.filter(
+          (item: any) => item.userId?._id === userId || item.userId === userId
+        );
+        this.wishlistService.getLengthOfWishlist(this.wishListData.length);
+        
+        // Update product wishlist status
+        if (this.product) {
+          this.checkProductWishlistStatus(this.product);
+        }
+      });
+    } else {
+      // For guest users, get length from localStorage
+      const guestWishlist = JSON.parse(localStorage.getItem('guestWishlist') || '[]');
+      this.wishlistService.getLengthOfWishlist(guestWishlist.length);
+    }
+  }
+
+  // Toggle wishlist - handles both logged-in and guest users
   toggleWishlist(product: any) {
-    product.isWishlisted = !product.isWishlisted;
+    if (!product || !product._id) return;
+
+    if (this.isUserLoggedIn()) {
+      // Logged-in user: Use API
+      const userId = this.getCurrentUserId();
+      if (!userId) {
+        this.toast.warning('Please login to add items to wishlist');
+        return;
+      }
+
+      if (!product.isWishlisted) {
+        // Add to wishlist via API
+        const payload = {
+          userId: userId,
+          productId: product._id
+        };
+
+        this.wishlistService.postWishlist(payload).subscribe({
+          next: (res: any) => {
+            if (res.code === 200 && res.success === true) {
+              product.isWishlisted = true;
+              this.toast.success('Added to wishlist ❤️');
+              this.checkWishlistStatus();
+            } else {
+              this.toast.error(res.message || 'Failed to add to wishlist');
+            }
+          },
+          error: (err: any) => {
+            console.error(err);
+            this.toast.error(err.error?.message || 'Failed to add to wishlist');
+          }
+        });
+      } else {
+        // Remove from wishlist via API
+        const matchedItem = this.wishListData.find(
+          (w: any) => w.productId?._id === product._id || w.productId === product._id
+        );
+
+        if (matchedItem && matchedItem._id) {
+          this.wishlistService.deleteWishLists(matchedItem._id).subscribe({
+            next: (res: any) => {
+              if (res.code === 200 && res.success === true) {
+                product.isWishlisted = false;
+                this.toast.info('Removed from wishlist 💔');
+                this.checkWishlistStatus();
+              } else {
+                this.toast.error(res.message || 'Failed to remove from wishlist');
+              }
+            },
+            error: (err: any) => {
+              console.error(err);
+              this.toast.error(err.error?.message || 'Failed to remove from wishlist');
+            }
+          });
+        }
+      }
+    } else {
+      // Guest user: Use localStorage
+      let guestWishlist: any[] = JSON.parse(localStorage.getItem('guestWishlist') || '[]');
+      
+      const existingIndex = guestWishlist.findIndex(
+        (item: any) => item.productId === product._id || item._id === product._id
+      );
+
+      if (existingIndex >= 0) {
+        // Remove from wishlist
+        guestWishlist.splice(existingIndex, 1);
+        product.isWishlisted = false;
+        this.toast.info('Removed from wishlist 💔');
+      } else {
+        // Add to wishlist
+        const wishlistItem = {
+          productId: product._id,
+          product: product // Store product data for display
+        };
+        guestWishlist.push(wishlistItem);
+        product.isWishlisted = true;
+        this.toast.success('Added to wishlist ❤️');
+      }
+
+      localStorage.setItem('guestWishlist', JSON.stringify(guestWishlist));
+      this.wishlistService.getLengthOfWishlist(guestWishlist.length);
+    }
   }
 
   goToDetails(product: any) {
@@ -274,6 +434,9 @@ export class ProductDetailsComponent implements OnInit {
     // Set the clicked product as the new main product
     this.product = product;
     this.selectedImage = product.images;
+    
+    // Check wishlist status for the new product
+    this.checkProductWishlistStatus(this.product);
 
     // Rebuild related products list:
     // 1. Remove the clicked product from related list
@@ -285,6 +448,8 @@ export class ProductDetailsComponent implements OnInit {
 
     if (previousProduct) {
       this.relatedProducts.push(previousProduct); // put old main into related
+      // Check wishlist status for previous product when added back to related
+      this.checkProductWishlistStatus(previousProduct);
     }
 
     // keep only same-category items

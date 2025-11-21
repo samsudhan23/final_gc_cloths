@@ -1,0 +1,14 @@
+.active {
+    background-color: var(--p-tag-primary-background);
+    color: var(--p-tag-success-color);
+}
+
+.inactive {
+    background-color: var(--p-tag-danger-background);
+    color: var(--p-tag-danger-color);
+}
+
+::ng-deep .userModel .p-dialog-content {
+    overflow-y: unset;
+}
+

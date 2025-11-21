@@ -14,8 +14,11 @@ export class CartService {
 
   constructor(private http: HttpClient) { }
 
-  getCartList(): Observable<apiResponse> {
-    return this.http.get<apiResponse>(enviornment.url + `cart/get`);
+  getCartList(userId?: string): Observable<apiResponse> {
+    const url = userId 
+      ? `${enviornment.url}cart/get?userId=${userId}`
+      : `${enviornment.url}cart/get`;
+    return this.http.get<apiResponse>(url);
   }
 
   postCart(data: any): Observable<apiResponse> {

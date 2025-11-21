@@ -17,6 +17,8 @@ import { AdminProductService } from '../../admin_module/service/productService/a
 import { EncryptionService } from '../../../shared/service/encryption.service';
 import { DeliveryaddressComponent } from '../deliveryaddress/deliveryaddress.component';
 import { PaymentComponent } from '../payment/payment.component';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 @Component({
   selector: 'app-user-cart',
@@ -32,8 +34,10 @@ import { PaymentComponent } from '../payment/payment.component';
     CardModule,
     DividerModule,
     DeliveryaddressComponent,
-    PaymentComponent
+    PaymentComponent,
+    ConfirmDialogModule
   ],
+  providers: [ConfirmationService, MessageService],
   templateUrl: './user-cart.component.html',
   styleUrl: './user-cart.component.scss'
 })
@@ -78,7 +82,8 @@ export class UserCartComponent {
     private fb: FormBuilder,
     private router: Router,
     private productService: AdminProductService,
-    private encryptionService: EncryptionService
+    private encryptionService: EncryptionService,
+    private confirmationService: ConfirmationService
   ) {
 
   }
@@ -95,16 +100,19 @@ export class UserCartComponent {
   getCartList() {
     const roleString = localStorage.getItem('role');
     const parse = roleString ? JSON.parse(roleString) : null;
-    if (parse?.id) {
-      this.cartService.getCartList().subscribe(
+    const userId = parse?.id || parse?._id;
+    
+    if (userId) {
+      // Logged-in user: Get from API with userId filter
+      this.cartService.getCartList(userId).subscribe(
         (res: apiResponse) => {
           if (res?.code === 200 && res?.success === true) {
-            this.allCartList = res?.result;
+            this.allCartList = res?.result || [];
 
             // total items count
-            this.cartLength = res.result
-              .map(item => item?.quantity)
-              .reduce((acc, cur) => acc + cur, 0);
+            this.cartLength = (res.result || [])
+              .map((item: any) => item?.quantity || 0)
+              .reduce((acc: number, cur: number) => acc + cur, 0);
             this.cartService.getLengthOfCart(this.cartLength);
 
             // form array setup
@@ -131,14 +139,23 @@ export class UserCartComponent {
             this.selectAll = true; // All items selected by default
             // ✅ calculate totals after building the cart
             this.calculateTotal();
+          } else {
+            this.allCartList = [];
+            this.cartLength = 0;
+            this.cartService.getLengthOfCart(0);
           }
         },
         (error) => {
-          this.toast.error(error.error.message);
+          console.error('Error fetching cart:', error);
+          this.toast.error(error.error?.message || 'Failed to load cart');
+          this.allCartList = [];
+          this.cartLength = 0;
+          this.cartService.getLengthOfCart(0);
         }
       );
     }
     else {
+      // Guest user: Get from localStorage
       const guestCart = JSON.parse(localStorage.getItem('guestCart') || '[]');
       
       this.allCartList = guestCart;
@@ -252,6 +269,16 @@ export class UserCartComponent {
     });
   }
 
+  // Check if user is logged in
+  isUserLoggedIn(): boolean {
+    const userData = localStorage.getItem('role');
+    if (userData) {
+      const user = JSON.parse(userData);
+      return !!(user && (user._id || user.id));
+    }
+    return false;
+  }
+
   // Proceed to checkout with selected items
   proceedToCheckout() {
     const selectedItems = this.getSelectedCartItems();
@@ -259,6 +286,28 @@ export class UserCartComponent {
       this.toast.warning('Please select at least one item to proceed to checkout');
       return;
     }
+
+    // Check if user is logged in
+    if (!this.isUserLoggedIn()) {
+      this.confirmationService.confirm({
+        message: 'Please login to proceed with checkout. Do you want to go to login page?',
+        header: 'Login Required',
+        icon: 'pi pi-exclamation-triangle',
+        acceptButtonStyleClass: 'p-button-primary',
+        acceptLabel: 'Go to Login',
+        rejectLabel: 'Cancel',
+        accept: () => {
+          // Navigate to user profile page (which has login component)
+          this.router.navigate(['/user/user-profile']);
+        },
+        reject: () => {
+          // User cancelled, do nothing
+        }
+      });
+      return;
+    }
+
+    // User is logged in, proceed with checkout
     this.checkoutDialogVisible = true;
     this.checkoutStep = 'address';
     this.selectedAddress = null;
