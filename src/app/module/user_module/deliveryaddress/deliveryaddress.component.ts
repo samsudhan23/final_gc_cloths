@@ -12,20 +12,26 @@ import { ToastrService } from 'ngx-toastr';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
+import { DeliveryAddressService } from '../../admin_module/service/delivery-address/delivery-address.service';
+import { AuthenticationService } from '../../../pages/service/authentication.service';
 
 interface Address {
-  id: number;
-  firstName: string;
-  lastName: string;
-  addressLine1: string; // House / Building
-  addressLine2?: string; // Landmark
+  _id?: string;
+  fullName: string;
+  addressLine: string; // House / Building
+  landmark?: string; // Landmark (mapped from addressLine2)
+  addressLine2?: string; // For form compatibility
   city?: string;
   state?: string;
-  pincode?: string;
+  postalCode?: string; // API field
+  pincode?: string; // Form field
   country?: string;
-  phoneNumber: string;
-  altPhoneNumber?: string;
+  phone: string; // API field
+  phoneNumber?: string; // Form field
+  alternatePhoneNumber?: string;
+  altPhoneNumber?: string; // Form field
   isDefault?: boolean;
+  userId?: any;
 }
 
 @Component({
@@ -50,52 +56,41 @@ interface Address {
 })
 export class DeliveryaddressComponent implements OnInit {
   @Input() selectMode: boolean = false; // Enable address selection mode
-  @Input() selectedAddressId: number | null = null; // Currently selected address ID
+  @Input() selectedAddressId: any = null; // Currently selected address ID
   @Output() addressSelected = new EventEmitter<Address>(); // Emit selected address
-  
+
   addressForm!: FormGroup;
-  addresses: Address[] = [
-    {
-      id: 1,
-      firstName: 'John',
-      lastName: 'Doe',
-      addressLine1: '221B Baker Street',
-      addressLine2: 'Near Central Park',
-      city: 'Chennai',
-      state: 'Tamil Nadu',
-      pincode: '600001',
-      country: 'India',
-      phoneNumber: '9876543210',
-      altPhoneNumber: '9123456780',
-      isDefault: true
-    },
-    {
-      id: 2,
-      firstName: 'Jane',
-      lastName: 'Doe',
-      addressLine1: '11 Downing Street',
-      city: 'Mumbai',
-      state: 'Maharashtra',
-      pincode: '400001',
-      country: 'India',
-      phoneNumber: '9000000000'
-    }
-  ];
-  editingAddressId: number | null = null;
+  addresses: Address[] = [];
+  editingAddressId: any = null;
   showForm: boolean = false;
   countries: string[] = ['India', 'United States', 'United Kingdom', 'Canada', 'Australia', 'Other'];
+  currentUserId: string | null = null;
 
   constructor(
     private fb: FormBuilder,
     private toast: ToastrService,
-    private confirmationService: ConfirmationService
-  ) {}
+    private confirmationService: ConfirmationService,
+    private deliveryAddressService: DeliveryAddressService,
+    private authService: AuthenticationService
+  ) { }
 
   ngOnInit() {
+    // Get current user ID
+    const currentUser = this.authService.getCurrentUser();
+    if (currentUser && (currentUser._id || currentUser.id)) {
+      this.currentUserId = currentUser._id || currentUser.id;
+    } else {
+      // Fallback to localStorage
+      const userData = localStorage.getItem('role');
+      if (userData) {
+        const user = JSON.parse(userData);
+        this.currentUserId = user._id || user.id;
+      }
+    }
+
     this.addressForm = this.fb.group({
-      firstName: ['', [Validators.required, Validators.maxLength(50)]],
-      lastName: ['', [Validators.required, Validators.maxLength(50)]],
-      addressLine1: ['', [Validators.required, Validators.maxLength(120)]],
+      fullName: ['', [Validators.required, Validators.maxLength(50)]],
+      addressLine: ['', [Validators.required, Validators.maxLength(120)]],
       addressLine2: ['', [Validators.maxLength(120)]],
       city: ['', [Validators.required, Validators.maxLength(80)]],
       state: ['', [Validators.required, Validators.maxLength(80)]],
@@ -105,22 +100,62 @@ export class DeliveryaddressComponent implements OnInit {
       altPhoneNumber: ['', [Validators.pattern(/^[0-9]{10,15}$/)]],
       isDefault: [false]
     });
+    
+    if (this.currentUserId) {
+      this.loadAddresses();
+    } else {
+      // this.toast.warning('Please login to manage delivery addresses');
+    }
+  }
+
+  loadAddresses(): void {
+    if (!this.currentUserId) {
+      this.toast.warning('User not found. Please login again.');
+      return;
+    }
+
+    this.deliveryAddressService.getDeliveryAddressesByUserId(this.currentUserId).subscribe((res: any) => {
+      if (res.code === 200 && res.success === true) {
+        // Map API response to component format
+        this.addresses = (res.result || []).map((addr: any) => ({
+          _id: addr._id,
+          id: addr._id, // For compatibility with existing code
+          fullName: addr.fullName,
+          addressLine: addr.addressLine,
+          landmark: addr.landmark,
+          addressLine2: addr.landmark, // For form compatibility
+          city: addr.city,
+          state: addr.state,
+          postalCode: addr.postalCode,
+          pincode: addr.postalCode, // For form compatibility
+          country: addr.country,
+          phone: addr.phone,
+          phoneNumber: addr.phone, // For form compatibility
+          alternatePhoneNumber: addr.alternatePhoneNumber,
+          altPhoneNumber: addr.alternatePhoneNumber, // For form compatibility
+          isDefault: addr.isDefault || false,
+          userId: addr.userId
+        }));
+      }
+    }, (error: any) => {
+      this.addresses = [];
+      this.toast.warning(error.error?.message || 'Failed to load delivery addresses');
+    });
   }
 
   editAddress(address: Address): void {
-    this.editingAddressId = address.id;
+    this.editingAddressId = address._id || null;
     this.showForm = true;
-    this.addressForm.reset({
-      firstName: address.firstName,
-      lastName: address.lastName,
-      addressLine1: address.addressLine1,
-      addressLine2: address.addressLine2 || '',
+    this.addressForm.patchValue({
+      fullName: address.fullName,
+      addressLine: address.addressLine,
+      addressLine2: address.addressLine2 || address.landmark || '',
       city: address.city || '',
       state: address.state || '',
-      pincode: address.pincode || '',
+      pincode: address.pincode || address.postalCode || '',
       country: address.country || 'India',
-      phoneNumber: address.phoneNumber,
-      altPhoneNumber: address.altPhoneNumber || '',
+      phoneNumber: address.phoneNumber || address.phone || '',
+      altPhoneNumber: address.altPhoneNumber || address.alternatePhoneNumber || '',
       isDefault: !!address.isDefault
     });
     // Scroll to form
@@ -136,9 +171,8 @@ export class DeliveryaddressComponent implements OnInit {
     this.editingAddressId = null;
     this.showForm = true;
     this.addressForm.reset({
-      firstName: '',
-      lastName: '',
-      addressLine1: '',
+      fullName: '',
+      addressLine: '',
       addressLine2: '',
       city: '',
       state: '',
@@ -163,44 +197,64 @@ export class DeliveryaddressComponent implements OnInit {
       this.toast.error('Please fill all required fields correctly');
       return;
     }
-    const value = this.addressForm.value as Address;
-    if (value.isDefault) {
-      this.addresses = this.addresses.map(a => ({ ...a, isDefault: false }));
+
+    if (!this.currentUserId) {
+      this.toast.error('User not found. Please login again.');
+      return;
     }
-    if (this.editingAddressId != null) {
-      this.addresses = this.addresses.map(a =>
-        a.id === this.editingAddressId ? { ...a, ...value, id: this.editingAddressId! } : a
-      );
-      this.toast.success('Address updated successfully');
+
+    const formValue = this.addressForm.value;
+    
+    // Map form fields to API format
+    const addressData = {
+      userId: this.currentUserId,
+      fullName: formValue.fullName,
+      addressLine: formValue.addressLine,
+      landmark: formValue.addressLine2 || '',
+      city: formValue.city,
+      state: formValue.state,
+      postalCode: formValue.pincode,
+      country: formValue.country,
+      phone: formValue.phoneNumber,
+      alternatePhoneNumber: formValue.altPhoneNumber || '',
+      isDefault: formValue.isDefault || false
+    };
+
+    if (this.editingAddressId) {
+      // Update existing address
+      this.deliveryAddressService.updateDeliveryAddress(this.editingAddressId, addressData).subscribe((res: any) => {
+        if (res.code === 200 && res.success === true) {
+          this.toast.success(res.message || 'Address updated successfully');
+          this.loadAddresses();
+          this.cancelForm();
+        } else {
+          this.toast.error(res.message || 'Failed to update address');
+        }
+      }, (error: any) => {
+        this.toast.error(error.error?.message || 'Server error occurred');
+      });
     } else {
-      const nextId = Math.max(0, ...this.addresses.map(a => a.id)) + 1;
-      this.addresses = [...this.addresses, { ...value, id: nextId }];
-      this.toast.success('Address added successfully');
+      // Add new address
+      this.deliveryAddressService.addDeliveryAddress(addressData).subscribe((res: any) => {
+        if (res.code === 200 && res.success === true) {
+          this.toast.success(res.message || 'Address added successfully');
+          this.loadAddresses();
+          this.cancelForm();
+        } else {
+          this.toast.error(res.message || 'Failed to add address');
+        }
+      }, (error: any) => {
+        this.toast.error(error.error?.message || 'Server error occurred');
+      });
     }
-    this.editingAddressId = null;
-    this.showForm = false;
-    this.addressForm.reset({
-      firstName: '',
-      lastName: '',
-      addressLine1: '',
-      addressLine2: '',
-      city: '',
-      state: '',
-      pincode: '',
-      country: 'India',
-      phoneNumber: '',
-      altPhoneNumber: '',
-      isDefault: false
-    });
   }
 
   cancelForm(): void {
     this.showForm = false;
     this.editingAddressId = null;
     this.addressForm.reset({
-      firstName: '',
-      lastName: '',
-      addressLine1: '',
+      fullName: '',
+      addressLine: '',
       addressLine2: '',
       city: '',
       state: '',
@@ -212,38 +266,68 @@ export class DeliveryaddressComponent implements OnInit {
     });
   }
 
-  deleteAddress(id: number): void {
-    const address = this.addresses.find(a => a.id === id);
-    const addressName = address ? `${address.firstName} ${address.lastName}` : 'this address';
-    
+  deleteAddress(id: any): void {
+    const address = this.addresses.find(a => a._id === id);
+    const addressName = address ? `${address.fullName}` : 'this address';
+    const addressId = address?._id;
+
     this.confirmationService.confirm({
       message: `Are you sure you want to delete ${addressName}?`,
       header: 'Delete Confirmation',
       icon: 'pi pi-exclamation-triangle',
       acceptButtonStyleClass: 'p-button-danger',
       accept: () => {
-        this.addresses = this.addresses.filter(a => a.id !== id);
-        this.toast.success('Address deleted successfully');
+        const deleteData = {
+          ids: [addressId]
+        };
+        this.deliveryAddressService.deleteDeliveryAddress(deleteData).subscribe((res: any) => {
+          if (res.code === 200 && res.success === true) {
+            this.toast.success(res.message || 'Address deleted successfully');
+            this.loadAddresses();
+          } else {
+            this.toast.error(res.message || 'Failed to delete address');
+          }
+        }, (error: any) => {
+          this.toast.error(error.error?.message || 'Server error occurred');
+        });
       }
     });
   }
 
-  setDefaultAddress(id: number): void {
-    this.addresses = this.addresses.map(a => ({ ...a, isDefault: a.id === id }));
-    this.toast.success('Default address updated successfully');
+  setDefaultAddress(id: any): void {
+    const address = this.addresses.find(a => a._id === id);
+    const addressId = address?._id;
+
+    if (!addressId) {
+      this.toast.error('Address ID not found');
+      return;
+    }
+
+    this.deliveryAddressService.setDefaultAddress(addressId as string).subscribe((res: any) => {
+      if (res.code === 200 && res.success === true) {
+        this.toast.success(res.message || 'Default address updated successfully');
+        this.loadAddresses();
+      } else {
+        this.toast.error(res.message || 'Failed to set default address');
+      }
+    }, (error: any) => {
+      this.toast.error(error.error?.message || 'Server error occurred');
+    });
   }
 
   // Select address (for checkout mode)
   selectAddress(address: Address): void {
     if (this.selectMode) {
-      this.selectedAddressId = address.id;
+      this.selectedAddressId = address._id || null;
       this.addressSelected.emit(address);
     }
   }
 
   // Check if address is selected
-  isAddressSelected(addressId: number): boolean {
-    return this.selectedAddressId === addressId;
+  isAddressSelected(addressId: number | string | undefined): boolean {
+    if (!addressId) return false;
+    return this.selectedAddressId === addressId || 
+           this.selectedAddressId === (this.addresses.find(a => a._id === addressId));
   }
 
   getFieldError(fieldName: string): string {
@@ -267,9 +351,8 @@ export class DeliveryaddressComponent implements OnInit {
 
   getFieldLabel(fieldName: string): string {
     const labels: { [key: string]: string } = {
-      firstName: 'First name',
-      lastName: 'Last name',
-      addressLine1: 'House No / Building name',
+      fullName: 'Full Name',
+      addressLine: 'House No / Building name',
       addressLine2: 'Landmark',
       city: 'City',
       state: 'State',
@@ -286,4 +369,3 @@ export class DeliveryaddressComponent implements OnInit {
     return !!(field && field.invalid && field.touched);
   }
 }
-

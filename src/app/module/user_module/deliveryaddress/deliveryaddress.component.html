@@ -9,34 +9,34 @@
 
     <div class="address-list" *ngIf="addresses.length > 0">
         <article class="address-card" *ngFor="let addr of addresses" 
-                 [class.selected]="selectMode && isAddressSelected(addr.id)">
+                 [class.selected]="selectMode && isAddressSelected(addr._id)">
             <!-- Radio button for selection mode -->
             <div class="address-radio" *ngIf="selectMode">
-                <p-radioButton [value]="addr.id" 
-                              [inputId]="'addr-' + addr.id"
+                <p-radioButton [value]="addr._id" 
+                              [inputId]="'addr-' + (addr._id)"
                               [(ngModel)]="selectedAddressId"
                               (onClick)="selectAddress(addr)"></p-radioButton>
             </div>
             <div class="address-body">
                 <div class="address-name">
-                    {{ addr.firstName }} {{ addr.lastName }}
+                    {{ addr.fullName }}
                     <span class="badge" *ngIf="addr.isDefault">Default</span>
                 </div>
-                <div class="address-line">{{ addr.addressLine1 }}</div>
-                <div class="address-line" *ngIf="addr.addressLine2">{{ addr.addressLine2 }}</div>
-                <div class="address-line" *ngIf="addr.city || addr.state || addr.pincode">
-                    {{ addr.city }}{{ addr.city && addr.state ? ', ' : '' }}{{ addr.state }}{{ (addr.city || addr.state) && addr.pincode ? ' - ' : '' }}{{ addr.pincode }}
+                <div class="address-line">{{ addr.addressLine }}</div>
+                <div class="address-line" *ngIf="addr.landmark">{{ addr.landmark }}</div>
+                <div class="address-line" *ngIf="addr.city || addr.state || addr.postalCode || addr.pincode">
+                    {{ addr.city }}{{ addr.city && addr.state ? ', ' : '' }}{{ addr.state }}{{ (addr.city || addr.state) && (addr.postalCode || addr.pincode) ? ' - ' : '' }}{{ addr.postalCode || addr.pincode }}
                 </div>
                 <div class="address-line" *ngIf="addr.country">{{ addr.country }}</div>
-                <div class="address-line">Phone: {{ addr.phoneNumber }}<span
-                        *ngIf="addr.altPhoneNumber"> / {{ addr.altPhoneNumber }}</span></div>
+                <div class="address-line">Phone: {{ addr.phone || addr.phoneNumber }}<span
+                        *ngIf="addr.alternatePhoneNumber || addr.altPhoneNumber"> / {{ addr.alternatePhoneNumber || addr.altPhoneNumber }}</span></div>
             </div>
             <div class="address-actions">
                 <p-button label="Edit" icon="pi pi-pencil" (click)="editAddress(addr)" severity="secondary"
                     [outlined]="true" size="small"></p-button>
-                <p-button label="Make default" icon="pi pi-check-circle" (click)="setDefaultAddress(addr.id)"
+                <p-button label="Make default" icon="pi pi-check-circle" (click)="setDefaultAddress(addr._id)"
                     [disabled]="addr.isDefault" severity="secondary" [outlined]="true" size="small"></p-button>
-                <p-button label="Delete" icon="pi pi-trash" (click)="deleteAddress(addr.id)" severity="danger"
+                <p-button label="Delete" icon="pi pi-trash" (click)="deleteAddress(addr._id)" severity="danger"
                     [text]="true" size="small"></p-button>
             </div>
         </article>
@@ -50,35 +50,24 @@
         <h4>{{ editingAddressId != null ? 'Edit Address' : 'Add New Address' }}</h4>
         <div class="form-grid">
             <div class="form-field">
-                <label for="firstName" class="form-label">First name <span class="required">*</span></label>
-                <input pInputText id="firstName" type="text" formControlName="firstName" 
-                    [class.ng-invalid]="isFieldInvalid('firstName')" 
-                    placeholder="Enter first name" />
+                <label for="fullName" class="form-label">Full Name <span class="required">*</span></label>
+                <input pInputText id="fullName" type="text" formControlName="fullName" 
+                    [class.ng-invalid]="isFieldInvalid('fullName')" 
+                    placeholder="Enter full name" />
                 <div class="error-message-container">
-                    <p-message severity="error" text="{{ getFieldError('firstName') }}" 
-                        *ngIf="isFieldInvalid('firstName')"></p-message>
-                </div>
-            </div>
-
-            <div class="form-field">
-                <label for="lastName" class="form-label">Last name <span class="required">*</span></label>
-                <input pInputText id="lastName" type="text" formControlName="lastName" 
-                    [class.ng-invalid]="isFieldInvalid('lastName')" 
-                    placeholder="Enter last name" />
-                <div class="error-message-container">
-                    <p-message severity="error" text="{{ getFieldError('lastName') }}" 
-                        *ngIf="isFieldInvalid('lastName')"></p-message>
+                    <p-message severity="error" text="{{ getFieldError('fullName') }}" 
+                        *ngIf="isFieldInvalid('fullName')"></p-message>
                 </div>
             </div>
 
             <div class="form-field form-col-span-2">
-                <label for="addressLine1" class="form-label">House No / Building name <span class="required">*</span></label>
-                <input pInputText id="addressLine1" type="text" formControlName="addressLine1" 
-                    [class.ng-invalid]="isFieldInvalid('addressLine1')" 
+                <label for="addressLine" class="form-label">House No / Building name <span class="required">*</span></label>
+                <input pInputText id="addressLine" type="text" formControlName="addressLine" 
+                    [class.ng-invalid]="isFieldInvalid('addressLine')" 
                     placeholder="Flat 12B, Blue Tower" />
                 <div class="error-message-container">
-                    <p-message severity="error" text="{{ getFieldError('addressLine1') }}" 
-                        *ngIf="isFieldInvalid('addressLine1')"></p-message>
+                    <p-message severity="error" text="{{ getFieldError('addressLine') }}" 
+                        *ngIf="isFieldInvalid('addressLine')"></p-message>
                 </div>
             </div>
 

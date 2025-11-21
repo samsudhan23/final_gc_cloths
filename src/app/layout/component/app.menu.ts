@@ -44,7 +44,8 @@ export class AppMenu {
                 items: [
                     { label: 'Wishlists', icon: 'pi pi-fw pi-heart', routerLink: ['/admin/wishlist'] },
                     { label: 'Cart', icon: 'pi pi-fw pi-shopping-cart', routerLink: ['/admin/Cart'] },
-                    { label: 'Order Management', icon: 'pi pi-fw pi-truck', routerLink: ['/admin/orders'] }
+                    { label: 'Order Management', icon: 'pi pi-fw pi-truck', routerLink: ['/admin/orders'] },
+                    { label: 'Delivery Address', icon: 'pi pi-fw pi-map-marker', routerLink: ['/admin/delivery'] }
                 ]
             }
             // {

@@ -163,13 +163,19 @@ export class LayoutComponent {
   getCartLength() {
     const roleString = localStorage.getItem('role');
     const parse = roleString ? JSON.parse(roleString) : null;
-    if (parse?.id) {
-      this.cart.getCartList().subscribe((res: apiResponse) => {
-        this.cartLength = res.result.map(item => item.quantity).reduce((accumulator, currentValue) => accumulator + currentValue, 0)
-        // Update the BehaviorSubject so other components can subscribe
-        this.cart.getLengthOfCart(this.cartLength);
+    const userId = parse?.id || parse?._id;
+    
+    if (userId) {
+      // Logged-in user: Get from API with userId filter
+      this.cart.getCartList(userId).subscribe((res: apiResponse) => {
+        if (res?.code === 200 && res?.success === true) {
+          this.cartLength = (res.result || []).map((item: any) => item?.quantity || 0).reduce((accumulator: number, currentValue: number) => accumulator + currentValue, 0)
+          // Update the BehaviorSubject so other components can subscribe
+          this.cart.getLengthOfCart(this.cartLength);
+        }
       })
     } else {
+      // Guest user: Get from localStorage
       const guestCart = JSON.parse(localStorage.getItem('guestCart') || '[]');
       this.allCartList = guestCart;
       console.log('guestCart: ', guestCart);

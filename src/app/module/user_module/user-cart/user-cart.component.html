@@ -234,7 +234,7 @@
         <h3 class="step-title">Select Delivery Address</h3>
         <app-deliveryaddress 
             [selectMode]="true"
-            [selectedAddressId]="selectedAddress?.id"
+            [selectedAddressId]="selectedAddress?._id"
             (addressSelected)="onAddressSelected($event)">
         </app-deliveryaddress>
         
@@ -242,12 +242,15 @@
             <p-card>
                 <div class="selected-address-summary">
                     <h4>Selected Address:</h4>
-                    <p><strong>{{ selectedAddress.firstName }} {{ selectedAddress.lastName }}</strong></p>
-                    <p>{{ selectedAddress.addressLine1 }}</p>
-                    <p *ngIf="selectedAddress.addressLine2">{{ selectedAddress.addressLine2 }}</p>
-                    <p>{{ selectedAddress.city }}, {{ selectedAddress.state }} - {{ selectedAddress.pincode }}</p>
+                    <p><strong>{{ selectedAddress.fullName }}</strong></p>
+                    <p>{{ selectedAddress.addressLine }}</p>
+                    <p *ngIf="selectedAddress.landmark">{{ selectedAddress.landmark }}</p>
+                    <p>{{ selectedAddress.city }}, {{ selectedAddress.state }} - {{ selectedAddress.postalCode || selectedAddress.pincode }}</p>
                     <p>{{ selectedAddress.country }}</p>
-                    <p>Phone: {{ selectedAddress.phoneNumber }}</p>
+                    <p>Phone: {{ selectedAddress.phone || selectedAddress.phoneNumber }}</p>
+                    <p *ngIf="selectedAddress.alternatePhoneNumber || selectedAddress.altPhoneNumber">
+                        Alternate: {{ selectedAddress.alternatePhoneNumber || selectedAddress.altPhoneNumber }}
+                    </p>
                 </div>
             </p-card>
         </div>
@@ -284,4 +287,6 @@
         </div>
     </ng-template>
 </p-dialog>
+
+<p-confirmdialog [style]="{ width: '450px' }" />
 }

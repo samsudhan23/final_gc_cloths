@@ -1,4 +1,4 @@
-import { Component, ElementRef, QueryList, ViewChildren } from '@angular/core';
+import { Component, ElementRef, QueryList, ViewChildren, Input, Output, EventEmitter } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
@@ -26,6 +26,7 @@ import { TextareaModule } from 'primeng/textarea';
 import { ToastModule } from 'primeng/toast';
 import { ToolbarModule } from 'primeng/toolbar';
 import { CartService } from '../../../module/admin_module/service/cartService/cart.service';
+import { WishlistService } from '../../../module/admin_module/service/wishlistService/wishlist.service';
 
 @Component({
   selector: 'app-sign-in',
@@ -51,6 +52,9 @@ import { CartService } from '../../../module/admin_module/service/cartService/ca
   styleUrl: './sign-in.component.scss'
 })
 export class SignInComponent {
+  @Input() showInDialog: boolean = false; // Flag to prevent navigation when used in dialog
+  @Output() loginSuccess = new EventEmitter<any>(); // Emit login success event
+  
   loading: boolean = false;
   isLogin: boolean = true;
   signupForm: FormGroup;
@@ -73,7 +77,8 @@ export class SignInComponent {
     private toast: ToastrService,
     private http: HttpClient,
     private auth: AuthenticationService,
-    private cartService: CartService
+    private cartService: CartService,
+    private wishlistService: WishlistService
   ) {
     this.signupForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
@@ -239,13 +244,20 @@ export class SignInComponent {
           console.log('res: ', res.result);
           this.toast.success(res.message);
           const role = res?.result?.role;
-          this.mergeGuestCart(res?.result?.id);
+          const userId = res?.result?.id || res?.result?._id;
+          this.mergeGuestCart(userId);
+          this.mergeGuestWishlist(userId);
 
-          // Redirect based on role
-          if (role === 'admin') {
-            this.router.navigate(['/admin']);
-          } else if (role === 'user') {
-            this.router.navigate(['/user']);
+          // Emit login success event if used in dialog
+          if (this.showInDialog) {
+            this.loginSuccess.emit(res.result);
+          } else {
+            // Redirect based on role only if not in dialog
+            if (role === 'admin') {
+              this.router.navigate(['/admin']);
+            } else if (role === 'user') {
+              this.router.navigate(['/user']);
+            }
           }
           // this.loginForm.reset();
           this.islogPasswordVisible = false;
@@ -335,6 +347,33 @@ export class SignInComponent {
     });
 
     localStorage.removeItem('guestCart');
+  }
+
+  // When the user logs in successfully, merge guest wishlist into server wishlist:
+  mergeGuestWishlist(userId: string) {
+    const guestWishlist = JSON.parse(localStorage.getItem('guestWishlist') || '[]');
+    if (guestWishlist.length === 0) return;
+
+    guestWishlist.forEach((item: any) => {
+      const wishlistData = {
+        userId: userId,
+        productId: item.productId || item._id
+      };
+      
+      this.wishlistService.postWishlist(wishlistData).subscribe({
+        next: (res: any) => {
+          // Success - item added (or already exists)
+          console.log('Wishlist item synced:', res);
+        },
+        error: (err: any) => {
+          // Item might already exist, continue
+          console.log('Wishlist item might already exist:', err);
+        }
+      });
+    });
+
+    // Clear localStorage after syncing
+    localStorage.removeItem('guestWishlist');
   }
 
 }
