@@ -29,7 +29,7 @@
 
                         <div class="row g-4">
                             <!-- Loop through products -->
-                            <div class="col-lg-3 col-md-4 col-sm-6" *ngFor="let product of productList">
+                            <div class="col-lg-3 col-md-4 col-sm-6" *ngFor="let product of filteredProducts">
                                 <div class="product-card">
 
                                     <div class="product-img cursor-pointer" (click)="viewDetails(product)">
@@ -54,7 +54,7 @@
 
                                         <!-- Wishlist & Cart Icons -->
                                         <div class="product-icons">
-                                            <button class="icon-btn" (click)="toggleWishlist(product)">
+                                            <button class="icon-btn" (click)="toggleWishlist(product, $event)">
                                                 <i [ngClass]="{
                   'bi bi-heart': !product.isWishlisted,
                   'bi bi-heart-fill text-danger animate-bounce': product.isWishlisted
@@ -66,7 +66,7 @@
                                         </div>
 
                                         <!-- 👁 Quick View Button -->
-                                        <button class="quick-view-btn" (click)="openQuickView(product)"><i
+                                        <button class="quick-view-btn" (click)="openQuickView(product,$event)"><i
                                                 class="bi bi-eye me-1"></i> Quick View</button>
                                     </div>
 
@@ -102,6 +102,11 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        <!-- Quick View Modal -->
+                        <div class="modal-backdrop" *ngIf="selectedProduct">
+                            <app-quick-view [selectedProducts]="selectedProduct"
+                                (closeEmitter)="closeQuickView()"></app-quick-view>
                         </div>
                     </div>
                 </div>

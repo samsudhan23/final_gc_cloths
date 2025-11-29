@@ -1,22 +1,23 @@
 <div class="bg-white">
-<button class="ml-2 mt-2 btn btn-outline-secondary px-4 rounded-pill shadow-sm hover-scale back-btn" (click)="goBack()"><i
-        class="bi bi-arrow-left me-2"></i>Back to Home</button>
+    <button class="ml-2 mt-2 btn btn-outline-secondary px-4 rounded-pill shadow-sm hover-scale back-btn"
+        (click)="goBack()"><i class="bi bi-arrow-left me-2"></i>Back to Home</button>
 
-<section class="product-section">
-    <div class="w-layout-blockcontainer container-fluid w-container">
-        <div class="product-section-wrapper">
-            <div class="product-heading-wrapper">
-                <!-- Product Heading -->
-                <div class="text-center mb-5">
-                    <div class="section-title">
-                        <h2 class="section-heading text-center" style="font-size: 40px;">My WishList ({{totalList}} items)</h2>
+    <section class="product-section">
+        <div class="w-layout-blockcontainer container-fluid w-container">
+            <div class="product-section-wrapper">
+                <div class="product-heading-wrapper">
+                    <!-- Product Heading -->
+                    <div class="text-center mb-5">
+                        <div class="section-title">
+                            <h2 class="section-heading text-center" style="font-size: 40px;">My WishList ({{totalList}}
+                                items)</h2>
+                        </div>
                     </div>
-                </div>
-                <!-- Product Body -->
-                <div class="product-section-inner-1">
-                    <div class="products-tab w-tabs">
-                        <div class="products-tab-menu w-tab-menu" role="tablist">
-                            <!-- <a *ngFor="let category of categoryList; let i = index" [attr.data-w-tab]="category._id"
+                    <!-- Product Body -->
+                    <div class="product-section-inner-1">
+                        <div class="products-tab w-tabs">
+                            <div class="products-tab-menu w-tab-menu" role="tablist">
+                                <!-- <a *ngFor="let category of categoryList; let i = index" [attr.data-w-tab]="category._id"
                                 class="products-tab-link w-inline-block w-tab-link"
                                 [ngClass]="{ 'w--current': selectedCategory === category.categoryName }"
                                 [id]="'w-tabs-0-data-w-tab-' + i" href="javascript:void(0)" role="tab"
@@ -26,93 +27,102 @@
                                 [attr.tabindex]="selectedCategory === category.categoryName ? null : '-1'">
                                 <div class="products-tab-nav">{{ category.categoryName }}</div>
                             </a> -->
-                        </div>
+                            </div>
 
-                        <div class="row g-4" *ngIf="wishListData.length > 0">
-                            <!-- Loop through products -->
-                            <div class="col-lg-3 col-md-4 col-sm-6" *ngFor="let product of wishListData; trackBy: trackByProduct">
-                                <div class="product-card">
+                            <div class="row g-4" *ngIf="wishListData.length > 0">
+                                <!-- Loop through products -->
+                                <div class="col-lg-3 col-md-4 col-sm-6"
+                                    *ngFor="let product of wishListData; trackBy: trackByProduct">
+                                    <div class="product-card">
 
-                                    <div class="product-img cursor-pointer" (click)="viewDetails(product)">
-                                        <!-- Sale / New Badge -->
-                                        <span *ngIf="product.discountPrice" class="badge sale-badge">Sale</span>
-                                        <span *ngIf="!product.discountPrice" class="badge new-badge">New</span>
+                                        <div class="product-img cursor-pointer" (click)="viewDetails(product)">
+                                            <!-- Sale / New Badge -->
+                                            <span *ngIf="product.discountPrice" class="badge sale-badge">Sale</span>
+                                            <span *ngIf="!product.discountPrice" class="badge new-badge">New</span>
 
-                                        <!-- 🏷 Stock Badge -->
-                                        <span *ngIf="!product.inStock" class="badge stock-badge out-stock">Out of
-                                            Stock</span>
-                                        <span *ngIf="product.inStock && product.totalStock <= 5"
-                                            class="badge stock-badge low-stock">Low Stock</span>
+                                            <!-- 🏷 Stock Badge -->
+                                            <span *ngIf="!product.inStock" class="badge stock-badge out-stock">Out of
+                                                Stock</span>
+                                            <span *ngIf="product.inStock && product.totalStock <= 5"
+                                                class="badge stock-badge low-stock">Low Stock</span>
 
-                                        <!-- Front Image -->
-                                        <img [src]="product.images" [alt]="product.productName"
-                                            class="img-fluid front-img">
+                                            <!-- Front Image -->
+                                            <img [src]="product.images" [alt]="product.productName"
+                                                class="img-fluid front-img">
 
-                                        <!-- Hover Image -->
-                                        <img *ngIf="product.gallery && product.gallery.length > 0"
-                                            [src]="product.gallery[0]" [alt]="product.productName"
-                                            class="img-fluid back-img">
+                                            <!-- Hover Image -->
+                                            <img *ngIf="product.gallery && product.gallery.length > 0"
+                                                [src]="product.gallery[0]" [alt]="product.productName"
+                                                class="img-fluid back-img">
 
-                                        <!-- Wishlist & Cart Icons -->
-                                        <div class="product-icons">
-                                            <button class="icon-btn" (click)="removeFromWishlist(product, $event)" title="Remove from wishlist">
-                                                <i class="bi bi-heart-fill text-danger"></i>
-                                            </button>
-                                            <button class="icon-btn" (click)="addToCart(product, $event)" title="Add to cart">
-                                                <i class="bi bi-cart"></i>
-                                            </button>
+                                            <!-- Wishlist & Cart Icons -->
+                                            <div class="product-icons">
+                                                <button class="icon-btn" (click)="removeFromWishlist(product, $event)"
+                                                    title="Remove from wishlist">
+                                                    <i class="bi bi-heart-fill text-danger"></i>
+                                                </button>
+                                                <button class="icon-btn" (click)="addToCart(product, $event)"
+                                                    title="Add to cart">
+                                                    <i class="bi bi-cart"></i>
+                                                </button>
+                                            </div>
+
+                                            <!-- 👁 Quick View Button -->
+                                            <button class="quick-view-btn" (click)="openQuickView(product,$event)"><i
+                                                    class="bi bi-eye me-1"></i> Quick View</button>
                                         </div>
 
-                                        <!-- 👁 Quick View Button -->
-                                        <button class="quick-view-btn" (click)="openQuickView(product)"><i
-                                                class="bi bi-eye me-1"></i> Quick View</button>
-                                    </div>
+                                        <!-- Product Content -->
+                                        <div class="product-content text-center p-3">
+                                            <h5 class="product-title">{{ product.productName }}</h5>
 
-                                    <!-- Product Content -->
-                                    <div class="product-content text-center p-3">
-                                        <h5 class="product-title">{{ product.productName }}</h5>
+                                            <!-- Price with discount -->
+                                            <p class="product-price">
+                                                <span *ngIf="product.discountPrice" class="discount">
+                                                    ₹{{ product.discountPrice }}
+                                                </span>
+                                                <span [class.old-price]="product.discountPrice">
+                                                    ₹{{ product.price }}
+                                                </span>
+                                            </p>
 
-                                        <!-- Price with discount -->
-                                        <p class="product-price">
-                                            <span *ngIf="product.discountPrice" class="discount">
-                                                ₹{{ product.discountPrice }}
-                                            </span>
-                                            <span [class.old-price]="product.discountPrice">
-                                                ₹{{ product.price }}
-                                            </span>
-                                        </p>
-
-                                        <!-- ⭐ Ratings -->
-                                        <div class="rating" *ngIf="product.rating">
-                                            <ng-container *ngFor="let star of [1,2,3,4,5]; let i = index">
-                                                <i class="bi" [ngClass]="{
+                                            <!-- ⭐ Ratings -->
+                                            <div class="rating" *ngIf="product.rating">
+                                                <ng-container *ngFor="let star of [1,2,3,4,5]; let i = index">
+                                                    <i class="bi" [ngClass]="{
                   'bi-star-fill': star <= product.rating.average,
                   'bi-star-half': star - 0.5 === product.rating.average,
                   'bi-star': star > product.rating.average
                 }"></i>
-                                            </ng-container>
-                                            <span>({{ product.rating.count }})</span>
-                                        </div>
+                                                </ng-container>
+                                                <span>({{ product.rating.count }})</span>
+                                            </div>
 
-                                        <button class="btn btn-dark buy-btn" (click)="buyNow(product)">
-                                            Buy Now <i class="bi bi-bag ml-2"></i>
-                                        </button>
+                                            <button class="btn btn-dark buy-btn" (click)="buyNow(product)">
+                                                Buy Now <i class="bi bi-bag ml-2"></i>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- Empty State -->
+                            <div class="text-center py-5" *ngIf="wishListData.length === 0">
+                                <i class="bi bi-heart" style="font-size: 4rem; color: #ccc;"></i>
+                                <h3 class="mt-3">Your wishlist is empty</h3>
+                                <p class="text-muted">Start adding products to your wishlist!</p>
+                                <button class="btn btn-primary mt-3" (click)="goBack()">Continue Shopping</button>
+                            </div>
                         </div>
-                        
-                        <!-- Empty State -->
-                        <div class="text-center py-5" *ngIf="wishListData.length === 0">
-                            <i class="bi bi-heart" style="font-size: 4rem; color: #ccc;"></i>
-                            <h3 class="mt-3">Your wishlist is empty</h3>
-                            <p class="text-muted">Start adding products to your wishlist!</p>
-                            <button class="btn btn-primary mt-3" (click)="goBack()">Continue Shopping</button>
-                        </div>
+                    </div>
+
+                    <!-- Quick View Modal -->
+                    <div class="modal-backdrop" *ngIf="selectedProduct">
+                        <app-quick-view [selectedProducts]="selectedProduct"
+                            (closeEmitter)="closeQuickView()"></app-quick-view>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 </div>
