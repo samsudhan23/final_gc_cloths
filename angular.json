@@ -37,7 +37,8 @@
                         ],
                         "scripts": [
                            "src/assets/js/particles.min.js",
-                           "src/assets/js/bg.js"
+                           "src/assets/js/bg.js",
+                            "src/assets/js/script.js"
                         ]
                     },
                     "configurations": {
@@ -100,7 +101,8 @@
                         ],
                         "scripts": [
                               "src/assets/js/particles.min.js",
-                              "src/assets/js/bg.js"
+                              "src/assets/js/bg.js",
+                               "src/assets/js/script.js"
                         ]
                     }
                 }

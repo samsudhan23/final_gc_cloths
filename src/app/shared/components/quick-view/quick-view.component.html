@@ -1,0 +1,20 @@
+<div class="modal-content">
+            <span class="close-btn" (click)="closeQuickView()">&times;</span>
+
+            <h4 class="mb-3"><strong>{{ selectedProducts.productName }}</strong></h4>
+
+            <div class="quick-view-gallery">
+                <!-- ✅ If gallery exists -->
+                <ng-container *ngIf="selectedProducts.gallery && selectedProducts.gallery.length > 0; else noImages">
+                    <div class="grid grid-cols-2 gap-2">
+                        <img *ngFor="let img of selectedProducts.gallery" [src]="img"
+                            [alt]="selectedProducts.productName" />
+                    </div>
+                </ng-container>
+
+                <!-- ❌ If no gallery -->
+                <ng-template #noImages>
+                    <p class="text-muted">No images found</p>
+                </ng-template>
+            </div>
+        </div>

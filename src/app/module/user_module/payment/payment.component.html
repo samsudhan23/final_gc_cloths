@@ -1,6 +1,5 @@
 <div class="payment-component">
     <h3 class="step-title">Payment</h3>
-    
     <div class="order-summary">
         <p-card>
             <h4>Order Summary</h4>
@@ -25,24 +24,20 @@
         <p-card>
             <h4>Select Payment Method</h4>
             <p-divider></p-divider>
-            
             <div class="payment-options">
                 <!-- Online Payment Option -->
-                <div class="payment-option" 
-                     [class.selected]="paymentMethod === 'online'"
-                     (click)="paymentMethod = 'online'">
+                <div class="payment-option" [class.selected]="paymentMethod === 'online'"
+                    (click)="paymentMethod = 'online'">
                     <div class="option-header">
-                        <p-radioButton 
-                            [value]="'online'"
-                            [(ngModel)]="paymentMethod"
-                            inputId="online-payment">
+                        <p-radioButton [value]="'online'" [(ngModel)]="paymentMethod" inputId="online-payment">
                         </p-radioButton>
                         <div class="option-content">
                             <div class="option-title">
                                 <i class="pi pi-credit-card"></i>
                                 <span>Online Payment</span>
                             </div>
-                            <p class="option-description">Pay securely with Razorpay (Credit/Debit Card, UPI, Net Banking)</p>
+                            <p class="option-description">Pay securely with Razorpay (Credit/Debit Card, UPI, Net
+                                Banking)</p>
                         </div>
                     </div>
                     <div class="option-features" *ngIf="paymentMethod === 'online'">
@@ -58,14 +53,9 @@
                 </div>
 
                 <!-- COD Option -->
-                <div class="payment-option" 
-                     [class.selected]="paymentMethod === 'cod'"
-                     (click)="paymentMethod = 'cod'">
+                <div class="payment-option" [class.selected]="paymentMethod === 'cod'" (click)="paymentMethod = 'cod'">
                     <div class="option-header">
-                        <p-radioButton 
-                            [value]="'cod'"
-                            [(ngModel)]="paymentMethod"
-                            inputId="cod-payment">
+                        <p-radioButton [value]="'cod'" [(ngModel)]="paymentMethod" inputId="cod-payment">
                         </p-radioButton>
                         <div class="option-content">
                             <div class="option-title">
@@ -91,21 +81,37 @@
     </div>
 
     <div class="payment-actions">
-        <p-button 
-            label="Back" 
-            icon="pi pi-arrow-left" 
-            (click)="onGoBack()" 
-            severity="secondary" 
-            [outlined]="true">
+        <p-button label="Back" icon="pi pi-arrow-left" (click)="onGoBack()" severity="secondary" [outlined]="true">
         </p-button>
-        <p-button 
+        <!-- <p-button 
             [label]="paymentMethod === 'cod' ? 'Place Order (COD)' : 'Pay Now'" 
             [icon]="paymentMethod === 'cod' ? 'pi pi-shopping-cart' : 'pi pi-credit-card'" 
             (click)="processPayment()" 
             [loading]="paymentProcessing"
             [disabled]="paymentProcessing"
             [severity]="paymentMethod === 'cod' ? 'info' : 'success'">
-        </p-button>
+        </p-button> -->
+        <button class="truck-button" type="button" data-manual-control="true" (click)="onTruckButtonClick($event)">
+            <span class="default">Complete Order</span>
+            <span class="success">
+                Order Placed
+                <svg viewbox="0 0 12 10">
+                    <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
+                </svg>
+            </span>
+            <span class="error">
+                Order Error
+                <svg viewBox="0 0 12 12">
+                    <line x1="1" y1="1" x2="11" y2="11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <line x1="11" y1="1" x2="1" y2="11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </span>
+            <div class="truck">
+                <div class="wheel"></div>
+                <div class="back"></div>
+                <div class="front"></div>
+                <div class="box"></div>
+            </div>
+        </button>
     </div>
 </div>
-

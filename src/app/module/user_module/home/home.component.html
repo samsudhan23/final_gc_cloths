@@ -219,8 +219,8 @@
                             </div>
 
                             <div class="row g-4">
-                                <!-- Loop through products -->
-                                <div class="col-lg-3 col-md-4 col-sm-6" *ngFor="let product of filteredProducts">
+                                <!-- Loop through products - Show only first 4 products -->
+                                <div class="col-lg-3 col-md-4 col-sm-6" *ngFor="let product of filteredProducts | slice:0:4">
                                     <div class="product-card">
 
                                         <div class="product-img cursor-pointer" (click)="viewDetails(product ,'data')">
@@ -251,7 +251,7 @@
                                                               'bi bi-heart-fill text-danger animate-bounce': product.isWishlisted
                                                             }"></i>
                                                 </button>
-                                                <button class="icon-btn" (click)="addToCart(product ,$event)">
+                                                <button class="icon-btn" (click)="viewDetails(product ,'data')">
                                                     <i class="bi bi-cart"></i>
                                                 </button>
                                             </div>
@@ -287,8 +287,8 @@
                                                 <span>({{ product.rating.count }})</span>
                                             </div>
 
-                                            <button class="btn btn-dark buy-btn" (click)="buyNow(product)">
-                                                Buy Now <i class="bi bi-bag ml-2"></i>
+                                            <button class="btn btn-dark buy-btn" (click)="viewDetails(product ,'data')">
+                                                Add To Cart <i class="bi bi-bag ml-2"></i>
                                             </button>
                                         </div>
                                     </div>
@@ -354,26 +354,7 @@
 
     <!-- Quick View Modal -->
     <div class="modal-backdrop" *ngIf="selectedProduct">
-        <div class="modal-content">
-            <span class="close-btn" (click)="closeQuickView()">&times;</span>
-
-            <h4 class="mb-3"><strong>{{ selectedProduct.productName }}</strong></h4>
-
-            <div class="quick-view-gallery">
-                <!-- ✅ If gallery exists -->
-                <ng-container *ngIf="selectedProduct.gallery && selectedProduct.gallery.length > 0; else noImages">
-                    <div class="grid grid-cols-2 gap-2">
-                        <img *ngFor="let img of selectedProduct.gallery" [src]="img"
-                            [alt]="selectedProduct.productName" />
-                    </div>
-                </ng-container>
-
-                <!-- ❌ If no gallery -->
-                <ng-template #noImages>
-                    <p class="text-muted">No images found</p>
-                </ng-template>
-            </div>
-        </div>
+        <app-quick-view [selectedProducts]="selectedProduct" (closeEmitter)="closeQuickView()"></app-quick-view>
     </div>
 
 

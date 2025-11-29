@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { CardModule } from 'primeng/card';
@@ -9,6 +9,9 @@ import { FormsModule } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { RazorpayService } from '../../../shared/service/razorpay.service';
 import { PlaceOrderService } from '../../admin_module/service/place_orders/place-order.service';
+
+declare var initTruckButton: any;
+declare var gsap: any;
 
 export interface PaymentData {
   selectedAddress: any;
@@ -31,7 +34,7 @@ export interface PaymentData {
   templateUrl: './payment.component.html',
   styleUrls: ['./payment.component.scss']
 })
-export class PaymentComponent {
+export class PaymentComponent implements AfterViewInit {
   @Input() selectedAddress: any = null;
   @Input() orderSummary: any = {
     subtotal: 0,
@@ -45,13 +48,158 @@ export class PaymentComponent {
 
   paymentMethod: 'online' | 'cod' = 'online';
   paymentProcessing: boolean = false;
+  private truckButtonElement: HTMLElement | null = null;
 
   constructor(
     private razorpayService: RazorpayService,
     private placeOrderService: PlaceOrderService,
     private toast: ToastrService,
     private router: Router
-  ) {}
+  ) { }
+
+  ngAfterViewInit(): void {
+    // Get reference to truck button element
+    setTimeout(() => {
+      this.truckButtonElement = document.querySelector('.truck-button') as HTMLElement;
+    }, 100);
+  }
+
+ // Button animation BUTTON Click
+  onTruckButtonClick(event: Event): void {
+    // Prevent default to control animation manually
+    event.preventDefault();
+    event.stopPropagation();
+
+    const button = event.target as HTMLElement;
+    const truckButton = button.closest('.truck-button') as HTMLElement;
+
+    if (truckButton && !truckButton.classList.contains('animation') && !truckButton.classList.contains('done')) {
+      // Start animation manually
+      this.startTruckAnimation(truckButton);
+      // Start payment process
+      this.processPayment();
+    }
+  }
+  // Button animation
+  startTruckAnimation(button: HTMLElement): void {
+    if (typeof gsap === 'undefined') return;
+
+    const box = button.querySelector('.box');
+    const truck = button.querySelector('.truck');
+    if (!box || !truck) return;
+
+    button.classList.add('animation');
+
+    gsap.to(button, {
+      '--box-s': 1,
+      '--box-o': 1,
+      duration: .3,
+      delay: .5
+    });
+
+    gsap.to(box, {
+      x: 0,
+      duration: .4,
+      delay: .7
+    });
+
+    gsap.to(button, {
+      '--hx': -5,
+      '--bx': 50,
+      duration: .18,
+      delay: .92
+    });
+
+    gsap.to(box, {
+      y: 0,
+      duration: .1,
+      delay: 1.15
+    });
+
+    gsap.set(button, {
+      '--truck-y': 0,
+      '--truck-y-n': -26
+    });
+
+    // Don't auto-complete - wait for API response
+    gsap.to(button, {
+      '--truck-y': 1,
+      '--truck-y-n': -25,
+      duration: .2,
+      delay: 1.25,
+      onComplete: () => {
+        // Start truck movement but don't mark as done yet
+        gsap.timeline().to(truck, {
+          x: 0,
+          duration: .4
+        }).to(truck, {
+          x: 40,
+          duration: 1
+        }).to(truck, {
+          x: 20,
+          duration: .6
+        }).to(truck, {
+          x: 96,
+          duration: .4
+        });
+        gsap.to(button, {
+          '--progress': 1,
+          duration: 2.4,
+          ease: "power2.in"
+        });
+      }
+    });
+  }
+  // Button animation - Success
+  completeTruckAnimation(): void {
+    if (!this.truckButtonElement || typeof gsap === 'undefined') return;
+    this.truckButtonElement.classList.add('done');
+    this.truckButtonElement.classList.remove('error-state');
+  }
+
+  // Button animation - Error
+  completeTruckAnimationError(): void {
+    if (!this.truckButtonElement || typeof gsap === 'undefined') return;
+    const truck = this.truckButtonElement.querySelector('.truck');
+    if (!truck) return;
+
+    // Complete the animation but mark as error
+    this.truckButtonElement.classList.add('done', 'error-state');
+    
+    // Ensure truck animation completes
+    gsap.to(this.truckButtonElement, {
+      '--progress': 1,
+      duration: 0.1,
+      ease: "power2.in"
+    });
+  }
+  // Button animation - Reset (for retry)
+  resetTruckAnimation(): void {
+    if (!this.truckButtonElement || typeof gsap === 'undefined') return;
+
+    const box = this.truckButtonElement.querySelector('.box');
+    const truck = this.truckButtonElement.querySelector('.truck');
+    if (!box || !truck) return;
+
+    this.truckButtonElement.classList.remove('animation', 'done', 'error-state');
+
+    gsap.set(truck, {
+      x: 4
+    });
+    gsap.set(this.truckButtonElement, {
+      '--progress': 0,
+      '--hx': 0,
+      '--bx': 0,
+      '--box-s': .5,
+      '--box-o': 0,
+      '--truck-y': 0,
+      '--truck-y-n': -26
+    });
+    gsap.set(box, {
+      x: -24,
+      y: -6
+    });
+  }
 
   processPayment(): void {
     if (!this.selectedAddress) {
@@ -70,7 +218,7 @@ export class PaymentComponent {
       this.processOnlinePayment();
     }
   }
-
+  //  COD
   placeCODOrder(): void {
     this.paymentProcessing = true;
 
@@ -108,27 +256,35 @@ export class PaymentComponent {
       next: (response: any) => {
         this.paymentProcessing = false;
         if (response.code === 200 && response.success) {
+          // Complete animation only on success
+          this.completeTruckAnimation();
           this.toast.success('Order placed successfully! Pay cash on delivery.');
           this.paymentSuccess.emit(response);
           // Navigate to order confirmation page
-          if (response.result?.orderNumber) {
-            this.router.navigate(['/user/view-order', response.result.orderNumber]);
-          } else {
-            this.router.navigate(['/user/user-profile']);
-          }
+          setTimeout(() => {
+            if (response.result?.orderNumber) {
+              this.router.navigate(['/user/view-order', response.result.orderNumber]);
+            } else {
+              this.router.navigate(['/user/user-profile']);
+            }
+          }, 500);
         } else {
+          // Reset animation on failure
+          this.resetTruckAnimation();
           this.toast.error(response.message || 'Failed to place order');
           this.paymentError.emit(response);
         }
       },
       error: (error: any) => {
         this.paymentProcessing = false;
+        // Reset animation on error
+        this.resetTruckAnimation();
         this.toast.error(error.error?.message || 'Failed to place order');
         this.paymentError.emit(error);
       }
     });
   }
-
+  // ONLINE PAYMENT
   processOnlinePayment(): void {
     this.paymentProcessing = true;
 
@@ -164,7 +320,7 @@ export class PaymentComponent {
       next: (response: any) => {
         if (response.code === 200 && response.success) {
           const razorpayOrderId = response.result?.orderId || response.result?.razorpay_order_id;
-          
+
           // Initiate Razorpay payment
           this.razorpayService.initiatePayment({
             amount: this.orderSummary.totalCost,
@@ -186,27 +342,37 @@ export class PaymentComponent {
                   next: (verifyResponse: any) => {
                     this.paymentProcessing = false;
                     if (verifyResponse.code === 200 && verifyResponse.success) {
+                      // Complete animation only on success
+                      this.completeTruckAnimation();
                       this.toast.success('Payment successful! Order placed successfully.');
                       this.paymentSuccess.emit(verifyResponse);
                       // Navigate to order confirmation page
-                      if (verifyResponse.result?.orderNumber) {
-                        this.router.navigate(['/user/view-order', verifyResponse.result.orderNumber]);
-                      } else {
-                        this.router.navigate(['/user/user-profile']);
-                      }
+                      setTimeout(() => {
+                        if (verifyResponse.result?.orderNumber) {
+                          this.router.navigate(['/user/view-order', verifyResponse.result.orderNumber]);
+                        } else {
+                          this.router.navigate(['/user/user-profile']);
+                        }
+                      }, 500);
                     } else {
+                      // Reset animation on failure
+                      this.resetTruckAnimation();
                       this.toast.error(verifyResponse.message || 'Payment verification failed');
                       this.paymentError.emit(verifyResponse);
                     }
                   },
                   error: (error: any) => {
                     this.paymentProcessing = false;
+                    // Reset animation on error
+                    this.resetTruckAnimation();
                     this.toast.error(error.error?.message || 'Payment verification failed');
                     this.paymentError.emit(error);
                   }
                 });
               } else {
                 this.paymentProcessing = false;
+                // Reset animation on payment failure
+                this.resetTruckAnimation();
                 if (paymentResponse.error !== 'Payment cancelled by user') {
                   this.toast.error(paymentResponse.error || 'Payment failed');
                 }
@@ -215,18 +381,24 @@ export class PaymentComponent {
             },
             error: (error: any) => {
               this.paymentProcessing = false;
+              // Reset animation on error
+              this.resetTruckAnimation();
               this.toast.error(error.error?.message || 'Payment initiation failed');
               this.paymentError.emit(error);
             }
           });
         } else {
           this.paymentProcessing = false;
+          // Reset animation on failure
+          this.resetTruckAnimation();
           this.toast.error(response.message || 'Failed to create order');
           this.paymentError.emit(response);
         }
       },
       error: (error: any) => {
         this.paymentProcessing = false;
+        // Reset animation on error
+        this.resetTruckAnimation();
         this.toast.error(error.error?.message || 'Failed to create order');
         this.paymentError.emit(error);
       }

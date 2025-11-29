@@ -10,10 +10,12 @@ import { InputTextModule } from 'primeng/inputtext';
 import { TabsModule } from 'primeng/tabs';
 import * as AOS from 'aos';
 import { EncryptionService } from '../../../shared/service/encryption.service';
+import { QuickViewComponent } from '../../../shared/components/quick-view/quick-view.component';
+import { WishlistService } from '../../admin_module/service/wishlistService/wishlist.service';
 
 @Component({
   selector: 'app-categorywiseproduct',
-  imports: [CommonModule, BadgeModule, AvatarModule, InputTextModule, TabsModule, ButtonModule, RouterModule],
+  imports: [CommonModule, BadgeModule, AvatarModule, InputTextModule, TabsModule, ButtonModule, RouterModule,QuickViewComponent],
   templateUrl: './categorywiseproduct.component.html',
   styleUrl: './categorywiseproduct.component.scss'
 })
@@ -24,11 +26,13 @@ export class CategorywiseproductComponent {
   categoryList: any[] = [];
   productList: any;
   selectedGender: string = 'Male';
+  wishListData: any[] = [];
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object, private productService: AdminProductService,
     private encryptionService: EncryptionService,
     private toast: ToastrService, private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private wishlistService: WishlistService,
   ) {
 
   }
@@ -51,13 +55,14 @@ export class CategorywiseproductComponent {
       const allProducts = res.result;
       // Filter based on selectedGender
       if (this.selectedGender && this.selectedGender.trim() !== '') {
-        this.productList = allProducts.filter(
+        this.filteredProducts = allProducts.filter(
           (item: any) =>
             item.gender?.genderName?.toLowerCase() ===
             this.selectedGender.toLowerCase()
         );
+         this.getWishlistdetails();
       } else {
-        this.productList = allProducts; // If no gender selected, show all
+        this.filteredProducts = allProducts; // If no gender selected, show all
       }
 
       console.log('Filtered Products:', this.productList);
@@ -84,16 +89,33 @@ export class CategorywiseproductComponent {
     console.log("Added to wishlist:", product);
     // your wishlist logic here
   }
-
-  toggleWishlist(product: any) {
-    product.isWishlisted = !product.isWishlisted;
+  getWishlistdetails() {
+    // Use centralized service method - service will update filteredProducts directly
+    this.wishlistService.getWishlistDetailsAndUpdateProducts(this.filteredProducts, {
+      onSuccess: (wishListData: any[]) => {
+        this.wishListData = wishListData;
+        // Service already updates filteredProducts with isWishlisted status
+      },
+      onError: (error: any) => {
+        console.error('Error fetching wishlist:', error);
+        this.wishListData = [];
+      }
+    });
   }
-
+  toggleWishlist(product: any, event: Event) {
+    // Use centralized service method
+    this.wishlistService.toggleWishlist(product, event, this.toast, (updated: boolean) => {
+      if (updated) {
+        // Refresh wishlist details after toggle
+        this.getWishlistdetails();
+      }
+    });
+  }
   selectedProduct: any = null;
 
-  openQuickView(product: any) {
+  openQuickView(product: any, event: Event) {
     this.selectedProduct = product;
-    console.log('this.selectedProduct: ', this.selectedProduct);
+   event.stopPropagation();
   }
 
   closeQuickView() {
