@@ -84,6 +84,7 @@ export class ProductDetailsComponent implements OnInit {
   isGotoCart: boolean = false;;
 
   wishListData: any[] = [];
+  filteredProducts: any = null;
 
   constructor(
     private router: Router,
@@ -99,68 +100,88 @@ export class ProductDetailsComponent implements OnInit {
   ngOnInit() {
     this.isGotoCart = false;
     this.getProduct();
-    this.checkWishlistStatus();
+    this.getWishlistdetails();
   }
-
   getProduct() {
-    // Get encrypted product ID from route parameter
-    const encryptedProductId = this.route.snapshot.paramMap.get('productId');
-    
-    if (!encryptedProductId) {
-      this.toast.error('Product ID not found in URL');
-      this.router.navigate(['user/home']);
-      return;
-    }
-
-    // Decrypt the product ID
-    let productId: string;
-    try {
-      productId = this.encryptionService.decrypt(encryptedProductId);
-    } catch (error) {
-      console.error('Error decrypting product ID:', error);
-      this.toast.error('Invalid product link');
-      this.router.navigate(['user/home']);
-      return;
-    }
-
-    // Fetch product by ID using the API
-    this.productService.geyProductsById(productId).subscribe({
-      next: (res: apiResponse) => {
-        if (res?.code === 200 && res?.success === true) {
-          this.product = res.result;
-          console.log('this.product: ', this.product);
-          if (this.product) {
-            this.buildProductSections(this.product);
-            // Check wishlist status for this product
-            this.checkProductWishlistStatus(this.product);
-            // Fetch all products for related products
-            this.productService.getProductlist().subscribe((productListRes: any) => {
-              this.productList = productListRes.result || [];
-              console.log(' this.productList: ',  this.productList);
-              this.relatedProducts = this.productList.filter(
-                (p: any) => p.category?.categoryName === this.product?.category?.categoryName && p._id !== this.product?._id
-              );
-              // Check wishlist status for related products
-              this.relatedProducts.forEach(product => {
-                this.checkProductWishlistStatus(product);
-              });
-            });
-          } else {
-            this.toast.error('Product not found');
-            this.router.navigate(['user/home']);
-          }
-        } else {
-          this.toast.error(res?.message || 'Failed to load product');
-          this.router.navigate(['user/home']);
-        }
-      },
-      error: (error: any) => {
-        console.error('Error fetching product:', error);
-        this.toast.error(error.error?.message || 'Failed to load product details');
-        this.router.navigate(['user/home']);
+    this.productService.getProductlist().subscribe((res: any) => {
+      this.productList = res.result;
+      console.log('allProducts: ', this.productList);
+      // Filter based on selectedGender
+      const encryptedProductId: any = this.route.snapshot.paramMap.get('productId');
+      let productId = this.encryptionService.decrypt(encryptedProductId);
+      this.filteredProducts = this.productList.filter((item: any) => item._id == productId)[0];      
+      // Set related products based on same category
+      if (this.filteredProducts) {
+        this.relatedProducts = this.productList.filter(
+          (p: any) => p.category?.categoryName === this.filteredProducts?.category?.categoryName && p._id !== this.filteredProducts?._id
+        );
       }
-    });
+      
+      // Get wishlist details after product and related products are loaded
+      this.getWishlistdetails();
+    }, (error: any) => {
+      this.toast.warning(error.error.message);
+    })
   }
+  // getProduct() {
+  //   // Get encrypted product ID from route parameter
+  //   const encryptedProductId = this.route.snapshot.paramMap.get('productId');
+
+  //   if (!encryptedProductId) {
+  //     this.toast.error('Product ID not found in URL');
+  //     this.router.navigate(['user/home']);
+  //     return;
+  //   }
+
+  //   // Decrypt the product ID
+  //   let productId: string;
+  //   try {
+  //     productId = this.encryptionService.decrypt(encryptedProductId);
+  //   } catch (error) {
+  //     console.error('Error decrypting product ID:', error);
+  //     this.toast.error('Invalid product link');
+  //     this.router.navigate(['user/home']);
+  //     return;
+  //   }
+
+  //   // Fetch product by ID using the API
+  //   this.productService.geyProductsById(productId).subscribe({
+  //     next: (res: apiResponse) => {
+  //       if (res?.code === 200 && res?.success === true) {
+  //         this.product = res.result;
+  //         console.log('this.product: ', this.product);
+  //         if (this.product) {
+  //           this.buildProductSections(this.product);
+  //           // Check wishlist status for this product
+  //           this.checkProductWishlistStatus(this.product);
+  //           // Fetch all products for related products
+  //           this.productService.getProductlist().subscribe((productListRes: any) => {
+  //             this.productList = productListRes.result || [];
+  //             console.log(' this.productList: ', this.productList);
+  //             this.relatedProducts = this.productList.filter(
+  //               (p: any) => p.category?.categoryName === this.product?.category?.categoryName && p._id !== this.product?._id
+  //             );
+  //             // Check wishlist status for related products
+  //             this.relatedProducts.forEach(product => {
+  //               this.checkProductWishlistStatus(product);
+  //             });
+  //           });
+  //         } else {
+  //           this.toast.error('Product not found');
+  //           this.router.navigate(['user/home']);
+  //         }
+  //       } else {
+  //         this.toast.error(res?.message || 'Failed to load product');
+  //         this.router.navigate(['user/home']);
+  //       }
+  //     },
+  //     error: (error: any) => {
+  //       console.error('Error fetching product:', error);
+  //       this.toast.error(error.error?.message || 'Failed to load product details');
+  //       this.router.navigate(['user/home']);
+  //     }
+  //   });
+  // }
   changeImage(img: any) {
     this.selectedImage = img;
   }
@@ -246,7 +267,7 @@ export class ProductDetailsComponent implements OnInit {
     const roleString = localStorage.getItem('role');
     const parse = roleString ? JSON.parse(roleString) : null;
     const userId = parse?.id || parse?._id;
-    
+
     if (userId) {
       // Logged-in user: Get from API with userId filter
       this.cartService.getCartList(userId).subscribe((res: apiResponse) => {
@@ -277,166 +298,45 @@ export class ProductDetailsComponent implements OnInit {
     }
   }
 
-  // Check if user is logged in
-  isUserLoggedIn(): boolean {
-    const userData = localStorage.getItem('role');
-    if (userData) {
-      const user = JSON.parse(userData);
-      return !!(user && (user._id || user.id));
+  getWishlistdetails() {
+    // Combine main product and related products for wishlist status update
+    const allProducts = [];
+    if (this.filteredProducts) {
+      allProducts.push(this.filteredProducts);
     }
-    return false;
-  }
-
-  // Get current user ID
-  getCurrentUserId(): string | null {
-    const userData = localStorage.getItem('role');
-    if (userData) {
-      const user = JSON.parse(userData);
-      return user._id || user.id || null;
+    if (this.relatedProducts && this.relatedProducts.length > 0) {
+      allProducts.push(...this.relatedProducts);
     }
-    return null;
-  }
 
-  // Check wishlist status for a product
-  checkProductWishlistStatus(product: any) {
-    if (!product || !product._id) return;
-
-    if (this.isUserLoggedIn()) {
-      // Check from API wishlist data
-      const isWishlisted = this.wishListData.some(
-        (w: any) => w.productId?._id === product._id || w.productId === product._id
-      );
-      product.isWishlisted = isWishlisted;
-    } else {
-      // Check from localStorage
-      const guestWishlist = JSON.parse(localStorage.getItem('guestWishlist') || '[]');
-      const isWishlisted = guestWishlist.some(
-        (item: any) => item.productId === product._id || item._id === product._id
-      );
-      product.isWishlisted = isWishlisted;
-    }
-  }
-
-  // Load wishlist data (for logged-in users)
-  checkWishlistStatus() {
-    if (this.isUserLoggedIn()) {
-      this.wishlistService.getWishList().subscribe((res: any) => {
-        const allWishlist = res?.result || [];
-        const userId = this.getCurrentUserId();
-        this.wishListData = allWishlist.filter(
-          (item: any) => item.userId?._id === userId || item.userId === userId
-        );
-        this.wishlistService.getLengthOfWishlist(this.wishListData.length);
-        
-        // Update product wishlist status
-        if (this.product) {
-          this.checkProductWishlistStatus(this.product);
-        }
-      });
-    } else {
-      // For guest users, get length from localStorage
-      const guestWishlist = JSON.parse(localStorage.getItem('guestWishlist') || '[]');
-      this.wishlistService.getLengthOfWishlist(guestWishlist.length);
-    }
-  }
-
-  // Toggle wishlist - handles both logged-in and guest users
-  toggleWishlist(product: any) {
-    if (!product || !product._id) return;
-
-    if (this.isUserLoggedIn()) {
-      // Logged-in user: Use API
-      const userId = this.getCurrentUserId();
-      if (!userId) {
-        this.toast.warning('Please login to add items to wishlist');
-        return;
+    // Use centralized service method
+    this.wishlistService.getWishlistDetailsAndUpdateProducts(allProducts, {
+      onSuccess: (wishListData: any[]) => {
+        this.wishListData = wishListData;
+      },
+      onError: (error: any) => {
+        console.error('Error fetching wishlist:', error);
+        this.wishListData = [];
       }
+    });
+  }
 
-      if (!product.isWishlisted) {
-        // Add to wishlist via API
-        const payload = {
-          userId: userId,
-          productId: product._id
-        };
-
-        this.wishlistService.postWishlist(payload).subscribe({
-          next: (res: any) => {
-            if (res.code === 200 && res.success === true) {
-              product.isWishlisted = true;
-              this.toast.success('Added to wishlist ❤️');
-              this.checkWishlistStatus();
-            } else {
-              this.toast.error(res.message || 'Failed to add to wishlist');
-            }
-          },
-          error: (err: any) => {
-            console.error(err);
-            this.toast.error(err.error?.message || 'Failed to add to wishlist');
-          }
-        });
-      } else {
-        // Remove from wishlist via API
-        const matchedItem = this.wishListData.find(
-          (w: any) => w.productId?._id === product._id || w.productId === product._id
-        );
-
-        if (matchedItem && matchedItem._id) {
-          this.wishlistService.deleteWishLists(matchedItem._id).subscribe({
-            next: (res: any) => {
-              if (res.code === 200 && res.success === true) {
-                product.isWishlisted = false;
-                this.toast.info('Removed from wishlist 💔');
-                this.checkWishlistStatus();
-              } else {
-                this.toast.error(res.message || 'Failed to remove from wishlist');
-              }
-            },
-            error: (err: any) => {
-              console.error(err);
-              this.toast.error(err.error?.message || 'Failed to remove from wishlist');
-            }
-          });
-        }
+  // Toggle wishlist - uses centralized service method
+  toggleWishlist(product: any, event: Event) {
+    this.wishlistService.toggleWishlist(product, event, this.toast, (updated: boolean) => {
+      if (updated) {
+        // Refresh wishlist details after toggle
+        this.getWishlistdetails();
       }
-    } else {
-      // Guest user: Use localStorage
-      let guestWishlist: any[] = JSON.parse(localStorage.getItem('guestWishlist') || '[]');
-      
-      const existingIndex = guestWishlist.findIndex(
-        (item: any) => item.productId === product._id || item._id === product._id
-      );
-
-      if (existingIndex >= 0) {
-        // Remove from wishlist
-        guestWishlist.splice(existingIndex, 1);
-        product.isWishlisted = false;
-        this.toast.info('Removed from wishlist 💔');
-      } else {
-        // Add to wishlist
-        const wishlistItem = {
-          productId: product._id,
-          product: product // Store product data for display
-        };
-        guestWishlist.push(wishlistItem);
-        product.isWishlisted = true;
-        this.toast.success('Added to wishlist ❤️');
-      }
-
-      localStorage.setItem('guestWishlist', JSON.stringify(guestWishlist));
-      this.wishlistService.getLengthOfWishlist(guestWishlist.length);
-    }
+    });
   }
 
   goToDetails(product: any) {
     // Keep a reference of the current main product
-    const previousProduct = this.product;
+    const previousProduct = this.filteredProducts;
 
     // Set the clicked product as the new main product
-    this.product = product;
+    this.filteredProducts = product;
     this.selectedImage = product.images;
-    
-    // Check wishlist status for the new product
-    this.checkProductWishlistStatus(this.product);
 
     // Rebuild related products list:
     // 1. Remove the clicked product from related list
@@ -448,24 +348,19 @@ export class ProductDetailsComponent implements OnInit {
 
     if (previousProduct) {
       this.relatedProducts.push(previousProduct); // put old main into related
-      // Check wishlist status for previous product when added back to related
-      this.checkProductWishlistStatus(previousProduct);
     }
 
     // keep only same-category items
     this.relatedProducts = this.relatedProducts.filter(
-      (p) => p.category.categoryName === this.product?.category?.categoryName && p._id !== this.product?._id
+      (p) => p.category.categoryName === this.filteredProducts?.category?.categoryName && p._id !== this.filteredProducts?._id
     );
 
     // Rebuild the product sections dynamically
-    this.buildProductSections(this.product);
+    this.buildProductSections(this.filteredProducts);
+    
+    // Check wishlist status for the new product and related products
+    this.getWishlistdetails();
   }
-
-  // goToDetails(product: any) {
-  //   this.router.navigate(['user/product-details'], {
-  //     state: { product, allProducts: [...this.relatedProducts, this.product] }
-  //   });
-  // }
 
   // central method to rebuild all accordion sections dynamically
   buildProductSections(product: any) {

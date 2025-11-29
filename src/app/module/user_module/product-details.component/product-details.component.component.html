@@ -1,42 +1,42 @@
 <button class="ml-2 btn btn-outline-secondary px-4 rounded-pill shadow-sm hover-scale back-btn" (click)="goBack()"><i
         class="bi bi-arrow-left me-2"></i>Back
     to Products</button>
-<div class="container py-5" *ngIf="product">
+<div class="container py-5" *ngIf="filteredProducts">
     <div class="row g-5 align-items-center">
         <!-- Gallery -->
         <div class="col-md-6">
             <div class="main-img text-center mb-3">
-                <img [src]="product.images" alt="{{product.productName}}" class="img-fluid rounded shadow">
+                <img [src]="filteredProducts.images" alt="{{filteredProducts.productName}}" class="img-fluid rounded shadow">
             </div>
             <div class="thumb-gallery d-flex justify-content-center gap-2">
-                <img *ngFor="let img of product.gallery" [src]="img" alt="{{product.productName}}" class="thumb-img"
+                <img *ngFor="let img of filteredProducts.gallery" [src]="img" alt="{{filteredProducts.productName}}" class="thumb-img"
                     (click)="changeImage(img)">
             </div>
         </div>
 
-        <!-- Product Info -->
+        <!-- filteredProducts Info -->
         <div class="col-md-6">
-            <h2 class="fw-bold">{{ product.productName }}</h2>
-            <p class="text-muted">{{ product.productDescription }}</p>
+            <h2 class="fw-bold">{{ filteredProducts.productName }}</h2>
+            <p class="text-muted">{{ filteredProducts.productDescription }}</p>
 
             <!-- Price -->
             <p class="fs-4">
-                <span *ngIf="product.discountPrice" class="text-success fw-bold">₹{{ product.discountPrice }}</span>
-                <span [class.text-muted]="product.discountPrice"
-                    [class.text-decoration-line-through]="product.discountPrice">
-                    ₹{{ product.price }}
+                <span *ngIf="filteredProducts.discountPrice" class="text-success fw-bold">₹{{ filteredProducts.discountPrice }}</span>
+                <span [class.text-muted]="filteredProducts.discountPrice"
+                    [class.text-decoration-line-through]="filteredProducts.discountPrice">
+                    ₹{{ filteredProducts.price }}
                 </span>
             </p>
 
             <!-- Category & Gender -->
-            <p><strong>Category:</strong> {{ product.category.categoryName }}</p>
-            <p><strong>Gender:</strong> {{ product.gender.genderName }}</p>
+            <p><strong>Category:</strong> {{ filteredProducts.category.categoryName }}</p>
+            <p><strong>Gender:</strong> {{ filteredProducts.gender.genderName }}</p>
 
             <!-- Sizes -->
             <div class="mb-3">
                 <strong>Available Sizes:</strong>
                 <div class="d-flex gap-2 mt-2 flex-wrap">
-                    <span *ngFor="let size of product.sizeStock" (click)="selectSize(size)" class="size-chip" [ngClass]="{
+                    <span *ngFor="let size of filteredProducts.sizeStock" (click)="selectSize(size)" class="size-chip" [ngClass]="{
                             'selected': selectedSize === size.size,
                             'disabled': size.stock === 0}">
                         {{ size.size }} ({{ size.stock }})
@@ -47,10 +47,10 @@
 
             <!-- Stock Info -->
             <p>
-                <span *ngIf="!product.inStock" class="badge bg-danger">Out of Stock</span>
-                <span *ngIf="product.inStock && product.totalStock <= 5" class="badge bg-warning text-dark">Low
+                <span *ngIf="!filteredProducts.inStock" class="badge bg-danger">Out of Stock</span>
+                <span *ngIf="filteredProducts.inStock && filteredProducts.totalStock <= 5" class="badge bg-warning text-dark">Low
                     Stock</span>
-                <span *ngIf="product.inStock && product.totalStock > 5" class="badge bg-success">In Stock</span>
+                <span *ngIf="filteredProducts.inStock && filteredProducts.totalStock > 5" class="badge bg-success">In Stock</span>
             </p>
             <!-- Quantity -->
             <div class="mb-8"><strong><label class="block mb-3 text-foreground">Quantity</label></strong>
@@ -75,12 +75,12 @@
             <!-- Buttons -->
             <div class="d-flex gap-3 mt-4 flex-wrap">
                 <!-- Buy Now -->
-                <button class="btn buy-now-btn px-4 rounded-pill shadow-sm hover-scale" (click)="buyNow(product)">
+                <button class="btn buy-now-btn px-4 rounded-pill shadow-sm hover-scale" (click)="buyNow(filteredProducts)">
                     <i class="bi bi-bag-check-fill me-2"></i>Buy Now
                 </button>
                 @if(!isGotoCart){
                 <button class="btn btn-outline-secondary px-4 rounded-pill shadow-sm hover-scales"
-                    (click)="addToCart(product)">
+                    (click)="addToCart(filteredProducts)">
                     <i class="bi bi-cart me-2"></i>Add to Cart
                 </button>
                 }
@@ -90,9 +90,9 @@
                 </button>
                 }
                 <button class="btn btn-outline-danger px-4 rounded-pill shadow-sm hover-scale"
-                    (click)="toggleWishlist(product)">
+                    (click)="toggleWishlist(filteredProducts,$event)">
                     <i
-                        [ngClass]="{ 'bi bi-heart': !product.isWishlisted, 'bi bi-heart-fill text-danger': product.isWishlisted }"></i>
+                        [ngClass]="{ 'bi bi-heart': !filteredProducts.isWishlisted, 'bi bi-heart-fill text-danger': filteredProducts.isWishlisted }"></i>
                     Wishlist
                 </button>
                 <!-- <button class="btn btn-outline-secondary px-4 rounded-pill shadow-sm hover-scale back-btn"
@@ -172,7 +172,7 @@
                             <div class="flex items-start gap-3 border-t pt-3">
                                 <i class="bi bi-arrow-repeat text-xl text-gray-800"></i>
                                 <p class="text-gray-600">
-                                    This product is eligible for return or exchange under our 07-days return or exchange
+                                    This filteredProducts is eligible for return or exchange under our 07-days return or exchange
                                     policy.
                                 </p>
                             </div>
@@ -212,11 +212,11 @@
         <h3 class="fw-bold mb-4">Related Products</h3>
         <div class="row g-4">
             <div class="col-lg-3 col-md-4 col-sm-6" *ngFor="let rp of relatedProducts">
-                <div class="product-card" (click)="goToDetails(rp)">
-                    <div class="product-img">
+                <div class="filteredProducts-card" (click)="goToDetails(rp)">
+                    <div class="filteredProducts-img">
                         <img [src]="rp.images" [alt]="rp.productName" class="img-fluid front-img">
                     </div>
-                    <div class="product-content text-center p-3">
+                    <div class="filteredProducts-content text-center p-3">
                         <h6 class="fw-bold">{{ rp.productName }}</h6>
                         <p>
                             <span *ngIf="rp.discountPrice" class="text-success">₹{{ rp.discountPrice }}</span>

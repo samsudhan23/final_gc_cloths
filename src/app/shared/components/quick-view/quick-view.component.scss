@@ -1,0 +1,60 @@
+/* Modal Content */
+.modal-content {
+    position: relative;
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: fadeIn 0.3s ease;
+    text-align: center;
+}
+
+
+/* Close Button */
+.close-btn {
+    position: absolute;
+    top: 12px;
+    right: 15px;
+    font-size: 28px;
+    cursor: pointer;
+    color: #444;
+    transition: 0.3s;
+}
+
+.close-btn:hover {
+    color: #ff4d4d;
+}
+
+/* Responsive Images in Modal */
+.quick-view-gallery img {
+    width: 100%;
+    max-height: 300px;
+    object-fit: contain;
+}
+
+
+/* Gallery Images */
+.quick-view-gallery img {
+    width: 100%;
+    max-height: 350px;
+    object-fit: contain;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+
+/* Responsive */
+@media (max-width: 576px) {
+    .modal-content {
+        padding: 15px;
+        max-width: 95%;
+    }
+
+    .quick-view-gallery img {
+        max-height: 250px;
+    }
+}

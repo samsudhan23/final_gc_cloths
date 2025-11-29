@@ -13,10 +13,11 @@ import { WishlistService } from '../../admin_module/service/wishlistService/wish
 import { EncryptionService } from '../../../shared/service/encryption.service';
 import { CartService } from '../../admin_module/service/cartService/cart.service';
 import { apiResponse } from '../../../shared/interface/response';
+import { QuickViewComponent } from '../../../shared/components/quick-view/quick-view.component';
 
 @Component({
   selector: 'app-user-wishlist',
-  imports: [CommonModule, BadgeModule, AvatarModule, InputTextModule, TabsModule, ButtonModule, RouterModule],
+  imports: [CommonModule, BadgeModule, AvatarModule, InputTextModule, TabsModule, ButtonModule, RouterModule,QuickViewComponent],
   templateUrl: './user-wishlist.component.html',
   styleUrl: './user-wishlist.component.scss'
 })
@@ -290,9 +291,9 @@ export class UserWishlistComponent {
 
   selectedProduct: any = null;
 
-  openQuickView(product: any) {
+  openQuickView(product: any,event: Event) {
     this.selectedProduct = product;
-    console.log('this.selectedProduct: ', this.selectedProduct);
+    event.stopPropagation();
   }
 
   closeQuickView() {
