@@ -128,8 +128,58 @@
                         Birth is
                         required.</small>
                 </div>
+                <div>
+                    <label for="gender" class="block font-bold mb-3">Gender</label>
+                    <p-select inputId="gender" formControlName="gender" [options]="['Male', 'Female', 'Other']"
+                        placeholder="Select Gender" fluid />
+                </div>
+                <div>
+                    <label for="altPhoneNumber" class="block font-bold mb-3">Alternate Phone Number</label>
+                    <input type="text" formControlName="altPhoneNumber" pInputText id="altPhoneNumber" fluid />
+                </div>
+                <div>
+                    <label for="avatarUrl" class="block font-bold mb-3">Avatar URL</label>
+                    <input type="text" formControlName="avatarUrl" pInputText id="avatarUrl" fluid />
+                </div>
 
             </div>
+
+            <div class="mt-4">
+                <h5 class="mb-3 font-bold">Address Details</h5>
+                <div class="grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 grid-cols-1 gap-4">
+                    <div class="col-span-full">
+                        <label for="addressLine1" class="block font-bold mb-3">House No / Building name</label>
+                        <input type="text" formControlName="addressLine1" pInputText id="addressLine1" fluid />
+                    </div>
+                    <div class="col-span-full">
+                        <label for="streetLocality" class="block font-bold mb-3">Street / Locality</label>
+                        <input type="text" formControlName="streetLocality" pInputText id="streetLocality" fluid />
+                    </div>
+                    <div class="col-span-full">
+                        <label for="addressLine2" class="block font-bold mb-3">Landmark</label>
+                        <input type="text" formControlName="addressLine2" pInputText id="addressLine2" fluid />
+                    </div>
+                    <div>
+                        <label for="city" class="block font-bold mb-3">City</label>
+                        <input type="text" formControlName="city" pInputText id="city" fluid />
+                    </div>
+                    <div>
+                        <label for="state" class="block font-bold mb-3">State</label>
+                        <input type="text" formControlName="state" pInputText id="state" fluid />
+                    </div>
+                    <div>
+                        <label for="pincode" class="block font-bold mb-3">Pincode / ZIP Code</label>
+                        <input type="text" formControlName="pincode" pInputText id="pincode" fluid />
+                    </div>
+                    <div>
+                        <label for="country" class="block font-bold mb-3">Country</label>
+                        <p-select inputId="country" formControlName="country"
+                            [options]="['India', 'United States', 'United Kingdom', 'Canada', 'Australia', 'Other']"
+                            placeholder="Select Country" fluid />
+                    </div>
+                </div>
+            </div>
+
             <div class="flex items-center mt-4">
                 <p-checkbox formControlName="isBlocked" inputId="checkOption1" binary="true" />
                 <label for="checkOption1" class="ml-2">Is Blocked</label>

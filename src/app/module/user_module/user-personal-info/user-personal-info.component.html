@@ -1,0 +1,135 @@
+<section class="personal-section">
+    <header class="section-header">
+        <p-button class="text-right" icon="pi pi-pencil" label="Edit"
+            (click)="startEditPersonal()"></p-button>
+    </header>
+
+    <form [formGroup]="personalForm" class="personal-form" (ngSubmit)="submitPersonal()">
+        <div class="form-grid">
+            <div class="form-col-span-2 subheading">🧍‍♂️ Personal Information</div>
+            <div class="form-field">
+                <label class="form-label">Full name <span class="text-red-500">*</span></label>
+                <input pInputText type="text" formControlName="fullName"
+                    placeholder="John Doe" [class.ng-invalid]="personalForm.get('fullName')?.touched && personalForm.get('fullName')?.invalid" />
+                <p-message severity="error" text="Full name is required" 
+                    *ngIf="personalForm.get('fullName')?.touched && personalForm.get('fullName')?.invalid"></p-message>
+            </div>
+            <div class="form-field avatar-upload">
+                <span class="form-label">Profile picture</span>
+                <div class="avatar-preview">
+                    <img [src]="avatarDisplayUrl || user.avatarUrl || 'https://via.placeholder.com/80?text=Avatar'"
+                        alt="avatar" />
+                </div>
+                <input type="file" accept="image/*" (change)="onProfileImageSelected($event)"
+                    [disabled]="isPersonalReadOnly" />
+            </div>
+            
+            <div class="form-field">
+                <label class="form-label">Gender <span class="text-red-500">*</span></label>
+                <p-dropdown formControlName="gender" [options]="genderOptions" 
+                    optionLabel="label" optionValue="value" placeholder="Select Gender"
+                    [class.ng-invalid]="personalForm.get('gender')?.touched && personalForm.get('gender')?.invalid"
+                    styleClass="w-full"></p-dropdown>
+                <p-message severity="error" text="Gender is required" 
+                    *ngIf="personalForm.get('gender')?.touched && personalForm.get('gender')?.invalid"></p-message>
+            </div>
+            <div class="form-field">
+                <label class="form-label">Date of birth <span class="text-red-500">*</span></label>
+                <p-calendar formControlName="dob" [showIcon]="true" dateFormat="dd/mm/yy" 
+                    placeholder="DD/MM/YYYY" [class.ng-invalid]="personalForm.get('dob')?.touched && personalForm.get('dob')?.invalid"
+                    styleClass="w-full"></p-calendar>
+                <p-message severity="error" text="Date of birth is required" 
+                    *ngIf="personalForm.get('dob')?.touched && personalForm.get('dob')?.invalid"></p-message>
+            </div>
+
+            <div class="form-col-span-2 subheading">🏠 Address Details</div>
+            <div class="form-field form-col-span-2">
+                <label class="form-label">House No / Building name <span class="text-red-500">*</span></label>
+                <input pInputText type="text" formControlName="addressLine1"
+                    placeholder="Flat 12B, Blue Tower" 
+                    [class.ng-invalid]="personalForm.get('addressLine1')?.touched && personalForm.get('addressLine1')?.invalid" />
+                <p-message severity="error" text="House No / Building name is required" 
+                    *ngIf="personalForm.get('addressLine1')?.touched && personalForm.get('addressLine1')?.invalid"></p-message>
+            </div>
+            <div class="form-field form-col-span-2">
+                <label class="form-label">Street / Locality <span class="text-red-500">*</span></label>
+                <input pInputText type="text" formControlName="streetLocality"
+                    placeholder="MG Road" 
+                    [class.ng-invalid]="personalForm.get('streetLocality')?.touched && personalForm.get('streetLocality')?.invalid" />
+                <p-message severity="error" text="Street / Locality is required" 
+                    *ngIf="personalForm.get('streetLocality')?.touched && personalForm.get('streetLocality')?.invalid"></p-message>
+            </div>
+            <div class="form-field form-col-span-2">
+                <label class="form-label">Landmark</label>
+                <input pInputText type="text" formControlName="addressLine2"
+                    placeholder="Near Metro Station" />
+            </div>
+            <div class="form-field">
+                <label class="form-label">City <span class="text-red-500">*</span></label>
+                <input pInputText type="text" formControlName="city"
+                    placeholder="Chennai" 
+                    [class.ng-invalid]="personalForm.get('city')?.touched && personalForm.get('city')?.invalid" />
+                <p-message severity="error" text="City is required" 
+                    *ngIf="personalForm.get('city')?.touched && personalForm.get('city')?.invalid"></p-message>
+            </div>
+            <div class="form-field">
+                <label class="form-label">State <span class="text-red-500">*</span></label>
+                <input pInputText type="text" formControlName="state"
+                    placeholder="Tamil Nadu" 
+                    [class.ng-invalid]="personalForm.get('state')?.touched && personalForm.get('state')?.invalid" />
+                <p-message severity="error" text="State is required" 
+                    *ngIf="personalForm.get('state')?.touched && personalForm.get('state')?.invalid"></p-message>
+            </div>
+            <div class="form-field">
+                <label class="form-label">Pincode / ZIP Code <span class="text-red-500">*</span></label>
+                <input pInputText type="text" formControlName="pincode"
+                    placeholder="600001" 
+                    [class.ng-invalid]="personalForm.get('pincode')?.touched && personalForm.get('pincode')?.invalid" />
+                <p-message severity="error" 
+                    [text]="personalForm.get('pincode')?.errors?.['required'] ? 'Pincode is required' : 'Enter a valid pincode'" 
+                    *ngIf="personalForm.get('pincode')?.touched && personalForm.get('pincode')?.invalid"></p-message>
+            </div>
+            <div class="form-field">
+                <label class="form-label">Country <span class="text-red-500">*</span></label>
+                <p-dropdown formControlName="country" [options]="countryOptions" 
+                    optionLabel="label" optionValue="value" placeholder="Select Country"
+                    [class.ng-invalid]="personalForm.get('country')?.touched && personalForm.get('country')?.invalid"
+                    styleClass="w-full"></p-dropdown>
+                <p-message severity="error" text="Country is required" 
+                    *ngIf="personalForm.get('country')?.touched && personalForm.get('country')?.invalid"></p-message>
+            </div>
+
+            <div class="form-col-span-2 subheading">📞 Contact Information</div>
+            <div class="form-field">
+                <label class="form-label">Phone number <span class="text-red-500">*</span></label>
+                <input pInputText type="tel" formControlName="phoneNumber"
+                    placeholder="+91 9876543210" 
+                    [class.ng-invalid]="personalForm.get('phoneNumber')?.touched && personalForm.get('phoneNumber')?.invalid" />
+                <p-message severity="error" 
+                    [text]="personalForm.get('phoneNumber')?.errors?.['required'] ? 'Phone number is required' : 'Enter a valid phone number'" 
+                    *ngIf="personalForm.get('phoneNumber')?.touched && personalForm.get('phoneNumber')?.invalid"></p-message>
+            </div>
+            <div class="form-field">
+                <label class="form-label">Alternate phone number</label>
+                <input pInputText type="tel" formControlName="altPhoneNumber"
+                    placeholder="Optional" 
+                    [class.ng-invalid]="personalForm.get('altPhoneNumber')?.touched && personalForm.get('altPhoneNumber')?.invalid" />
+                <p-message severity="error" text="Enter a valid phone number" 
+                    *ngIf="personalForm.get('altPhoneNumber')?.touched && personalForm.get('altPhoneNumber')?.invalid"></p-message>
+            </div>
+            <div class="form-field form-col-span-2">
+                <label class="form-label">Email address</label>
+                <input pInputText type="email" formControlName="email" [readonly]="true"
+                    placeholder="john.doe@example.com" />
+            </div>
+        </div>
+
+        <div class="form-actions" *ngIf="!isPersonalReadOnly">
+            <button class="btn outline" type="button" (click)="resetPersonal()" [disabled]="isLoading">Cancel</button>
+            <button class="btn primary" type="submit" [disabled]="isLoading">
+                <span *ngIf="isLoading">Saving...</span>
+                <span *ngIf="!isLoading">Save info</span>
+            </button>
+        </div>
+    </form>
+</section>
