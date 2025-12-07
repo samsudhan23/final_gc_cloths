@@ -367,7 +367,6 @@ export class ProductManagementComponent {
       const FormControlValues = this.productForm.value;
 
       formData.append('productName', FormControlValues.productName);
-      formData.append('discountPrice', FormControlValues.discountPrice);
       formData.append('warehouse', FormControlValues.warehouse);
       formData.append('productDescription', FormControlValues.productDescription);
       formData.append('gender', FormControlValues.gender);

@@ -23,6 +23,10 @@ export const routes: Routes = [
                 loadComponent: () => import('./components/category/category.component').then(m => m.CategoryComponent)
             },
             {
+                path: 'gender',
+                loadComponent: () => import('./components/gender-management/gender-management.component').then(m => m.GenderManagementComponent)
+            },
+            {
                 path: 'productVariant',
                 loadComponent: () => import('./components/product-variant/product-variant.component').then(m => m.ProductVariantComponent)
             },

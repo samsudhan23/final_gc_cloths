@@ -196,8 +196,10 @@ export class HomeComponent implements OnInit {
   filterProducts(): void {
     if (this.selectedCategory === 'All') {
       this.filteredProducts = this.productList;
+      console.log('this.filteredProducts: ', this.filteredProducts);
     } else {
       this.filteredProducts = this.productList.filter((product: any) => product.category.categoryName === this.selectedCategory);
+      console.log('this.filteredProducts: ', this.filteredProducts);
     }
   }
 
