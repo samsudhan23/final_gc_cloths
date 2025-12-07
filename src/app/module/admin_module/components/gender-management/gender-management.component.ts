@@ -13,7 +13,6 @@ import { DatePickerModule } from 'primeng/datepicker';
 import { RippleModule } from 'primeng/ripple';
 import { ToastModule } from 'primeng/toast';
 import { CustomerService } from '../../../../pages/service/customer.service';
-import { ProductService } from '../../../../pages/service/product.service';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DialogModule } from 'primeng/dialog';
 import { InputNumberModule } from 'primeng/inputnumber';
@@ -22,8 +21,9 @@ import { TextareaModule } from 'primeng/textarea';
 import { ToolbarModule } from 'primeng/toolbar';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { CheckboxModule } from 'primeng/checkbox';
-import { UserService } from '../../service/user/user.service';
 import { ToastrService } from 'ngx-toastr';
+import { GenderService } from '../../service/gender/gender.service';
+import { apiResponse } from '../../../../shared/interface/response';
 
 interface Column {
   field: string;
@@ -37,7 +37,7 @@ interface ExportColumn {
 }
 
 @Component({
-  selector: 'app-user-management',
+  selector: 'app-gender-management',
   imports: [
     CommonModule,
     TableModule,
@@ -62,64 +62,43 @@ interface ExportColumn {
     ReactiveFormsModule
   ],
   providers: [CustomerService, ConfirmationService, MessageService],
-  templateUrl: './user-management.component.html',
-  styleUrl: './user-management.component.scss'
+  templateUrl: './gender-management.component.html',
+  styleUrl: './gender-management.component.scss'
 })
-export class UserManagementComponent {
+export class GenderManagementComponent {
   @ViewChild('dt') dt!: Table;
   userDialog: boolean = false;
   selectedUser!: any | null;
-  usersList: any[] = [];
+  genderList: any[] = [];
   exportColumns!: ExportColumn[];
   mode: 'add' | 'edit' | 'view' = 'add';
   currentUserId: string | null = null;
-  rolePeremission: any[] = [
-    { label: 'Admin', value: 'admin' },
-    { label: 'User', value: 'user' },
-  ];
   cols: Column[] = [
     { field: 'Name', header: 'name' },
-    { field: 'Email', header: 'email' },
-    { field: 'Phone', header: 'phoneNumber' },
-    { field: 'Role', header: 'role' }
+    { field: 'Slug', header: 'slug' },
+    { field: 'Created Date', header: 'createdAt' }
   ];
   userForm: FormGroup;
   constructor(
-    private userService: UserService,
+    private genderService: GenderService,
     private confirmationService: ConfirmationService,
     private fb: FormBuilder,
     private toast: ToastrService,
   ) {
     this.userForm = this.fb.group({
-      name: ['', Validators.required],
-      phoneNumber: ['', [Validators.required, Validators.pattern(/^[6-9]\d{9}$/)]],
-      email: ['', [Validators.required,Validators.pattern(/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/i)]],
-      password: ['', Validators.required],
-      dateOfBirth: [null, Validators.required],
-      role: ['user', Validators.required],
-      isBlocked: [false],
-      gender: [''],
-      altPhoneNumber: [''],
-      avatarUrl: [''],
-      addressLine1: [''],
-      streetLocality: [''],
-      addressLine2: [''],
-      city: [''],
-      state: [''],
-      pincode: [''],
-      country: ['India']
+      genderName: ['', Validators.required],
     });
   }
 
   ngOnInit() {
-    this.loadUsers()
+    this.loadGenders();
     this.exportColumns = this.cols.map((col) => ({ title: col.header, dataKey: col.field }));
   }
 
-  // User Module
-  loadUsers(): void {
-    this.userService.getUsers().subscribe((res: any) => {
-      this.usersList = res.result;
+  // Gender Module
+  loadGenders(): void {
+    this.genderService.getGenderList().subscribe((res: any) => {
+      this.genderList = res.result;
     }, (error: any) => {
       this.toast.warning(error.error.message);
     })
@@ -130,25 +109,28 @@ export class UserManagementComponent {
   }
   openNew() {
     this.userDialog = true;
-    this.mode = 'add'
-    this.userForm.get('role')?.setValue('user')
+    this.mode = 'add';
   }
 
   deleteSelectedProducts() {
     this.confirmationService.confirm({
-      message: 'Are you sure you want to delete the selected User?',
+      message: 'Are you sure you want to delete the selected Gender?',
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         const dele = {
           ids: this.selectedUser.map((ite: { _id: any; }) => ite._id)
         }
-        this.userService.deleteUser(dele).subscribe((res: any) => {
+
+        this.genderService.deleteGender(dele).subscribe((res: any) => {
           if (res.code === 200 && res.success === true) {
             this.toast.success(res.message);
-            this.loadUsers()
+            this.loadGenders();
           }
-        });
+        },
+          (error: any) => {
+            this.toast.warning(error.error.message);
+          });
       }
     });
   }
@@ -159,19 +141,22 @@ export class UserManagementComponent {
 
   deleteProduct(user: any) {
     this.confirmationService.confirm({
-      message: 'Are you sure you want to delete ' + user.name + '?',
+      message: 'Are you sure you want to delete ' + user.genderName + '?',
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         const dele = {
-          ids: user._id
+          ids: [user._id]
         }
-        this.userService.deleteUser(dele).subscribe((res: any) => {
+        this.genderService.deleteGender(dele).subscribe((res: any) => {
           if (res.code === 200 && res.success === true) {
             this.toast.success(res.message);
-            this.loadUsers()
+            this.loadGenders();
           }
-        });
+        },
+          (error: any) => {
+            this.toast.warning(error.error.message);
+          });
       }
     });
   }
@@ -179,17 +164,11 @@ export class UserManagementComponent {
   hideDialog() {
     this.userDialog = false;
     this.userForm.reset();
-    this.userForm.get('isBlocked')?.setValue(false);
-    this.userForm.get('role')?.setValue('user');
-    this.userForm.get('country')?.setValue('India');
   }
 
   onDialogHide() {
     if (this.userForm) {
       this.userForm.reset(); // Reset when dialog is closed using header 'X'
-      this.userForm.get('isBlocked')?.setValue(false);
-      this.userForm.get('role')?.setValue('user');
-      this.userForm.get('country')?.setValue('India');
     }
   }
   editUser(event: any, type: string) {
@@ -201,18 +180,11 @@ export class UserManagementComponent {
         this.mode = 'edit';
         this.currentUserId = editTableDatas._id;
         this.userForm.patchValue(editTableDatas);
-        this.userForm.patchValue({
-          dateOfBirth: editTableDatas.dateOfBirth ? new Date(editTableDatas.dateOfBirth) : null
-        });
-        // this.userForm.get('password')?.setValue('');
         this.userForm.enable();
         break;
       case "View":
         this.mode = 'view';
         this.userForm.patchValue(editTableDatas);
-        this.userForm.patchValue({
-          dateOfBirth: editTableDatas.dateOfBirth ? new Date(editTableDatas.dateOfBirth) : null
-        });
         this.userForm.disable();
         break;
     }
@@ -223,37 +195,32 @@ export class UserManagementComponent {
       this.userForm.markAllAsTouched();
       return;
     }
+    if (this.userForm.valid) {
+      const user = this.userForm.value;
 
-    const user = this.userForm.value;
-
-    if (this.mode === 'add') {
-      this.userService.addUser(user).subscribe((res: any) => {
-        if (res.code === 200 && res.success === true) {
-          this.toast.success(res.message);
-          this.loadUsers();
-          this.hideDialog();
-        } else {
-          this.toast.error(res.message || 'Something went wrong');
-        }
-      },
-        (err) => {
-          this.toast.error(err?.error?.message || 'Server error occurred');
-        }
-      );
-    } else if (this.mode === 'edit' && this.currentUserId) {
-      this.userService.updateUser(this.currentUserId, user).subscribe((res: any) => {
-        if (res.code === 200 && res.success === true) {
-          this.toast.success(res.message);
-          this.loadUsers();
-          this.hideDialog();
-        } else {
-          this.toast.error(res.message || 'Something went wrong');
-        }
-      },
-        (err) => {
-          this.toast.error(err?.error?.message || 'Server error occurred');
-        }
-      );
+      if (this.mode === 'add') {
+        this.genderService.postGender(user).subscribe((res: apiResponse) => {
+          if (res.code === 200 && res.success === true) {
+            this.toast.success(res.message);
+            this.loadGenders();
+            this.hideDialog();
+          }
+        },
+          (error: any) => {
+            this.toast.warning(error.error.message);
+          });
+      } else if (this.mode === 'edit' && this.currentUserId) {
+        this.genderService.updateGender(this.currentUserId, user).subscribe((res: any) => {
+          if (res.code === 200 && res.success === true) {
+            this.toast.success(res.message);
+            this.loadGenders();
+            this.hideDialog();
+          }
+        },
+          (error: any) => {
+            this.toast.warning(error.error.message);
+          });
+      }
     }
   }
 }
