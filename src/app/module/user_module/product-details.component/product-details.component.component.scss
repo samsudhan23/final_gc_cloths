@@ -2,6 +2,7 @@
   max-height: 400px;
   object-fit: contain;
 }
+
 .thumb-img {
   width: 70px;
   height: 70px;
@@ -11,6 +12,7 @@
   cursor: pointer;
   transition: 0.3s;
 }
+
 .thumb-img:hover {
   border-color: #000;
   transform: scale(1.05);
@@ -23,10 +25,12 @@
   cursor: pointer;
   transition: 0.3s;
 }
+
 .related-products .product-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
+
 .related-products .product-img img {
   height: 200px;
   object-fit: cover;
@@ -50,28 +54,32 @@
 
 /* Back button modern style */
 .back-btn {
-  background-color: #f8f9fa; /* Soft gray */
+  background-color: #f8f9fa;
+  /* Soft gray */
   border: 1px solid #dee2e6;
   color: #495057;
   transition: all 0.3s ease;
 }
 
 .back-btn:hover {
-  background-color: #317dc9; /* Darker gray on hover */
+  background-color: #317dc9;
+  /* Darker gray on hover */
   color: #edf0f3;
   border-color: #adb5bd;
 }
 
 /* Buy Now button modern style */
 .buy-now-btn {
-  background-color: #f8f9fa; /* Soft gray */
+  background-color: #f8f9fa;
+  /* Soft gray */
   border: 1px solid #dee2e6;
   color: #495057;
   transition: all 0.3s ease;
 }
 
 .buy-now-btn:hover {
-  background-color: #2bac72; /* Darker gray on hover */
+  background-color: #2bac72;
+  /* Darker gray on hover */
   color: #e8eff6;
   border-color: #adb5bd;
 }
@@ -123,3 +131,115 @@ button:hover {
 
 
 
+///CARD SLIDER ANIMATION
+
+@-webkit-keyframes animation {
+  from {
+    opacity: 0;
+    -webkit-transform: scale(1.2) rotateX(45deg);
+    transform: scale(1.2) rotateX(45deg);
+  }
+
+  to {}
+}
+
+@-webkit-keyframes animation2 {
+  from {
+    opacity: 0;
+    -webkit-transform: scale(1.2) rotateX(45deg);
+    transform: scale(1.2) rotateX(45deg);
+  }
+
+  to {}
+}
+
+// body * {
+//   cursor: url(https://dl.dropboxusercontent.com/u/50037593/ElasticSlider/images/cur.png), auto;
+// }
+
+body {
+  background: #1c1c1c;
+  /*-webkit-perspective:1000px;*/
+  overflow: hidden;
+
+  cursor: url(https://dl.dropboxusercontent.com/u/50037593/ElasticSlider/images/cur.png), auto;
+}
+
+@font-face {
+  font-family: font;
+  src: url(https://dl.dropboxusercontent.com/u/50037593/ElasticSlider/hand.ttf);
+  font-weight: bold;
+}
+
+.slider div p {
+  color: #1c1c1c;
+  position: absolute;
+  bottom: -65px;
+  font-family: font;
+  font-size: 22px;
+}
+
+.slider-wrapper {
+  position: relative;
+  width: 100%;
+  height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1000px;
+}
+
+.slider {
+  -webkit-animation: animation ease 1s;
+  animation-delay: .8s;
+  animation-fill-mode: backwards;
+  position: relative;
+  width: 400px;
+  height: 500px;
+  margin: 0 auto;
+  transition: ease-in-out .2s;
+}
+
+/*.slider:active{ -webkit-transform:rotateZ(10deg);}*/
+
+
+.slide img {
+  text-align: center;
+  width: 100%;
+  height: auto;
+  max-height: 476px;
+  object-fit: contain;
+  display: block;
+  -webkit-user-drag: none;
+  user-drag: none;
+  -moz-user-drag: none;
+ border-radius: 5px;
+}
+
+
+.slide {
+  -webkit-user-select: none;
+  user-select: none;
+  -moz-user-select: none;
+  position: absolute;
+  // width: 400px;
+  height: auto;
+  max-height: 500px;
+  left: 0;
+  top: 0;
+  background-color: white;
+  box-shadow: 0px 10px 30px 0px rgba(0, 0, 0, 0.3);
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+  -moz-transform-style: preserve-3d;
+  text-align: center;
+  border: 12px white solid;
+  border-radius: 5px;
+  object-fit: contain;
+}
+
+.transition {
+  -webkit-transition: cubic-bezier(0, 1.95, .49, .73) .4s;
+  -moz-transition: cubic-bezier(0, 1.95, .49, .73) .4s;
+  transition: cubic-bezier(0, 1.95, .49, .73) .4s;
+}
