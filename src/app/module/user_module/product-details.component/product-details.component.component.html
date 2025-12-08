@@ -2,20 +2,32 @@
         class="bi bi-arrow-left me-2"></i>Back
     to Products</button>
 <div class="container py-5" *ngIf="filteredProducts">
-    <div class="row g-5 align-items-center">
+    <div class="grid grid-cols-4 gap-4">
         <!-- Gallery -->
-        <div class="col-md-6">
-            <div class="main-img text-center mb-3">
+        <div class="col-span-2 flex items-center justify-center">
+            <!-- <div class="main-img text-center mb-3">
                 <img [src]="filteredProducts.images" alt="{{filteredProducts.productName}}" class="img-fluid rounded shadow">
             </div>
             <div class="thumb-gallery d-flex justify-content-center gap-2">
                 <img *ngFor="let img of filteredProducts.gallery" [src]="img" alt="{{filteredProducts.productName}}" class="thumb-img"
                     (click)="changeImage(img)">
+            </div> -->
+            <div #sliderContainer class="slider-wrapper cursor-pointer">
+                <div class="slider" *ngIf="filteredProducts">
+                    <div class="slide" *ngIf="filteredProducts.images">
+                        <img [src]="filteredProducts.images" [alt]="filteredProducts.productName" />
+                        <!-- <p>{{ filteredProducts.productName }}</p> -->
+                    </div>
+                    <div class="slide" *ngFor="let img of filteredProducts.gallery; let i = index">
+                        <img [src]="img" [alt]="filteredProducts.productName + ' - Image ' + (i + 1)" />
+                        <!-- <p>{{ filteredProducts.productName }} - View {{ i + 1 }}</p> -->
+                    </div>
+                </div>
             </div>
         </div>
 
         <!-- filteredProducts Info -->
-        <div class="col-md-6">
+        <div class="col-span-2">
             <h2 class="fw-bold">{{ filteredProducts.productName }}</h2>
             <p class="text-muted">{{ filteredProducts.productDescription }}</p>
 
