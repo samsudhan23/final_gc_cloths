@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
@@ -69,7 +69,9 @@ import {
     ])
   ]
 })
-export class ProductDetailsComponent implements OnInit {
+export class ProductDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
+  @ViewChild('sliderContainer', { static: false }) sliderContainer!: ElementRef;
+  
   product: any = null;
   selectedImage: string | undefined = '';
   selectedSize: string | null = null;
@@ -86,6 +88,23 @@ export class ProductDetailsComponent implements OnInit {
   wishListData: any[] = [];
   filteredProducts: any = null;
 
+  // Slider properties
+  private slider: HTMLElement | null = null;
+  private sliders: HTMLCollection | null = null;
+  private initX: number | null = null;
+  private transX: number = 0;
+  private rotZ: number = 0;
+  private transY: number = 0;
+  private curSlide: HTMLElement | null = null;
+  private prevSlide: HTMLElement | null = null;
+  private readonly Z_DIS: number = 50;
+  private readonly Y_DIS: number = 10;
+  private readonly TRANS_DUR: number = 0.4;
+  private slideMouseMoveHandler: ((e: MouseEvent | TouchEvent) => void) | null = null;
+  private slideMouseUpHandler: (() => void) | null = null;
+  private slideMouseDownHandler: ((e: MouseEvent | TouchEvent) => void) | null = null;
+  private slideTouchStartHandler: ((e: MouseEvent | TouchEvent) => void) | null = null;
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -101,6 +120,20 @@ export class ProductDetailsComponent implements OnInit {
     this.isGotoCart = false;
     this.getProduct();
     this.getWishlistdetails();
+  }
+
+  ngAfterViewInit() {
+    // Initialize slider after view is ready
+    // Use setTimeout to ensure DOM is fully rendered
+    setTimeout(() => {
+      if (this.filteredProducts && this.sliderContainer) {
+        this.initSlider();
+      }
+    }, 300);
+  }
+
+  ngOnDestroy() {
+    this.cleanupSlider();
   }
   getProduct() {
     this.productService.getProductlist().subscribe((res: any) => {
@@ -119,6 +152,11 @@ export class ProductDetailsComponent implements OnInit {
       
       // Get wishlist details after product and related products are loaded
       this.getWishlistdetails();
+      
+      // Initialize slider after products are loaded
+      setTimeout(() => {
+        this.initSlider();
+      }, 200);
     }, (error: any) => {
       this.toast.warning(error.error.message);
     })
@@ -360,6 +398,12 @@ export class ProductDetailsComponent implements OnInit {
     
     // Check wishlist status for the new product and related products
     this.getWishlistdetails();
+    
+    // Reinitialize slider with new product images
+    setTimeout(() => {
+      this.cleanupSlider();
+      this.initSlider();
+    }, 200);
   }
 
   // central method to rebuild all accordion sections dynamically
@@ -497,5 +541,233 @@ export class ProductDetailsComponent implements OnInit {
 
   goToCart() {
     this.router.navigate(['user/cart']);
+  }
+
+  // Elastic Slider Methods
+  initSlider(): void {
+    if (!this.sliderContainer || !this.filteredProducts) {
+      return;
+    }
+
+    this.slider = this.sliderContainer.nativeElement.querySelector('.slider') as HTMLElement;
+    if (!this.slider) {
+      return;
+    }
+
+    this.sliders = this.slider.children;
+    
+    if (!this.sliders || this.sliders.length === 0) {
+      return;
+    }
+    
+    // Prevent image drag
+    const images = this.slider.querySelectorAll('img');
+    images.forEach((img: HTMLImageElement) => {
+      img.addEventListener('mousemove', (e: MouseEvent) => {
+        e.preventDefault();
+      });
+      img.addEventListener('dragstart', (e: DragEvent) => {
+        e.preventDefault();
+        return false;
+      });
+    });
+
+    this.init();
+  }
+
+  private init(): void {
+    if (!this.sliders || this.sliders.length === 0) {
+      return;
+    }
+
+    let z = 0;
+    let y = 0;
+
+    // Initialize slides from last to first
+    for (let i = this.sliders.length - 1; i >= 0; i--) {
+      const slide = this.sliders[i] as HTMLElement;
+      slide.style.transform = `translateZ(${z}px) translateY(${y}px)`;
+      z -= this.Z_DIS;
+      y += this.Y_DIS;
+    }
+
+    // Attach events to the last slide (topmost)
+    this.attachEvents(this.sliders[this.sliders.length - 1] as HTMLElement);
+  }
+
+  private attachEvents(elem: HTMLElement): void {
+    // Remove old event listeners if curSlide exists
+    if (this.curSlide && this.slideMouseDownHandler) {
+      this.curSlide.removeEventListener('mousedown', this.slideMouseDownHandler, false);
+    }
+    if (this.curSlide && this.slideTouchStartHandler) {
+      this.curSlide.removeEventListener('touchstart', this.slideTouchStartHandler, false);
+    }
+
+    this.curSlide = elem;
+
+    // Store bound handlers so we can remove them later
+    this.slideMouseDownHandler = this.slideMouseDown.bind(this);
+    this.slideTouchStartHandler = this.slideMouseDown.bind(this);
+    
+    this.curSlide.addEventListener('mousedown', this.slideMouseDownHandler, false);
+    this.curSlide.addEventListener('touchstart', this.slideTouchStartHandler, false);
+  }
+
+  private slideMouseDown(e: MouseEvent | TouchEvent): void {
+    if (e instanceof TouchEvent && e.touches) {
+      this.initX = e.touches[0].clientX;
+    } else if (e instanceof MouseEvent) {
+      this.initX = e.pageX;
+    }
+
+    this.slideMouseMoveHandler = this.slideMouseMove.bind(this);
+    this.slideMouseUpHandler = this.slideMouseUp.bind(this);
+
+    document.addEventListener('mousemove', this.slideMouseMoveHandler, false);
+    document.addEventListener('touchmove', this.slideMouseMoveHandler, false);
+    document.addEventListener('mouseup', this.slideMouseUpHandler, false);
+    document.addEventListener('touchend', this.slideMouseUpHandler, false);
+  }
+
+  private slideMouseMove(e: MouseEvent | TouchEvent): void {
+    if (!this.curSlide || this.initX === null || !this.sliders) {
+      return;
+    }
+
+    let mouseX: number;
+    if (e instanceof TouchEvent && e.touches) {
+      mouseX = e.touches[0].clientX;
+    } else if (e instanceof MouseEvent) {
+      mouseX = e.pageX;
+    } else {
+      return;
+    }
+
+    this.transX += mouseX - this.initX;
+    this.rotZ = this.transX / 20;
+    this.transY = -Math.abs(this.transX / 15);
+
+    this.curSlide.style.transition = 'none';
+    this.curSlide.style.webkitTransform = `translateX(${this.transX}px) rotateZ(${this.rotZ}deg) translateY(${this.transY}px)`;
+    this.curSlide.style.transform = `translateX(${this.transX}px) rotateZ(${this.rotZ}deg) translateY(${this.transY}px)`;
+
+    let j = 1;
+    // Update remaining elements
+    for (let i = this.sliders.length - 2; i >= 0; i--) {
+      const slide = this.sliders[i] as HTMLElement;
+      slide.style.webkitTransform = `translateX(${this.transX / (2 * j)}px) rotateZ(${this.rotZ / (2 * j)}deg) translateY(${this.Y_DIS * j}px) translateZ(${-this.Z_DIS * j}px)`;
+      slide.style.transform = `translateX(${this.transX / (2 * j)}px) rotateZ(${this.rotZ / (2 * j)}deg) translateY(${this.Y_DIS * j}px) translateZ(${-this.Z_DIS * j}px)`;
+      slide.style.transition = 'none';
+      j++;
+    }
+
+    this.initX = mouseX;
+    e.preventDefault();
+
+    if (Math.abs(this.transX) >= this.curSlide.offsetWidth - 30) {
+      // Remove event listeners before transitioning
+      if (this.slideMouseMoveHandler) {
+        document.removeEventListener('mousemove', this.slideMouseMoveHandler, false);
+        document.removeEventListener('touchmove', this.slideMouseMoveHandler, false);
+      }
+      if (this.slideMouseUpHandler) {
+        document.removeEventListener('mouseup', this.slideMouseUpHandler, false);
+        document.removeEventListener('touchend', this.slideMouseUpHandler, false);
+      }
+      
+      // Reset dragging state
+      this.initX = null;
+      
+      this.curSlide.style.transition = 'ease 0.2s';
+      this.curSlide.style.opacity = '0';
+      this.prevSlide = this.curSlide;
+      
+      if (this.sliders.length > 1) {
+        this.attachEvents(this.sliders[this.sliders.length - 2] as HTMLElement);
+      }
+      
+      // Reset transforms
+      this.transX = 0;
+      this.rotZ = 0;
+      this.transY = 0;
+
+      setTimeout(() => {
+        if (this.slider && this.prevSlide) {
+          this.slider.insertBefore(this.prevSlide, this.slider.firstChild);
+          this.prevSlide.style.transition = 'none';
+          this.prevSlide.style.opacity = '1';
+          
+          // Reinitialize slider after slide is moved
+          this.init();
+        }
+      }, 201);
+
+      return;
+    }
+  }
+
+  private slideMouseUp(): void {
+    // Remove all event listeners first
+    if (this.slideMouseMoveHandler) {
+      document.removeEventListener('mousemove', this.slideMouseMoveHandler, false);
+      document.removeEventListener('touchmove', this.slideMouseMoveHandler, false);
+    }
+    if (this.slideMouseUpHandler) {
+      document.removeEventListener('mouseup', this.slideMouseUpHandler, false);
+      document.removeEventListener('touchend', this.slideMouseUpHandler, false);
+    }
+
+    // Reset dragging state
+    this.initX = null;
+    
+    if (!this.curSlide || !this.sliders) {
+      return;
+    }
+
+    this.transX = 0;
+    this.rotZ = 0;
+    this.transY = 0;
+
+    this.curSlide.style.transition = `cubic-bezier(0,1.95,.49,.73) ${this.TRANS_DUR}s`;
+    this.curSlide.style.webkitTransform = `translateX(${this.transX}px) rotateZ(${this.rotZ}deg) translateY(${this.transY}px)`;
+    this.curSlide.style.transform = `translateX(${this.transX}px) rotateZ(${this.rotZ}deg) translateY(${this.transY}px)`;
+
+    // Update remaining elements
+    let j = 1;
+    for (let i = this.sliders.length - 2; i >= 0; i--) {
+      const slide = this.sliders[i] as HTMLElement;
+      slide.style.transition = `cubic-bezier(0,1.95,.49,.73) ${this.TRANS_DUR / (j + 0.9)}s`;
+      slide.style.webkitTransform = `translateX(${this.transX}px) rotateZ(${this.rotZ}deg) translateY(${this.Y_DIS * j}px) translateZ(${-this.Z_DIS * j}px)`;
+      slide.style.transform = `translateX(${this.transX}px) rotateZ(${this.rotZ}deg) translateY(${this.Y_DIS * j}px) translateZ(${-this.Z_DIS * j}px)`;
+      j++;
+    }
+  }
+
+  private cleanupSlider(): void {
+    // Remove document-level event listeners
+    if (this.slideMouseMoveHandler) {
+      document.removeEventListener('mousemove', this.slideMouseMoveHandler, false);
+      document.removeEventListener('touchmove', this.slideMouseMoveHandler, false);
+    }
+    if (this.slideMouseUpHandler) {
+      document.removeEventListener('mouseup', this.slideMouseUpHandler, false);
+      document.removeEventListener('touchend', this.slideMouseUpHandler, false);
+    }
+    
+    // Remove slide-level event listeners
+    if (this.curSlide && this.slideMouseDownHandler) {
+      this.curSlide.removeEventListener('mousedown', this.slideMouseDownHandler, false);
+    }
+    if (this.curSlide && this.slideTouchStartHandler) {
+      this.curSlide.removeEventListener('touchstart', this.slideTouchStartHandler, false);
+    }
+    
+    // Reset handlers
+    this.slideMouseMoveHandler = null;
+    this.slideMouseUpHandler = null;
+    this.slideMouseDownHandler = null;
+    this.slideTouchStartHandler = null;
+    this.initX = null;
   }
 }
