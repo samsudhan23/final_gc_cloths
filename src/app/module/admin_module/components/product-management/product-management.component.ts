@@ -94,7 +94,7 @@ export class ProductManagementComponent {
   warehouseList: any[] = [];
   genderList: Gender[] = [];
   fileInfo: string | number = '';
-  imageFile!: File;
+  imageFile!: any;
   galleryFiles: any[] = [];
   galleryImages: any;
   singleImage: any;
@@ -387,12 +387,12 @@ export class ProductManagementComponent {
       formData.append('tags', FormControlValues.tags);
       formData.append('category', FormControlValues.category);
       if (this.imageFile) {
-        formData.append('images', this.imageFile);
+        formData.append('images',this.imageFile, this.imageFile.name);
       }
       this.galleryFiles.forEach(file => {
         if (file instanceof File) {
           // New file: upload the actual file
-          formData.append('gallery', file);
+          formData.append('gallery', file, file.name);
         } else if (typeof file === 'string') {
           // Existing image URL: extract filename
           let tmp = file.split('http://localhost:5000/assets/Products/')[1];
