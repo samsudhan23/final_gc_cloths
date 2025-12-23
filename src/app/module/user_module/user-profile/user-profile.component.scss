@@ -1,6 +1,6 @@
 /* Page background wrapper */
 .profile-shell {
-    background: linear-gradient(180deg, #fff5f5 0%, #fff1f2 100%);
+    background: var(--white);
     padding: 24px 0;
     overflow: hidden;
 }
@@ -14,7 +14,7 @@
     max-width: 1600px;
     margin: 0 auto;
     box-sizing: border-box;
-    background: #ffffff;
+    background: var(--lite-olive);
     border-radius: 16px;
     box-shadow: 0 12px 36px rgba(2, 8, 23, 0.08);
     align-items: stretch;

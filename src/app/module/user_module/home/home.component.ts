@@ -64,6 +64,15 @@ export class HomeComponent implements OnInit {
   ) { }
   ngAfterViewInit(): void {
     showAlert();
+    setTimeout(() => {
+      AOS.init({
+        duration: 800,
+        once: true,
+        easing: 'ease-out-cubic'
+      });
+
+      AOS.refresh(); // ⭐ important
+    }, 300);
   }
   ngOnInit() {
     showAlert();

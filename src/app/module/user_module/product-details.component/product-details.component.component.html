@@ -1,207 +1,269 @@
-<button class="ml-2 btn btn-outline-secondary px-4 rounded-pill shadow-sm hover-scale back-btn" (click)="goBack()"><i
+<button class="ml-2 btn btn-outline-secondary px-4 rounded-pill shadow-sm hover-scale back-btn mobile-back-btn" (click)="goBack()"><i
         class="bi bi-arrow-left me-2"></i>Back
     to Products</button>
-<div class="container py-5" *ngIf="filteredProducts">
-    <div class="grid grid-cols-4 gap-4">
+<div class="container py-5 product-details-container" *ngIf="filteredProducts">
+    <div class="grid grid-cols-4 gap-4 product-grid">
         <!-- Gallery -->
-        <div class="col-span-2 flex items-center justify-center">
-            <!-- <div class="main-img text-center mb-3">
-                <img [src]="filteredProducts.images" alt="{{filteredProducts.productName}}" class="img-fluid rounded shadow">
-            </div>
-            <div class="thumb-gallery d-flex justify-content-center gap-2">
-                <img *ngFor="let img of filteredProducts.gallery" [src]="img" alt="{{filteredProducts.productName}}" class="thumb-img"
-                    (click)="changeImage(img)">
-            </div> -->
+        <div class="col-span-2 image-column">
+            <span>
+                  <button class="nav prev" (click)="moveSlide('prev')">&#10094;</button>
+            </span>
             <div #sliderContainer class="slider-wrapper cursor-pointer">
                 <div class="slider" *ngIf="filteredProducts">
                     <div class="slide" *ngIf="filteredProducts.images">
                         <img [src]="filteredProducts.images" [alt]="filteredProducts.productName" />
-                        <!-- <p>{{ filteredProducts.productName }}</p> -->
                     </div>
                     <div class="slide" *ngFor="let img of filteredProducts.gallery; let i = index">
                         <img [src]="img" [alt]="filteredProducts.productName + ' - Image ' + (i + 1)" />
-                        <!-- <p>{{ filteredProducts.productName }} - View {{ i + 1 }}</p> -->
                     </div>
                 </div>
             </div>
+             <span>
+            <button class="nav next" (click)="moveSlide('next')">&#10095;</button>
+             </span>
         </div>
 
-        <!-- filteredProducts Info -->
-        <div class="col-span-2">
-            <h2 class="fw-bold">{{ filteredProducts.productName }}</h2>
-            <p class="text-muted">{{ filteredProducts.productDescription }}</p>
+        <!-- Product Info - Redesigned with Animations -->
+        <div class="col-span-2 product-info-container">
+            <!-- Product Name with Fade-in Animation -->
+            <div class="product-header">
+                <h2 class="product-title animate-fade-in">{{ filteredProducts.productName }}</h2>
+                <p class="product-description animate-slide-up">{{ filteredProducts.productDescription }}</p>
+            </div>
 
-            <!-- Price -->
-            <p class="fs-4">
-                <span *ngIf="filteredProducts.discountPrice" class="text-success fw-bold">₹{{ filteredProducts.discountPrice }}</span>
-                <span [class.text-muted]="filteredProducts.discountPrice"
-                    [class.text-decoration-line-through]="filteredProducts.discountPrice">
-                    ₹{{ filteredProducts.price }}
-                </span>
-            </p>
-
-            <!-- Category & Gender -->
-            <p><strong>Category:</strong> {{ filteredProducts.category.categoryName }}</p>
-            <p><strong>Gender:</strong> {{ filteredProducts.gender.genderName }}</p>
-
-            <!-- Sizes -->
-            <div class="mb-3">
-                <strong>Available Sizes:</strong>
-                <div class="d-flex gap-2 mt-2 flex-wrap">
-                    <span *ngFor="let size of filteredProducts.sizeStock" (click)="selectSize(size)" class="size-chip" [ngClass]="{
-                            'selected': selectedSize === size.size,
-                            'disabled': size.stock === 0}">
-                        {{ size.size }} ({{ size.stock }})
+            <!-- Price Section with Discount Badge Animation -->
+            <div class="price-section animate-scale-in">
+                <div class="price-container">
+                    <div class="current-price">
+                        <span *ngIf="filteredProducts.discountPrice" class="discount-price">
+                            ₹{{ filteredProducts.discountPrice }}
+                        </span>
+                        <span *ngIf="!filteredProducts.discountPrice" class="regular-price">
+                            ₹{{ filteredProducts.price }}
+                        </span>
+                    </div>
+                    <span *ngIf="filteredProducts.discountPrice" class="original-price">
+                        ₹{{ filteredProducts.price }}
+                    </span>
+                    <span *ngIf="filteredProducts.discountPrice" class="discount-badge">
+                        {{ ((filteredProducts.price - filteredProducts.discountPrice) / filteredProducts.price * 100).toFixed(0) }}% OFF
                     </span>
                 </div>
             </div>
 
+            <!-- Category & Gender with Icons -->
+            <div class="product-meta animate-slide-up-delay">
+                <div class="meta-item">
+                    <i class="bi bi-tag-fill meta-icon"></i>
+                    <div class="meta-content">
+                        <span class="meta-label">Category</span>
+                        <span class="meta-value">{{ filteredProducts.category.categoryName }}</span>
+                    </div>
+                </div>
+                <div class="meta-item">
+                    <i class="bi bi-person-fill meta-icon"></i>
+                    <div class="meta-content">
+                        <span class="meta-label">Gender</span>
+                        <span class="meta-value">{{ filteredProducts.gender.genderName }}</span>
+                    </div>
+                </div>
+            </div>
 
-            <!-- Stock Info -->
-            <p>
-                <span *ngIf="!filteredProducts.inStock" class="badge bg-danger">Out of Stock</span>
-                <span *ngIf="filteredProducts.inStock && filteredProducts.totalStock <= 5" class="badge bg-warning text-dark">Low
-                    Stock</span>
-                <span *ngIf="filteredProducts.inStock && filteredProducts.totalStock > 5" class="badge bg-success">In Stock</span>
-            </p>
-            <!-- Quantity -->
-            <div class="mb-8"><strong><label class="block mb-3 text-foreground">Quantity</label></strong>
-                <div class="flex items-center space-x-2">
+            <!-- Stock Badge with Pulse Animation -->
+            <div class="stock-badge-container animate-fade-in-delay">
+                <span *ngIf="!filteredProducts.inStock" class="stock-badge stock-out pulse-animation">
+                    <i class="bi bi-x-circle me-1"></i>Out of Stock
+                </span>
+                <span *ngIf="filteredProducts.inStock && filteredProducts.totalStock <= 5" 
+                      class="stock-badge stock-low pulse-animation">
+                    <i class="bi bi-exclamation-triangle me-1"></i>Low Stock
+                </span>
+                <span *ngIf="filteredProducts.inStock && filteredProducts.totalStock > 5" 
+                      class="stock-badge stock-in pulse-animation">
+                    <i class="bi bi-check-circle me-1"></i>In Stock
+                </span>
+            </div>
+
+            <!-- Sizes with Enhanced Animation -->
+            <div class="sizes-section animate-slide-up-delay-2">
+                <div class="section-header">
+                    <i class="bi bi-rulers section-icon"></i>
+                    <strong class="section-title">Available Sizes</strong>
+                </div>
+                <div class="sizes-grid">
+                    <span *ngFor="let size of filteredProducts.sizeStock; let i = index" 
+                          (click)="selectSize(size)" 
+                          class="size-chip-modern" 
+                          [ngClass]="{
+                            'selected': selectedSize === size.size,
+                            'disabled': size.stock === 0
+                          }"
+                          [style.animation-delay]="(i * 0.1) + 's'">
+                        <span class="size-label">{{ size.size }}</span>
+                        <span class="size-stock">({{ size.stock }})</span>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Quantity Selector with Modern Design -->
+            <div class="quantity-section animate-slide-up-delay-3">
+                <div class="section-header">
+                    <i class="bi bi-123 section-icon"></i>
+                    <strong class="section-title">Quantity</strong>
+                </div>
+                <div class="quantity-controls">
                     <button (click)="quantityAdding('minus')"
-                        class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border shadow-sm h-11 w-11 bg-neutral text-neutral-foreground border-border hover:bg-gray-200 hover:text-primary transition-colors duration-150"
-                        aria-label="Decrease quantity" [disabled]="quantityValue == 1">
-                        <i class="pi pi-minus" style="font-size: 1rem"></i>
+                            class="quantity-btn quantity-minus"
+                            [disabled]="quantityValue == 1"
+                            [class.disabled]="quantityValue == 1">
+                        <i class="pi pi-minus"></i>
                     </button>
-                    <input [disabled]="true" [(ngModel)]="quantityValue" type="number" min="1" max="99"
-                        class="w-16 pl-[13px] h-11 text-center border border-border rounded-md bg-neutral text-foreground font-medium focus:outline-none focus:ring-2 focus:ring-primary"
-                        aria-label="Quantity" value="1">
-                    <button (click)="quantityAdding('add')" [disabled]="quantityValue == this.stock"
-                        class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border shadow-sm h-11 w-11 bg-neutral text-neutral-foreground border-border hover:bg-gray-200 hover:text-primary transition-colors duration-150"
-                        aria-label="Increase quantity">
-                        <i class="pi pi-plus" style="font-size: 1rem"></i>
+                    <div class="quantity-display">
+                        <span class="quantity-value">{{ quantityValue }}</span>
+                    </div>
+                    <button (click)="quantityAdding('add')"
+                            class="quantity-btn quantity-plus"
+                            [disabled]="quantityValue == this.stock"
+                            [class.disabled]="quantityValue == this.stock">
+                        <i class="pi pi-plus"></i>
                     </button>
-
                 </div>
             </div>
 
-            <!-- Buttons -->
-            <div class="d-flex gap-3 mt-4 flex-wrap">
-                <!-- Buy Now -->
-                <button class="btn buy-now-btn px-4 rounded-pill shadow-sm hover-scale" (click)="buyNow(filteredProducts)">
-                    <i class="bi bi-bag-check-fill me-2"></i>Buy Now
-                </button>
+            <!-- Action Buttons with Enhanced Animations -->
+            <div class="action-buttons grid md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 animate-fade-in-delay-2">
+                <!-- <button class="action-btn btn-buy-now" (click)="buyNow(filteredProducts)">
+                    <i class="bi bi-bag-check-fill"></i>
+                    <span>Buy Now</span>
+                    <div class="btn-ripple"></div>
+                </button> -->
+                
                 @if(!isGotoCart){
-                <button class="btn btn-outline-secondary px-4 rounded-pill shadow-sm hover-scales"
-                    (click)="addToCart(filteredProducts)">
-                    <i class="bi bi-cart me-2"></i>Add to Cart
+                <button class="action-btn btn-add-cart" (click)="addToCart(filteredProducts)">
+                    <i class="bi bi-cart-plus"></i>
+                    <span>Add to Cart</span>
+                    <div class="btn-ripple"></div>
                 </button>
                 }
+                
                 @if(isGotoCart){
-                <button class="btn buy-now-btn px-4 rounded-pill shadow-sm hover-scales" (click)="goToCart()">
-                    <i class="bi bi-cart me-2"></i>Go to Cart
+                <button class="action-btn btn-go-cart" (click)="goToCart()">
+                    <i class="bi bi-cart-check"></i>
+                    <span>Go to Cart</span>
+                    <div class="btn-ripple"></div>
                 </button>
                 }
-                <button class="btn btn-outline-danger px-4 rounded-pill shadow-sm hover-scale"
-                    (click)="toggleWishlist(filteredProducts,$event)">
-                    <i
-                        [ngClass]="{ 'bi bi-heart': !filteredProducts.isWishlisted, 'bi bi-heart-fill text-danger': filteredProducts.isWishlisted }"></i>
-                    Wishlist
+                
+                <button class="action-btn btn-wishlist" 
+                        (click)="toggleWishlist(filteredProducts,$event)"
+                        [class.active]="filteredProducts.isWishlisted">
+                    <i [ngClass]="filteredProducts.isWishlisted ? 'bi bi-heart-fill' : 'bi bi-heart'"></i>
+                    <span>Wishlist</span>
+                    <div class="btn-ripple"></div>
                 </button>
-                <!-- <button class="btn btn-outline-secondary px-4 rounded-pill shadow-sm hover-scale back-btn"
-                    (click)="goBack()"><i class="bi bi-arrow-left me-2"></i>Back
-                    to Products</button> -->
             </div>
 
-            <!-- Share and Delivery Section -->
-            <div class="mt-8 border-t pt-5 space-y-6">
-
-                <!-- Share Icons -->
-                <div class="flex flex-wrap items-center gap-3">
-                    <span class="font-medium text-gray-800 text-base">Share</span>
-
-                    <div class="flex items-center gap-4">
-                        <a [href]="'https://wa.me/?text=Check this out: ' + currentUrl" target="_blank"
-                            class="text-green-500 hover:scale-110 transition">
-                            <i class="bi bi-whatsapp text-2xl"></i>
-                        </a>
-
-                        <a [href]="'https://www.facebook.com/sharer/sharer.php?u=' + currentUrl" target="_blank"
-                            class="text-blue-600 hover:scale-110 transition">
-                            <i class="bi bi-facebook text-2xl"></i>
-                        </a>
-
-                        <a [href]="'https://twitter.com/intent/tweet?url=' + currentUrl" target="_blank"
-                            class="text-sky-400 hover:scale-110 transition">
-                            <i class="bi bi-twitter-x text-2xl"></i>
-                        </a>
-
-                        <a href="https://www.instagram.com/" target="_blank"
-                            class="text-pink-500 hover:scale-110 transition">
-                            <i class="bi bi-instagram text-2xl"></i>
-                        </a>
-
-                        <!-- Copy Link -->
-                        <button (click)="copyLink()" class="relative text-gray-600 hover:scale-110 transition"
+            <!-- Share Section with Animated Icons -->
+            <div class="share-section animate-slide-up-delay-4">
+                <div class="section-header">
+                    <i class="bi bi-share-fill section-icon"></i>
+                    <span class="section-title">Share</span>
+                </div>
+                <div class="share-icons">
+                    <a [href]="'https://wa.me/?text=Check this out: ' + currentUrl" 
+                       target="_blank"
+                       class="share-icon share-whatsapp"
+                       title="Share on WhatsApp">
+                        <i class="bi bi-whatsapp"></i>
+                    </a>
+                    <a [href]="'https://www.facebook.com/sharer/sharer.php?u=' + currentUrl" 
+                       target="_blank"
+                       class="share-icon share-facebook"
+                       title="Share on Facebook">
+                        <i class="bi bi-facebook"></i>
+                    </a>
+                    <a [href]="'https://twitter.com/intent/tweet?url=' + currentUrl" 
+                       target="_blank"
+                       class="share-icon share-twitter"
+                       title="Share on Twitter">
+                        <i class="bi bi-twitter-x"></i>
+                    </a>
+                    <a href="https://www.instagram.com/" 
+                       target="_blank"
+                       class="share-icon share-instagram"
+                       title="Share on Instagram">
+                        <i class="bi bi-instagram"></i>
+                    </a>
+                    <button (click)="copyLink()" 
+                            class="share-icon share-link"
                             title="Copy link">
-                            <i class="bi bi-link-45deg text-2xl"></i>
-                            <span *ngIf="linkCopied"
-                                class="absolute -top-6 left-1/2 -translate-x-1/2 bg-black text-white text-xs rounded px-2 py-1 opacity-90 animate-bounce">
-                                Link Copied!
-                            </span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Delivery Details -->
-                <div class="border-t pt-5">
-                    <h3 class="font-semibold text-lg text-gray-800 mb-3">Delivery Details</h3>
-
-                    <div class="flex flex-wrap items-center gap-3">
-                        <input type="text" [(ngModel)]="pincode" maxlength="6" placeholder="Enter Pincode"
-                            class="border rounded-md px-4 py-2 w-40 focus:outline-none focus:ring-2 focus:ring-teal-600 text-gray-800" />
-
-                        <button (click)="checkPincode()"
-                            class="text-teal-600 font-semibold hover:underline transition text-sm uppercase">
-                            {{ pincodeChecked ? 'Change' : 'Check' }}
-                        </button>
-                    </div>
-
-                    <!-- Animated delivery info -->
-                    <div [@slideToggle]="pincodeChecked ? 'open' : 'closed'"
-                        class="overflow-hidden transition-all duration-300 ease-in-out">
-                        <div class="mt-4 space-y-3 text-gray-700 text-sm sm:text-base">
-
-                            <div class="flex items-start gap-3">
-                                <i class="bi bi-cash-coin text-xl text-gray-800"></i>
-                                <p>Cash on delivery is available</p>
-                            </div>
-
-                            <div class="flex items-start gap-3">
-                                <i class="bi bi-truck text-xl text-gray-800"></i>
-                                <p>Estimated Delivery by <strong>{{ estimatedDelivery }}</strong></p>
-                            </div>
-
-                            <div class="flex items-start gap-3 border-t pt-3">
-                                <i class="bi bi-arrow-repeat text-xl text-gray-800"></i>
-                                <p class="text-gray-600">
-                                    This filteredProducts is eligible for return or exchange under our 07-days return or exchange
-                                    policy.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+                        <i class="bi bi-link-45deg"></i>
+                        <span *ngIf="linkCopied" class="copy-tooltip">Copied!</span>
+                    </button>
                 </div>
             </div>
 
+            <!-- Delivery Details with Enhanced Animation -->
+            <div class="delivery-section animate-slide-up-delay-5">
+                <div class="section-header">
+                    <i class="bi bi-truck section-icon"></i>
+                    <h3 class="section-title">Delivery Details</h3>
+                </div>
+                
+                <div class="pincode-input-group">
+                    <div class="input-wrapper">
+                        <i class="bi bi-geo-alt input-icon"></i>
+                        <input type="text" 
+                               [(ngModel)]="pincode" 
+                               maxlength="6" 
+                               placeholder="Enter Pincode"
+                               class="pincode-input"
+                               [class.checked]="pincodeChecked" />
+                    </div>
+                    <button (click)="checkPincode()" 
+                            class="pincode-check-btn"
+                            [class.checked]="pincodeChecked">
+                        <span *ngIf="!pincodeChecked">Check</span>
+                        <span *ngIf="pincodeChecked">Change</span>
+                    </button>
+                </div>
 
+                <!-- Animated delivery info -->
+                <div [@slideToggle]="pincodeChecked ? 'open' : 'closed'"
+                     class="delivery-info">
+                    <div class="delivery-item">
+                        <div class="delivery-icon-wrapper">
+                            <i class="bi bi-cash-coin delivery-icon"></i>
+                        </div>
+                        <p class="delivery-text">Cash on delivery is available</p>
+                    </div>
 
+                    <div class="delivery-item">
+                        <div class="delivery-icon-wrapper">
+                            <i class="bi bi-truck delivery-icon"></i>
+                        </div>
+                        <p class="delivery-text">
+                            Estimated Delivery by <strong class="delivery-date">{{ estimatedDelivery }}</strong>
+                        </p>
+                    </div>
+
+                    <div class="delivery-item delivery-return">
+                        <div class="delivery-icon-wrapper">
+                            <i class="bi bi-arrow-repeat delivery-icon"></i>
+                        </div>
+                        <p class="delivery-text">
+                            This product is eligible for return or exchange under our 07-days return or exchange policy.
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     <div class="mt-10 space-y-4">
         <div *ngFor="let section of productSections" class="border rounded-lg shadow-sm overflow-hidden bg-white">
             <button (click)="toggleSection(section)"
-                class="w-full flex justify-between items-center px-5 py-3 bg-gray-50 hover:bg-gray-100 transition-all duration-300">
+                class="w-full flex justify-between items-center px-5 py-3 bg-[#f4fae7] hover:bg-gray-100 transition-all duration-300">
                 <span class="font-semibold text-gray-800 text-lg">
                     {{ section.title }}
                 </span>

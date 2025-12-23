@@ -3,7 +3,8 @@
     transition: transform var(--m-duration-long, .5s);
     will-change: transform;
     z-index: 82;
-    position: relative;
+    position: fixed;
+    background-color: #f4fae7;
 }
 
 @media screen and (min-width: 1280px) {

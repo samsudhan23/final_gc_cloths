@@ -3743,7 +3743,7 @@ blockquote {
     width: 100%;
     height: 100vh;
     position: relative;
-    background-image: radial-gradient(circle at top left, #d6c8ca 10%, #fdf6ef 30%);
+    background-image: radial-gradient(circle at top left, #D6E6B8  10%, #f2fbe2 30%);
     overflow: hidden;
 }
 
@@ -4152,7 +4152,7 @@ blockquote {
 }
 
 .background-overly {
-    background-color: var(--grey-light);
+    background-color: var(--lite-olive);
     position: absolute;
     inset: 0% -20% 0% 0%
 }
@@ -4475,7 +4475,7 @@ blockquote {
 }
 
 .marquee-2-section {
-    background-color: var(--grey-light);
+    background-color: var(--lite-olive);
     padding-top: 90px;
     padding-bottom: 90px;
     position: relative;
