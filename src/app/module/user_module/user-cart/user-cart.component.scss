@@ -8,7 +8,12 @@
     margin-bottom: 40px;
     color: white;
 }
-
+.bg-color{
+    background: var(--lite-olive);
+}
+.hover-bg-color:hover{
+    background: var(--lite-olive);
+}
 .cart-header h1 {
     font-size: 2.5rem;
     margin-bottom: 10px;
@@ -109,7 +114,7 @@
 
 .item-offer {
     display: inline-block;
-    color: #667eea;
+    color: #6B8E23;
     font-size: 0.9rem;
     font-weight: 600;
     text-decoration: none;
@@ -118,7 +123,7 @@
 }
 
 .item-offer:hover {
-    color: #764ba2;
+    color: #556B2F;
     text-decoration: underline;
 }
 
@@ -163,12 +168,12 @@
 }
 
 .select-box:hover {
-    border-color: #667eea;
+    border-color: #6B8E23;
 }
 
 .select-box:focus {
     outline: none;
-    border-color: #667eea;
+    border-color: #6B8E23;
 }
 
 .item-pricing {
@@ -248,7 +253,7 @@
 
 .summary-divider {
     height: 2px;
-    background: linear-gradient(to right, #667eea, #764ba2);
+    background: linear-gradient(to right, #6B8E23, #556B2F);
     margin: 20px 0;
     border-radius: 2px;
 }
@@ -256,7 +261,7 @@
 .checkout-btn {
     width: 100%;
     padding: 16px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #6B8E23 0%, #556B2F 100%);
     color: white;
     border: none;
     border-radius: 12px;
@@ -265,12 +270,12 @@
     cursor: pointer;
     transition: all 0.3s ease;
     margin-top: 20px;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 4px 15px rgba(107, 142, 35, 0.4);
 }
 
 .checkout-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+    box-shadow: 0 6px 20px rgba(107, 142, 35, 0.5);
 }
 
 .checkout-btn:active {
@@ -297,7 +302,7 @@
 
 .promo-input:focus {
     outline: none;
-    border-color: #667eea;
+    border-color: #6B8E23;
 }
 
 .apply-btn {
@@ -336,14 +341,14 @@
 .trust-icon {
     width: 70px;
     height: 70px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #6B8E23 0%, #556B2F 100%);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
     font-size: 1.8rem;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 4px 15px rgba(107, 142, 35, 0.3);
 }
 
 .trust-content h3 {
@@ -550,7 +555,7 @@
     .p-dialog {
         .p-dialog-header {
             padding: 20px 24px;
-            background: #f8f9fa;
+            background: var(--lite-olive);
             border-bottom: 1px solid #e5e7eb;
             border-radius: 10px;
 
