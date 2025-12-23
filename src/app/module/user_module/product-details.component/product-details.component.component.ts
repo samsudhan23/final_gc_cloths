@@ -89,8 +89,8 @@ export class ProductDetailsComponent implements OnInit, AfterViewInit, OnDestroy
   filteredProducts: any = null;
 
   // Slider properties
-  private slider: HTMLElement | null = null;
-  private sliders: HTMLCollection | null = null;
+  private slider: any = null;
+  private sliders: any = null;
   private initX: number | null = null;
   private transX: number = 0;
   private rotZ: number = 0;
@@ -118,6 +118,7 @@ export class ProductDetailsComponent implements OnInit, AfterViewInit, OnDestroy
 
   ngOnInit() {
     this.isGotoCart = false;
+    this.currentUrl = window.location.href;
     this.getProduct();
     this.getWishlistdetails();
   }
@@ -149,7 +150,7 @@ export class ProductDetailsComponent implements OnInit, AfterViewInit, OnDestroy
           (p: any) => p.category?.categoryName === this.filteredProducts?.category?.categoryName && p._id !== this.filteredProducts?._id
         );
       }
-      
+       this.buildProductSections(this.filteredProducts);
       // Get wishlist details after product and related products are loaded
       this.getWishlistdetails();
       
@@ -408,6 +409,7 @@ export class ProductDetailsComponent implements OnInit, AfterViewInit, OnDestroy
 
   // central method to rebuild all accordion sections dynamically
   buildProductSections(product: any) {
+    console.log('product: ', product);
     if (!product) return;
 
     this.productSections = [];
@@ -575,7 +577,7 @@ export class ProductDetailsComponent implements OnInit, AfterViewInit, OnDestroy
     this.init();
   }
 
-  private init(): void {
+  public init(): void {
     if (!this.sliders || this.sliders.length === 0) {
       return;
     }
@@ -743,6 +745,53 @@ export class ProductDetailsComponent implements OnInit, AfterViewInit, OnDestroy
       j++;
     }
   }
+
+  moveSlide(direction: 'next' | 'prev'): void {
+  if (!this.slider || !this.sliders || this.sliders.length === 0) {
+    return;
+  }
+
+  if (direction === 'next') {
+    this.slideNext();
+  } else {
+    this.slidePrev();
+  }
+}
+private slideNext(): void {
+  const activeSlide = this.sliders[this.sliders.length - 1] as HTMLElement;
+
+  activeSlide.style.transition = 'ease 0.3s';
+  activeSlide.style.transform = `translateX(${activeSlide.offsetWidth + 60}px) rotateZ(10deg)`;
+
+  setTimeout(() => {
+    activeSlide.style.transition = 'none';
+    activeSlide.style.transform = '';
+    activeSlide.style.opacity = '1';
+
+    this.slider.insertBefore(activeSlide, this.slider.firstChild);
+    this.init();
+  }, 300);
+}
+private slidePrev(): void {
+  const lastIndex = this.sliders.length - 1;
+  const bottomSlide = this.sliders[0] as HTMLElement;
+
+  // Move bottom slide to top FIRST
+  this.slider.appendChild(bottomSlide);
+  this.init();
+
+  // Now animate it IN from left
+  const activeSlide = this.sliders[this.sliders.length - 1] as HTMLElement;
+
+  activeSlide.style.transition = 'none';
+  activeSlide.style.transform = `translateX(-${activeSlide.offsetWidth + 60}px) rotateZ(-10deg)`;
+
+  requestAnimationFrame(() => {
+    activeSlide.style.transition = 'ease 0.3s';
+    activeSlide.style.transform = `translateX(0) rotateZ(0deg)`;
+  });
+}
+
 
   private cleanupSlider(): void {
     // Remove document-level event listeners

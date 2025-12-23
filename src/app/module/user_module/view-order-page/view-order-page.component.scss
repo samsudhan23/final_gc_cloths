@@ -2,7 +2,7 @@
     max-width: 1200px;
     margin: 0 auto;
     padding: 24px;
-    background: white;
+    background: var(--white);
     min-height: calc(100vh - 100px);
 }
 
@@ -35,7 +35,7 @@
 .order-summary-card {
     ::ng-deep .p-card-header {
         padding: 20px;
-        background: #f8f9fa;
+        background: var(--lite-olive);
         border-bottom: 1px solid #e5e7eb;
     }
 
@@ -91,7 +91,7 @@
 .order-items-card {
     ::ng-deep .p-card-header {
         padding: 20px;
-        background: #f8f9fa;
+        background: var(--lite-olive);
         border-bottom: 1px solid #e5e7eb;
 
         h3 {
@@ -112,7 +112,7 @@
         grid-template-columns: 100px 1fr auto;
         gap: 16px;
         padding: 16px;
-        background: #f9fafb;
+        background: var(--lite-olive);
         border-radius: 8px;
         border: 1px solid #e5e7eb;
 
@@ -176,7 +176,7 @@
 .timeline-card {
     ::ng-deep .p-card-header {
         padding: 20px;
-        background: #f8f9fa;
+        background: var(--lite-olive);
         border-bottom: 1px solid #e5e7eb;
 
         h3 {
@@ -244,7 +244,7 @@
 .info-card {
     ::ng-deep .p-card-header {
         padding: 20px;
-        background: #f8f9fa;
+        background: var(--lite-olive);
         border-bottom: 1px solid #e5e7eb;
 
         h3 {
@@ -307,7 +307,7 @@
 .price-breakdown-card {
     ::ng-deep .p-card-header {
         padding: 20px;
-        background: #f8f9fa;
+        background: var(--lite-olive);
         border-bottom: 1px solid #e5e7eb;
 
         h3 {

@@ -32,7 +32,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div class="lg:col-span-2">
                 <!-- Select All Checkbox -->
-                <div class="mb-4 flex items-center gap-2 p-3 bg-neutral-50 rounded-lg border border-border">
+                <div class="mb-4 flex items-center gap-2 p-3 bg-color rounded-lg border border-border">
                     <p-checkbox [(ngModel)]="selectAll" 
                                 (onChange)="onSelectAll($event.checked)"
                                 [binary]="true"
@@ -46,7 +46,7 @@
                 <section aria-label="Cart items" *ngFor="let item of allCartList; let i = index">
                     <div>
                         <div
-                            class="relative rounded-xl p-4 md:p-6 transition-all duration-200 ease-in hover:scale-[1.02] hover:bg-neutral-50 mb-4 border border-border">
+                            class="relative rounded-xl p-4 md:p-6 transition-all duration-200 ease-in hover:scale-[1.02] mb-4 border border-border hover-bg-color">
                             <Button (click)="deleteCart(item)"
                                 class="absolute top-2 right-2 bg-transparent text-neutral-600 hover:bg-neutral-200 hover:text-neutral-900"
                                 aria-label="Remove item">
@@ -195,7 +195,7 @@
         </div> -->
 
         <!-- <TrustIndicators />  @for(indicator of indicators; track item){}-->
-        <section class="mt-12 py-8 px-4 md:px-8 bg-neutral-50 rounded-lg border border-border">
+        <section class="mt-12 py-8 px-4 md:px-8 bg-color rounded-lg border border-border">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 @for(indicator of indicators; track indicator){
                 <div class="flex flex-col items-center text-center gap-3">
