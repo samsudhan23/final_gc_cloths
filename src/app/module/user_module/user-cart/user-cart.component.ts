@@ -23,11 +23,11 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 @Component({
   selector: 'app-user-cart',
   imports: [
-    CommonModule, 
-    ButtonModule, 
-    FormsModule, 
-    Select, 
-    ReactiveFormsModule, 
+    CommonModule,
+    ButtonModule,
+    FormsModule,
+    Select,
+    ReactiveFormsModule,
     CheckboxModule,
     DialogModule,
     RadioButtonModule,
@@ -43,7 +43,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 })
 export class UserCartComponent {
   selectedCity: any | undefined = '';
-  deliveryCharge: any = 5.99;
+  deliveryCharge: any;// = 5.99;
   cart: any = [];
   totalSelectedPrductCost: any = {};
   indicators: any[] = [
@@ -67,14 +67,15 @@ export class UserCartComponent {
   allCartList: CartItem[] = [];
   cartFormArray!: FormArray;
   cartLength!: number;
-  selectedSize:string ='';
+  selectedSize: string = '';
   selectedItems: Set<string> = new Set(); // Track selected cart items by their unique ID
   selectAll: boolean = false;
-  
+
   // Checkout modal properties
   checkoutDialogVisible: boolean = false;
   selectedAddress: any = null;
   checkoutStep: 'address' | 'payment' = 'address';
+  estimatedDelivery: any;
 
   constructor(
     private cartService: CartService,
@@ -85,6 +86,11 @@ export class UserCartComponent {
     private encryptionService: EncryptionService,
     private confirmationService: ConfirmationService
   ) {
+
+    const today = new Date();
+    const estimated = new Date(today.setDate(today.getDate() + 7));
+    const options: Intl.DateTimeFormatOptions = { day: '2-digit', month: 'short' };
+    this.estimatedDelivery = estimated.toLocaleDateString('en-GB', options);
 
   }
   ngOnInit() {
@@ -101,7 +107,7 @@ export class UserCartComponent {
     const roleString = localStorage.getItem('role');
     const parse = roleString ? JSON.parse(roleString) : null;
     const userId = parse?.id || parse?._id;
-    
+
     if (userId) {
       // Logged-in user: Get from API with userId filter
       this.cartService.getCartList(userId).subscribe(
@@ -131,7 +137,7 @@ export class UserCartComponent {
                 quantity: [selectedQuantityObj],
               });
               this.cartFormArray.push(group);
-              
+
               // Select all items by default
               const itemId = this.getItemId(item);
               this.selectedItems.add(itemId);
@@ -157,7 +163,7 @@ export class UserCartComponent {
     else {
       // Guest user: Get from localStorage
       const guestCart = JSON.parse(localStorage.getItem('guestCart') || '[]');
-      
+
       this.allCartList = guestCart;
 
       this.cartLength = guestCart
@@ -181,7 +187,7 @@ export class UserCartComponent {
           quantity: [selectedQuantityObj],
         });
         this.cartFormArray.push(group);
-        
+
         // Select all items by default
         const itemId = this.getItemId(item);
         this.selectedItems.add(itemId);
@@ -205,12 +211,14 @@ export class UserCartComponent {
       }
     });
 
+    this.calculateDeliveryCharge();
+
     this.totalSelectedPrductCost = {
       subtotal: subtotal,
       totalCost: subtotal + this.deliveryCharge,
     };
 
-    
+
   }
 
   // Get unique ID for cart item (combination of product ID and size)
@@ -350,7 +358,7 @@ export class UserCartComponent {
     // Error handling is done in payment component
   }
   onQuantityChange(event?: any, cartData?: any) {
-    
+
     this.updateCart(event?.value?.value, cartData);
     // Recalculate total after quantity change
     this.calculateTotal();
@@ -362,7 +370,7 @@ export class UserCartComponent {
       quantity: quantity,
       selectedSize: this.selectedSize ? this.selectedSize : cartData?.selectedSize
     }
-    
+
     this.cartService.updateCartItem(cartData?._id, data).subscribe((res: any) => {
       if (res.code === 200 && res.success === true) {
         this.toast.success(res.message);
@@ -386,7 +394,7 @@ export class UserCartComponent {
 
     // reset the quantity value to 1
     this.cartFormArray.at(i).get('quantity')?.setValue(1);
-    
+
     // Recalculate total after size change
     this.calculateTotal();
   }
@@ -466,4 +474,21 @@ export class UserCartComponent {
     const encryptedId = this.encryptionService.encrypt(product._id);
     this.router.navigate(['user/product-details', encryptedId]);
   }
+
+  calculateDeliveryCharge() {
+    let totalItems = 0;
+
+    // Count only selected items for checkout
+    this.allCartList.forEach((item) => {
+      const itemId = this.getItemId(item);
+      if (this.selectedItems.has(itemId)) {
+        totalItems += item.quantity || 1;
+      }
+    });
+
+    // 1 product = 100 INR
+    this.deliveryCharge = totalItems * 100;
+    console.log('this.deliveryCharge: ', this.deliveryCharge);
+  }
+
 }

@@ -58,8 +58,8 @@ export class UserPersonalInfoComponent implements OnInit {
   
   genderOptions = [
     { label: 'Select Gender', value: '' },
-    { label: 'Male', value: 'Male' },
-    { label: 'Female', value: 'Female' },
+    { label: 'Men', value: 'Men' },
+    { label: 'Woman', value: 'Woman' },
     { label: 'Other', value: 'Other' }
   ];
   
