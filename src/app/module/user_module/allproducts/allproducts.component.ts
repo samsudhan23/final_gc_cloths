@@ -14,12 +14,13 @@ import { QuickViewComponent } from '../../../shared/components/quick-view/quick-
 import { WishlistService } from '../../admin_module/service/wishlistService/wishlist.service';
 
 @Component({
-  selector: 'app-categorywiseproduct',
-  imports: [CommonModule, BadgeModule, AvatarModule, InputTextModule, TabsModule, ButtonModule, RouterModule,QuickViewComponent],
-  templateUrl: './categorywiseproduct.component.html',
-  styleUrl: './categorywiseproduct.component.scss'
+  selector: 'app-allproducts',
+  imports: [CommonModule, BadgeModule, AvatarModule, InputTextModule, TabsModule, ButtonModule, RouterModule, QuickViewComponent],
+  templateUrl: './allproducts.component.html',
+  styleUrl: './allproducts.component.scss'
 })
-export class CategorywiseproductComponent {
+export class AllproductsComponent {
+
 
   selectedCategory: string = 'All';
   filteredProducts: any[] = [];
@@ -41,10 +42,11 @@ export class CategorywiseproductComponent {
       AOS.init({ disable: 'mobile', duration: 1200, });
       AOS.refresh();
       // this.getProduct();
+      this.filteredProducts = [];
       this.route.paramMap.subscribe(params => {
-      this.selectedGender = params.get('genderName') || '';
-      this.getProduct();
-    });
+        this.selectedGender = params.get('categoryName') || '';
+        this.getProduct();
+      });
       // this.changeSlide();
     }
   }
@@ -57,10 +59,10 @@ export class CategorywiseproductComponent {
       if (this.selectedGender && this.selectedGender.trim() !== '') {
         this.filteredProducts = allProducts.filter(
           (item: any) =>
-            item.gender?.genderName?.toLowerCase() ===
+            item.category?.categoryName?.toLowerCase() ===
             this.selectedGender.toLowerCase()
         );
-         this.getWishlistdetails();
+        this.getWishlistdetails();
       } else {
         this.filteredProducts = allProducts; // If no gender selected, show all
       }
@@ -115,7 +117,7 @@ export class CategorywiseproductComponent {
 
   openQuickView(product: any, event: Event) {
     this.selectedProduct = product;
-   event.stopPropagation();
+    event.stopPropagation();
   }
 
   closeQuickView() {

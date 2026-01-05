@@ -35,10 +35,10 @@
             <button class="nav next" (click)="next()">&#10095;</button>
         </div>
     </div> -->
-<section>
-  <div id="particles-js" class="particles2">
-    <div class="overlay d-flex justify-content-center align-items-center">
-      <!-- <div class="card custom-card text-center p-4">
+    <section>
+        <div id="particles-js" class="particles2">
+            <div class="overlay d-flex justify-content-center align-items-center">
+                <!-- <div class="card custom-card text-center p-4">
         <div class="card-body">
           <h4 class="card-title mb-3">Welcome</h4>
           <p class="card-text mb-4">
@@ -47,30 +47,31 @@
           <button class="btn btn-primary">Get Started</button>
         </div>
       </div> -->
-       <div class="carousel">
-            <div class="item" *ngFor="let product of animated; let i = index" [ngClass]="getPositionClass(i)">
-                <img [src]="product.images" [alt]="product.productName" />
-                <div class="info" *ngIf="getPositionClass(i) === 'active'">
-                    <div class="bg">
-                        <h3>{{ product.productName }}</h3>
-                        <p>₹ {{ product.price }}</p>
-                    </div>
-                    <button class="btn">
-                        Explore
-                    </button>
+                <div class="carousel">
+                    <div class="item" *ngFor="let product of animated; let i = index" [ngClass]="getPositionClass(i)">
+                        <img [src]="product.images" [alt]="product.productName" />
+                        <div class="info" *ngIf="getPositionClass(i) === 'active'">
+                            <div class="bg">
+                                <h3>{{ product.productName }}</h3>
+                                <p>₹ {{ product.price }}</p>
+                            </div>
+                            <button class="btn" (click)="viewDetails(product ,'data')">
+                                Explore
+                            </button>
 
-                    <div class="dots">
-                        <span *ngFor="let p of animated; let j = index" [class.active-dot]="j === activeIndex"></span>
+                            <div class="dots">
+                                <span *ngFor="let p of animated; let j = index"
+                                    [class.active-dot]="j === activeIndex"></span>
+                            </div>
+                        </div>
                     </div>
+
+                    <button class="nav prev" (click)="prev()">&#10094;</button>
+                    <button class="nav next" (click)="next()">&#10095;</button>
                 </div>
             </div>
-
-            <button class="nav prev" (click)="prev()">&#10094;</button>
-            <button class="nav next" (click)="next()">&#10095;</button>
         </div>
-    </div>
-  </div>
-</section>
+    </section>
 
 
 
@@ -218,9 +219,41 @@
                                 </a>
                             </div>
 
-                            <div class="row g-4">
+                            <!-- No Products Message -->
+                            <div *ngIf="filteredProducts.length === 0"
+                                class="w-full flex items-center justify-center py-16 px-4">
+
+                                <div
+                                    class="max-w-md w-full bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-8 text-center border border-gray-200">
+
+                                    <!-- Icon -->
+                                    <div
+                                        class="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-full bg-yellow-100">
+                                        <i class="bi bi-box-seam text-4xl text-yellow-600"></i>
+                                    </div>
+
+                                    <!-- Title -->
+                                    <h3 class="text-2xl font-semibold text-gray-800 mb-2">
+                                        No Products Available
+                                    </h3>
+
+                                    <!-- Description -->
+                                    <p class="text-gray-600 text-sm sm:text-base mb-6">
+                                        We couldn’t find any products in this category right now.
+                                        Please check back later or explore other categories.
+                                    </p>
+
+                                    <!-- Action -->
+                                    <button (click)="selectCategory('All')"
+                                        class="inline-flex items-center justify-center rounded-full bg-black text-white px-6 py-3 text-sm font-medium hover:bg-gray-800 transition-all">
+                                        View All Products
+                                    </button>
+                                </div>
+                            </div>
+                            <div *ngIf="filteredProducts.length > 0" class="row g-4">
                                 <!-- Loop through products - Show only first 4 products -->
-                                <div class="col-lg-3 col-md-4 col-sm-6" *ngFor="let product of filteredProducts | slice:0:4">
+                                <div class="col-lg-3 col-md-4 col-sm-6"
+                                    *ngFor="let product of filteredProducts | slice:0:4">
                                     <div class="product-card">
 
                                         <div class="product-img cursor-pointer" (click)="viewDetails(product ,'data')">
@@ -578,7 +611,7 @@
                                                 </div>
                                                 <div class="testimonial-quote-box" aria-hidden="true">
                                                     <blockquote class="testimonial-quote" aria-hidden="true">I had the
-                                                        pleasure of shopping with GSCloths, and they exceeded all my
+                                                        pleasure of shopping with CLONO, and they exceeded all my
                                                         expectations. From the moment I placed my order, everything was
                                                         seamless and stylish.</blockquote>
                                                 </div>
@@ -637,7 +670,7 @@
                 <div class="testimonial-card text-center">
                     <div class="testimonial-icon">❝</div>
                     <p class="testimonial">
-                        I had the pleasure of shopping with <strong>GSCloths</strong>, and they exceeded all my
+                        I had the pleasure of shopping with <strong>CLONO</strong>, and they exceeded all my
                         expectations. Everything was seamless and stylish.
                     </p>
                     <div class="testimonial-name">James Pendragon</div>

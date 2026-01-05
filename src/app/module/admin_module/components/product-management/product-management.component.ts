@@ -112,7 +112,7 @@ export class ProductManagementComponent {
     this.productForm = this.fb.group({
       productName: ['', Validators.required],
       productDescription: [''],
-      warehouse:[''],
+      warehouse: [''],
       gender: ['', [Validators.required]],
       price: ['', Validators.required],
       discountPrice: [''],
@@ -121,7 +121,7 @@ export class ProductManagementComponent {
       totalStock: ['', Validators.required],
       tags: [''],
       category: ['', Validators.required],
-      careInstruction:[''],
+      careInstruction: [''],
     });
   }
   get sizeStockControls(): FormArray {
@@ -133,7 +133,43 @@ export class ProductManagementComponent {
     this.productList();
     this.genderData();
     // this.exportColumns = this.cols.map((col) => ({ title: col.header, dataKey: col.field }));
+    this.productForm.get('gender')?.valueChanges.subscribe((genderId) => {
+      this.filterSizesByGender(genderId);
+      // Clear sizeStock FormArray
+      const sizeStockArray = this.productForm.get('sizeStock') as FormArray;
+      sizeStockArray.clear();
+
+      // Reset total stock
+      this.productForm.get('totalStock')?.setValue(0);
+    });
   }
+
+  filteredSizes: any[] = [];
+
+  filterSizesByGender(genderId: string): void {
+    // Reset selected sizes
+    this.productForm.get('sizes')?.setValue([]);
+
+    if (!genderId) {
+      this.filteredSizes = [];
+      return;
+    }
+
+    const selectedGender = this.genderList.find(g => g._id === genderId);
+
+    if (selectedGender?.genderName === 'Men') {
+      this.filteredSizes = this.dressSizesWithMeasurements.filter(size =>
+        ['M', 'L', 'XL', '2XL'].includes(size.label)
+      );
+    }
+
+    if (selectedGender?.genderName === 'Woman') {
+      this.filteredSizes = this.dressSizesWithMeasurements.filter(size =>
+        ['XS', 'S', 'M', 'L'].includes(size.label)
+      );
+    }
+  }
+
 
 
   getCategoryList() {
@@ -221,7 +257,7 @@ export class ProductManagementComponent {
 
     this.productForm.setControl('sizeStock', updatedArray);
     // after clear the size calcluate the stock
-    const sizeStockArray = this.productForm.get('sizeStock')?.value || [];  
+    const sizeStockArray = this.productForm.get('sizeStock')?.value || [];
     console.log('sizeStockArray: ', sizeStockArray);
     const total = sizeStockArray.reduce((acc: number, curr: any) => {
       const stock = Number(curr.stock) || 0;
@@ -387,7 +423,7 @@ export class ProductManagementComponent {
       formData.append('tags', FormControlValues.tags);
       formData.append('category', FormControlValues.category);
       if (this.imageFile) {
-        formData.append('images',this.imageFile, this.imageFile.name);
+        formData.append('images', this.imageFile, this.imageFile.name);
       }
       this.galleryFiles.forEach(file => {
         if (file instanceof File) {

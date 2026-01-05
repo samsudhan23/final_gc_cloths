@@ -493,7 +493,12 @@ export class ProductDetailsComponent implements OnInit, AfterViewInit, OnDestroy
   copyLink() {
     navigator.clipboard.writeText(this.currentUrl).then(() => {
       this.linkCopied = true;
-      setTimeout(() => (this.linkCopied = false), 2000);
+      this.toast.success('Product link copied to clipboard!');
+
+      // Add success pulse animation for icon
+      const timer = setTimeout(() => {
+        this.linkCopied = false;
+      }, 1500);
     });
   }
 
@@ -508,7 +513,7 @@ export class ProductDetailsComponent implements OnInit, AfterViewInit, OnDestroy
 
     // When clicking "Check" first — ensure size selected
     if (!this.selectedSize) {
-      alert('Please select a size before checking delivery.');
+      this.toast.warning('Please select a size before checking delivery!');
       return;
     }
 
@@ -522,7 +527,7 @@ export class ProductDetailsComponent implements OnInit, AfterViewInit, OnDestroy
       const options: Intl.DateTimeFormatOptions = { day: '2-digit', month: 'short' };
       this.estimatedDelivery = estimated.toLocaleDateString('en-GB', options);
     } else {
-      alert('Please enter a valid 6-digit pincode.');
+      this.toast.error('Please enter a valid 6-digit pincode');
     }
     // if (this.pincode.trim().length === 6) {
     //   this.pincodeChecked = true;
