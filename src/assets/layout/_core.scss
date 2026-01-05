@@ -15,7 +15,15 @@ body {
     -moz-osx-font-smoothing: grayscale;
     line-height: 1.2;
 }
+/* User theme */
+body.user-role {
+   background-color: var(--white); /* light gray / user */
+}
 
+/* Admin theme */
+body.admin-role {
+  background-color: var(--lite-olive); /* slightly darker / admin */
+}
 a {
     text-decoration: none;
 }
