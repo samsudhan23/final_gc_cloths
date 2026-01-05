@@ -25,6 +25,48 @@
             </div>
 
             <div class="m-header__mobile-right m:w-3/12 m:flex m:flex-1 m:justify-end">
+                <!-- Mobile Search -->
+                <div class="mobile-search-container">
+                    <div class="search-box-mobile" (click)="$event.stopPropagation()">
+                        <input type="text" 
+                               [(ngModel)]="searchQuery"
+                               (input)="onSearchInput($event)"
+                               (focus)="onSearchFocus()"
+                               (blur)="onSearchBlur()"
+                               (keyup.enter)="onSearchSubmit()"
+                               class="search-input-mobile" 
+                               placeholder="Search products...">
+                        <button class="search-btn-mobile" (click)="onSearchSubmit()">
+                            <i class="pi pi-search"></i>
+                        </button>
+                        <!-- Search Suggestions Dropdown -->
+                        <div class="search-suggestions" *ngIf="showSuggestions && searchSuggestions.length > 0">
+                            <div class="suggestions-header">
+                                <span>Search Results</span>
+                                <span class="suggestions-count">{{ searchSuggestions.length }}</span>
+                            </div>
+                            <div class="suggestions-list">
+                                <div *ngFor="let product of searchSuggestions" 
+                                     class="suggestion-item"
+                                     (click)="selectSuggestion(product)">
+                                    <img [src]="product.images" [alt]="product.productName" class="suggestion-image">
+                                    <div class="suggestion-details">
+                                        <h6 class="suggestion-title">{{ product.productName }}</h6>
+                                        <p class="suggestion-price">
+                                            <span *ngIf="product.discountPrice" class="discount-price">₹{{ product.discountPrice }}</span>
+                                            <span [class.old-price]="product.discountPrice">₹{{ product.price }}</span>
+                                        </p>
+                                        <span class="suggestion-category">{{ product.category?.categoryName }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="suggestions-footer" (click)="onSearchSubmit()">
+                                <span>View all results for "{{ searchQuery }}"</span>
+                                <i class="pi pi-arrow-right"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <a href="/cart" class="m-cart-icon-bubble" aria-label="0" role="button" aria-haspopup="dialog">
                     <span class="m-tooltip m:block m-tooltip--bottom m-tooltip--style-2">
@@ -268,21 +310,51 @@
                     </div>
 
                     <div class="m-header__right">
-
-                        <!-- <m-search-popup class="m-header__search m:flex m:items-center" data-open-search-popup="">
-                            <button type="submit" class="m-search-form__button" aria-label="Search"
-                                fdprocessedid="k2392b">
-                                <span class="m-tooltip m:block m-tooltip--bottom m-tooltip--style-2">
-                                    <svg class="m-svg-icon--medium-small" fill="currentColor" stroke="currentColor"
-                                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                                        <path
-                                            d="M508.5 468.9L387.1 347.5c-2.3-2.3-5.3-3.5-8.5-3.5h-13.2c31.5-36.5 50.6-84 50.6-136C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c52 0 99.5-19.1 136-50.6v13.2c0 3.2 1.3 6.2 3.5 8.5l121.4 121.4c4.7 4.7 12.3 4.7 17 0l22.6-22.6c4.7-4.7 4.7-12.3 0-17zM208 368c-88.4 0-160-71.6-160-160S119.6 48 208 48s160 71.6 160 160-71.6 160-160 160z">
-                                        </path>
-                                    </svg>
-                                    <span class="m-tooltip__content">Search</span>
-                                </span>
-                            </button>
-                        </m-search-popup> -->
+                        <!-- Desktop Search Bar -->
+                        <div class="desktop-search-container">
+                            <div class="search-box-desktop" (click)="$event.stopPropagation()">
+                                <input type="text" 
+                                       [(ngModel)]="searchQuery"
+                                       (input)="onSearchInput($event)"
+                                       (focus)="onSearchFocus()"
+                                       (blur)="onSearchBlur()"
+                                       (keyup.enter)="onSearchSubmit()"
+                                       class="search-input-desktop" 
+                                       placeholder="Search products, categories...">
+                                <button class="search-btn-desktop" (click)="onSearchSubmit()" *ngIf="!searchQuery">
+                                    <i class="pi pi-search"></i>
+                                </button>
+                                <button class="search-btn-desktop search-clear" (click)="clearSearch()" *ngIf="searchQuery">
+                                    <i class="pi pi-times"></i>
+                                </button>
+                                <!-- Search Suggestions Dropdown -->
+                                <div class="search-suggestions-desktop" *ngIf="showSuggestions && searchSuggestions.length > 0">
+                                    <div class="suggestions-header">
+                                        <span>Search Results</span>
+                                        <span class="suggestions-count">{{ searchSuggestions.length }}</span>
+                                    </div>
+                                    <div class="suggestions-list">
+                                        <div *ngFor="let product of searchSuggestions" 
+                                             class="suggestion-item"
+                                             (mousedown)="selectSuggestion(product)">
+                                            <img [src]="product.images" [alt]="product.productName" class="suggestion-image">
+                                            <div class="suggestion-details">
+                                                <h6 class="suggestion-title">{{ product.productName }}</h6>
+                                                <p class="suggestion-price">
+                                                    <span *ngIf="product.discountPrice" class="discount-price">₹{{ product.discountPrice }}</span>
+                                                    <span [class.old-price]="product.discountPrice">₹{{ product.price }}</span>
+                                                </p>
+                                                <span class="suggestion-category">{{ product.category?.categoryName }} • {{ product.gender?.genderName }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="suggestions-footer" (mousedown)="onSearchSubmit()">
+                                        <span>View all results for "{{ searchQuery }}"</span>
+                                        <i class="pi pi-arrow-right"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
 
 
