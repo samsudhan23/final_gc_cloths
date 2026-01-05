@@ -26,7 +26,7 @@ export class UserWishlistComponent {
   filteredProducts: any[] = [];
   categoryList: any[] = [];
   productList: any;
-  selectedGender: string = 'Male';
+  selectedGender: string = 'Men';
 
   wishListItems: any[] = []; // Store full wishlist items with _id for deletion
 

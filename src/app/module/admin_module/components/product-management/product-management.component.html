@@ -154,7 +154,7 @@
                     <div>
                         <label for="sizes" class="block font-bold mb-3">Sizes</label>
                         <p-multiselect formControlName="sizes" class="multiselect"
-                            [options]="dressSizesWithMeasurements" (onChange)="onSizeChange($event)" optionLabel="label"
+                            [options]="filteredSizes" (onChange)="onSizeChange($event)" optionLabel="label"
                             optionValue="label" display="chip" placeholder="Select Sizes" [maxSelectedLabels]="6"
                             styleClass="w-full md:w-80" />
                     </div>
@@ -206,7 +206,7 @@
                         </button>
                         <div class="mt-2" style="color: #666; font-size: 0.85rem;">
                             <i class="pi pi-info-circle" style="margin-right: 5px;"></i>
-                            Recommended upload resolution : <b>1024 x 1024 px</b>
+                            Recommended upload resolution : <b>1080 x 1440 px</b>
                         </div>
                     </div>
                     <!-- <img [src]="fileInfo" alt="" style="width: 10%;">  -->
