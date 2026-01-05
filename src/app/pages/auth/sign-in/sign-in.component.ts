@@ -27,6 +27,7 @@ import { ToastModule } from 'primeng/toast';
 import { ToolbarModule } from 'primeng/toolbar';
 import { CartService } from '../../../module/admin_module/service/cartService/cart.service';
 import { WishlistService } from '../../../module/admin_module/service/wishlistService/wishlist.service';
+import { ThemeService } from '../../../shared/service/theme.service';
 
 @Component({
   selector: 'app-sign-in',
@@ -78,7 +79,8 @@ export class SignInComponent {
     private http: HttpClient,
     private auth: AuthenticationService,
     private cartService: CartService,
-    private wishlistService: WishlistService
+    private wishlistService: WishlistService,
+    private theme: ThemeService
   ) {
     this.signupForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
@@ -255,8 +257,12 @@ export class SignInComponent {
             // Redirect based on role only if not in dialog
             if (role === 'admin') {
               this.router.navigate(['/admin']);
+               const user = this.auth.getCurrentUser();
+               this.theme.setRole(user.role);
             } else if (role === 'user') {
               this.router.navigate(['/user']);
+              const user = this.auth.getCurrentUser();
+               this.theme.setRole(user.role);
             }
           }
           // this.loginForm.reset();
