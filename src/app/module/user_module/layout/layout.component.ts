@@ -1,11 +1,14 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Component, Inject, PLATFORM_ID, ViewChild } from '@angular/core';
-import { Router, RouterModule } from '@angular/router';
+import { Component, Inject, PLATFORM_ID, ViewChild, ElementRef } from '@angular/core';
+import { Router, RouterModule, ActivatedRoute } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { AvatarModule } from 'primeng/avatar';
 import { BadgeModule } from 'primeng/badge';
 import { UserFooterComponent } from '../user-footer/user-footer.component';
 import { AuthenticationService } from '../../../pages/service/authentication.service';
 import { CategoryService } from '../../admin_module/service/category/category.service';
+import { AdminProductService } from '../../admin_module/service/productService/admin-product.service';
+import { EncryptionService } from '../../../shared/service/encryption.service';
 import * as AOS from 'aos';
 import { ButtonModule } from 'primeng/button';
 import { Sidebar, SidebarModule } from 'primeng/sidebar';
@@ -15,14 +18,14 @@ import { OverlayBadgeModule } from 'primeng/overlaybadge';
 import { Gender } from '../../../shared/interface/gender';
 import { Tooltip } from 'primeng/tooltip';
 import { Popover, PopoverModule } from 'primeng/popover';
-import { Subscription } from 'rxjs';
+import { Subscription, debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { CartService } from '../../admin_module/service/cartService/cart.service';
 import { apiResponse } from '../../../shared/interface/response';
 import { WishlistService } from '../../admin_module/service/wishlistService/wishlist.service';
 
 @Component({
   selector: 'app-layout',
-  imports: [CommonModule, PopoverModule, BadgeModule, Tooltip, OverlayBadgeModule, AvatarModule, RouterModule, UserFooterComponent, SidebarModule, ButtonModule, RippleModule, StyleClassModule],
+  imports: [CommonModule, PopoverModule, BadgeModule, Tooltip, OverlayBadgeModule, AvatarModule, RouterModule, UserFooterComponent, SidebarModule, ButtonModule, RippleModule, StyleClassModule, FormsModule],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.scss',
   animations: [
@@ -96,10 +99,21 @@ export class LayoutComponent {
   WishlistLength: any = 0;
   allCartList: any[] = [];
 
+  // Search properties
+  searchQuery: string = '';
+  searchSuggestions: any[] = [];
+  showSuggestions: boolean = false;
+  allProducts: any[] = [];
+  private searchSubject = new Subject<string>();
+  private searchSubscription?: Subscription;
+
   constructor(@Inject(PLATFORM_ID) private platformId: Object,
     private auth: AuthenticationService,
     private category: CategoryService,
+    private productService: AdminProductService,
+    private encryptionService: EncryptionService,
     private router: Router,
+    private route: ActivatedRoute,
     private cart: CartService,
     private wishlistService: WishlistService
   ) { }
@@ -159,6 +173,101 @@ export class LayoutComponent {
     ]
     this.genderData();
     this.getCartLength();
+    this.loadAllProducts();
+    this.setupSearch();
+  }
+
+  loadAllProducts() {
+    this.productService.getProductlist().subscribe((res: any) => {
+      if (res.code === 200 && res.success === true) {
+        this.allProducts = res.result || [];
+      }
+    });
+  }
+
+  setupSearch() {
+    // Debounce search input to avoid too many API calls
+    this.searchSubscription = this.searchSubject.pipe(
+      debounceTime(300),
+      distinctUntilChanged()
+    ).subscribe((query: string) => {
+      if (query && query.trim().length >= 2) {
+        this.searchProducts(query);
+      } else {
+        this.searchSuggestions = [];
+        this.showSuggestions = false;
+      }
+    });
+  }
+
+  onSearchInput(event: any) {
+    const query = event.target.value;
+    this.searchQuery = query;
+    this.searchSubject.next(query);
+  }
+
+  searchProducts(query: string) {
+    const searchTerm = query.toLowerCase().trim();
+    if (searchTerm.length < 2) {
+      this.searchSuggestions = [];
+      this.showSuggestions = false;
+      return;
+    }
+
+    // Filter products based on search term
+    this.searchSuggestions = this.allProducts.filter((product: any) => {
+      const productName = (product.productName || '').toLowerCase();
+      const categoryName = (product.category?.categoryName || '').toLowerCase();
+      const genderName = (product.gender?.genderName || '').toLowerCase();
+      const description = (product.productDescription || '').toLowerCase();
+      const tags = (product.tags || []).join(' ').toLowerCase();
+      const sku = (product.sku || '').toLowerCase();
+
+      return productName.includes(searchTerm) ||
+             categoryName.includes(searchTerm) ||
+             genderName.includes(searchTerm) ||
+             description.includes(searchTerm) ||
+             tags.includes(searchTerm) ||
+             sku.includes(searchTerm);
+    }).slice(0, 8); // Limit to 8 suggestions
+
+    this.showSuggestions = this.searchSuggestions.length > 0;
+  }
+
+  onSearchSubmit() {
+    if (this.searchQuery && this.searchQuery.trim().length >= 2) {
+      this.router.navigate(['/user/productlists'], {
+        queryParams: { search: this.searchQuery.trim() }
+      });
+      this.showSuggestions = false;
+      this.searchQuery = '';
+    }
+  }
+
+  selectSuggestion(product: any) {
+    const encryptedId = this.encryptionService.encrypt(product._id);
+    this.router.navigate(['/user/product-details', encryptedId]);
+    this.showSuggestions = false;
+    this.searchQuery = '';
+  }
+
+  clearSearch() {
+    this.searchQuery = '';
+    this.searchSuggestions = [];
+    this.showSuggestions = false;
+  }
+
+  onSearchFocus() {
+    if (this.searchQuery && this.searchQuery.trim().length >= 2) {
+      this.showSuggestions = this.searchSuggestions.length > 0;
+    }
+  }
+
+  onSearchBlur() {
+    // Delay hiding suggestions to allow click events
+    setTimeout(() => {
+      this.showSuggestions = false;
+    }, 200);
   }
   getCartLength() {
     const roleString = localStorage.getItem('role');
@@ -186,6 +295,9 @@ export class LayoutComponent {
   }
   ngOnDestroy() {
     if (this.sub) this.sub.unsubscribe();
+    if (this.searchSubscription) {
+      this.searchSubscription.unsubscribe();
+    }
   }
 
   toggle(event: any) {

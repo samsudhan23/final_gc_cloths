@@ -8,11 +8,136 @@
                 <!-- Product Heading -->
                 <div class="text-center mb-5">
                     <div class="section-title">
-                        <h2 class="section-heading text-center">Our Products</h2>
+                        <h2 class="section-heading text-center">
+                            <span *ngIf="searchQuery">Search Results for "{{ searchQuery }}"</span>
+                            <span *ngIf="!searchQuery">Our Products</span>
+                        </h2>
+                        <p *ngIf="searchQuery" class="text-muted mt-2">
+                            Found {{ filteredProducts.length }} product(s)
+                        </p>
                     </div>
                 </div>
-                <!-- Product Body -->
-                <div class="product-section-inner-1">
+
+                <!-- Filter Toggle Button (Mobile) -->
+                <div class="filter-toggle-mobile mb-3">
+                    <button class="btn btn-filter-toggle" (click)="toggleFilter()">
+                        <i class="bi bi-funnel me-2"></i>
+                        {{ isFilterOpen ? 'Hide Filters' : 'Show Filters' }}
+                        <span *ngIf="selectedCategories.length > 0 || selectedGenders.length > 0 || selectedSizes.length > 0" 
+                              class="filter-count">{{ selectedCategories.length + selectedGenders.length + selectedSizes.length }}</span>
+                    </button>
+                </div>
+
+                <!-- Main Content with Filters -->
+                <div class="products-layout">
+                    <!-- Filter Sidebar -->
+                    <aside class="filter-sidebar" [class.open]="isFilterOpen">
+                        <div class="filter-header">
+                            <h3 class="filter-title">
+                                <i class="bi bi-funnel-fill me-2"></i>Filters
+                            </h3>
+                            <button class="btn-clear-all" (click)="clearAllFilters()" *ngIf="selectedCategories.length > 0 || selectedGenders.length > 0 || selectedSizes.length > 0">
+                                <i class="bi bi-x-circle me-1"></i>Clear All
+                            </button>
+                        </div>
+
+                        <div class="filter-content">
+                            <!-- Category Filter -->
+                            <div class="filter-group">
+                                <h4 class="filter-group-title">
+                                    <i class="bi bi-tag-fill me-2"></i>Category
+                                </h4>
+                                <div class="filter-options">
+                                    <label *ngFor="let category of categoryList" class="filter-checkbox">
+                                        <input type="checkbox" 
+                                               [value]="category.categoryName"
+                                               [checked]="selectedCategories.includes(category.categoryName)"
+                                               (change)="onCategoryChange(category.categoryName, $event)">
+                                        <span class="checkmark"></span>
+                                        <span class="filter-label">{{ category.categoryName }}</span>
+                                        <span class="filter-count-badge">{{ getCategoryCount(category.categoryName) }}</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Gender Filter -->
+                            <div class="filter-group">
+                                <h4 class="filter-group-title">
+                                    <i class="bi bi-person-fill me-2"></i>Gender
+                                </h4>
+                                <div class="filter-options">
+                                    <label *ngFor="let gender of genderList" class="filter-checkbox">
+                                        <input type="checkbox" 
+                                               [value]="gender.genderName"
+                                               [checked]="selectedGenders.includes(gender.genderName)"
+                                               (change)="onGenderChange(gender.genderName, $event)">
+                                        <span class="checkmark"></span>
+                                        <span class="filter-label">{{ gender.genderName }}</span>
+                                        <span class="filter-count-badge">{{ getGenderCount(gender.genderName) }}</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Size Filter -->
+                            <div class="filter-group">
+                                <h4 class="filter-group-title">
+                                    <i class="bi bi-rulers me-2"></i>Size
+                                </h4>
+                                <div class="filter-options size-options">
+                                    <label *ngFor="let size of availableSizes" class="filter-checkbox size-checkbox">
+                                        <input type="checkbox" 
+                                               [value]="size"
+                                               [checked]="selectedSizes.includes(size)"
+                                               (change)="onSizeChange(size, $event)">
+                                        <span class="checkmark"></span>
+                                        <span class="filter-label size-label">{{ size }}</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Price Filter -->
+                            <div class="filter-group">
+                                <h4 class="filter-group-title">
+                                    <i class="bi bi-currency-rupee me-2"></i>Price Range
+                                </h4>
+                                <div class="price-filter">
+                                    <div class="price-inputs">
+                                        <div class="price-input-group">
+                                            <label>Min</label>
+                                            <input type="number" 
+                                                   [(ngModel)]="priceRange[0]" 
+                                                   [min]="minPrice" 
+                                                   [max]="maxPrice"
+                                                   (ngModelChange)="onPriceChange()"
+                                                   class="price-input">
+                                        </div>
+                                        <div class="price-input-group">
+                                            <label>Max</label>
+                                            <input type="number" 
+                                                   [(ngModel)]="priceRange[1]" 
+                                                   [min]="minPrice" 
+                                                   [max]="maxPrice"
+                                                   (ngModelChange)="onPriceChange()"
+                                                   class="price-input">
+                                        </div>
+                                    </div>
+                                    <p class="price-range-display">
+                                        ₹{{ priceRange[0] | number:'1.0-0' }} - ₹{{ priceRange[1] | number:'1.0-0' }}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Results Count -->
+                            <div class="filter-results">
+                                <p class="results-count">
+                                    <strong>{{ filteredProducts.length }}</strong> product(s) found
+                                </p>
+                            </div>
+                        </div>
+                    </aside>
+
+                    <!-- Product Body -->
+                    <div class="product-section-inner-1">
                     <div class="products-tab w-tabs">
                         <div class="products-tab-menu w-tab-menu" role="tablist">
                             <!-- <a *ngFor="let category of categoryList; let i = index" [attr.data-w-tab]="category._id"
@@ -141,6 +266,7 @@
                                 (closeEmitter)="closeQuickView()"></app-quick-view>
                         </div>
                     </div>
+                </div>
                 </div>
             </div>
         </div>
