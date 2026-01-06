@@ -52,6 +52,7 @@ export class LayoutComponent {
 
   sidebarVisible: boolean = false;
   sideSubMenu: boolean = false;
+  searchModalVisible: boolean = false;
 
   items: any = [
     {
@@ -269,6 +270,22 @@ export class LayoutComponent {
       this.showSuggestions = false;
     }, 200);
   }
+
+  openSearchModal() {
+    this.searchModalVisible = true;
+    // Focus search input after modal opens
+    setTimeout(() => {
+      const input = document.querySelector('.search-input-modal') as HTMLInputElement;
+      if (input) {
+        input.focus();
+      }
+    }, 100);
+  }
+
+  closeSearchModal() {
+    this.searchModalVisible = false;
+    this.showSuggestions = false;
+  }
   getCartLength() {
     const roleString = localStorage.getItem('role');
     const parse = roleString ? JSON.parse(roleString) : null;
@@ -312,6 +329,15 @@ export class LayoutComponent {
     } else if (member.name === 'Profile') {
       this.router.navigate(['/user/user-profile'])
     }
+  }
+
+  navigateToProfile() {
+    this.router.navigate(['/user/user-profile']);
+    this.sidebarVisible = false;
+  }
+
+  hasLogoutOption(): boolean {
+    return this.members.some((m: any) => m.name === 'Logout');
   }
   getCategoryList() {
     this.category.getCategoriesMasterList().subscribe((res: apiResponse) => {
