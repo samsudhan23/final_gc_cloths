@@ -21,7 +21,7 @@ import { WishlistService } from '../../admin_module/service/wishlistService/wish
 })
 export class CategorywiseproductComponent {
 
-  selectedCategory: string = 'All';
+  selectedCategory: any;
   filteredProducts: any[] = [];
   categoryList: any[] = [];
   productList: any;
@@ -41,10 +41,23 @@ export class CategorywiseproductComponent {
       AOS.init({ disable: 'mobile', duration: 1200, });
       AOS.refresh();
       // this.getProduct();
-      this.route.paramMap.subscribe(params => {
-      this.selectedGender = params.get('genderName') || '';
-      this.getProduct();
-    });
+    //   this.route.paramMap.subscribe(params => {
+    //   this.selectedGender = params.get('genderName') || '';
+    //   console.log('this.selectedGender: ', this.selectedGender);
+    //   this.selectedCategory = params.get('categoryName') || '';
+    //   console.log('this.selectedCategory: ', this.selectedCategory);
+    //   this.getProduct();
+    // });
+    this.route.queryParamMap.subscribe(params => {
+
+    this.selectedGender = params.get('gender') ?? '';
+    this.selectedCategory = params.get('category') ?? '';
+
+    console.log('Gender:', this.selectedGender);
+    console.log('Category:', this.selectedCategory);
+
+    this.getProduct();
+  });
       // this.changeSlide();
     }
   }
@@ -61,10 +74,18 @@ export class CategorywiseproductComponent {
             this.selectedGender.toLowerCase()
         );
          this.getWishlistdetails();
-      } else {
+      }
+      else if (this.selectedCategory && this.selectedCategory.trim() !== '') {
+        this.filteredProducts = allProducts.filter(
+          (item: any) =>
+            item.category?.categoryName?.toLowerCase() ===
+            this.selectedCategory.toLowerCase()
+        );
+         this.getWishlistdetails();
+      }
+       else {
         this.filteredProducts = allProducts; // If no gender selected, show all
       }
-
       console.log('Filtered Products:', this.productList);
     }, (error: any) => {
       this.toast.warning(error.error.message);
@@ -138,7 +159,7 @@ export class CategorywiseproductComponent {
   }
 
   goBacktoProducts() {
-    this.router.navigate(['user/productlists']);
+    this.router.navigate(['user/categorywiseproduct']);
   }
 
 }
