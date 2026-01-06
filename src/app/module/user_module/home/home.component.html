@@ -320,7 +320,7 @@
                                                 <span>({{ product.rating.count }})</span>
                                             </div>
 
-                                            <button class="btn btn-dark buy-btn" (click)="viewDetails(product ,'data')">
+                                            <button class="btn btn-dark buy-btn" style="font-size:small; width:auto; padding:10px;" (click)="viewDetails(product ,'data')">
                                                 Add To Cart <i class="bi bi-bag ml-2"></i>
                                             </button>
                                         </div>
@@ -528,23 +528,26 @@
                                 </div>
                                 <div class="cta-time-box">
                                     <div class="day-box">
-                                        <div class="day-number">10<br></div>
+                                        <div class="day-number">{{ days }}<br></div>
                                         <div class="day-text">Days<br></div>
                                     </div>
+                                    <div class="day-number">:</div>
                                     <div class="day-box">
-                                        <div class="day-number">09</div>
+                                        <div class="day-number">{{ hours }}</div>
                                         <div class="day-text">Hrs</div>
                                     </div>
+                                    <div class="day-number">:</div>
                                     <div class="day-box">
-                                        <div class="day-number">30<br></div>
+                                        <div class="day-number">{{ minutes }}<br></div>
                                         <div class="day-text">Min</div>
                                     </div>
+                                    <div class="day-number">:</div>
                                     <div class="day-box">
-                                        <div class="day-number">50<br></div>
+                                        <div class="day-number">{{ seconds }}<br></div>
                                         <div class="day-text">Sec<br></div>
                                     </div>
                                 </div>
-                                <div class="button-block"><a class="button w-inline-block">
+                                <div class="button-block"><a (click)="productlists()" class="button w-inline-block cursor-pointer">
                                         <div class="button-hover"
                                             style="transform: translate3d(0%, 0%, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); transform-style: preserve-3d;">
                                         </div>
