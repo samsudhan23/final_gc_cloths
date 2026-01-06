@@ -39,11 +39,15 @@ export class UserFooterComponent {
 
   categoryproductlists(item: any) {
     console.log('item: ', item);
-    this.router.navigate(['user/productlists', item.categoryName]);
+    this.router.navigate(
+      ['user/categorywiseproduct'],
+      { queryParams: { category: item.categoryName } }
+    );
+    // this.router.navigate(['user/categorywiseproduct', item.categoryName]);
   }
 
   productlists() {
-    this.router.navigate(['user/productlists']);
+    this.router.navigate(['user/categorywiseproduct']);
   }
 
   privacypolicy() {

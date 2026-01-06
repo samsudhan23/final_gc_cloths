@@ -361,38 +361,91 @@ export class ProductManagementComponent {
       this.sizeStockControls.clear();
     }
   }
+  // async editProducts(event: any, type: string) {
+  //   const editTableDatas = event;
+  //   this.formDialog = true;
+
+  //   if (type === 'Edit') {
+  //     this.mode = 'edit';
+  //     this.currentId = editTableDatas._id;
+  //     console.log('editTableDatas: ', editTableDatas);
+  //     this.productForm.patchValue({
+  //       ...editTableDatas,
+  //       gender: editTableDatas?.gender?._id,
+  //       category: editTableDatas?.category?._id,
+  //     });
+
+  //     const sizesArray = editTableDatas?.sizeStock?.map((s: any) => s.size) || [];
+  //     this.productForm.get('sizes')?.setValue(sizesArray);
+  //     const sizeStockArray = this.productForm?.get('sizeStock') as FormArray;
+  //     sizeStockArray.clear(); // Clear existing controls
+  //     sizesArray.forEach((size: string) => {
+  //       const stockObj = editTableDatas.sizeStock.find((item: any) => item.size === size);
+  //       const stockValue = stockObj ? stockObj.stock : 0;
+  //       sizeStockArray.push(this.fb.group({
+  //         size: [size],
+  //         stock: [stockValue, [Validators.required, Validators.min(0)]]
+  //       }));
+  //     });
+  //     this.fileInfo = editTableDatas.images;
+  //     this.singleImage = this.fileInfo;
+  //     this.galleryFiles = [...this.galleryFiles, ...editTableDatas.gallery];
+  //     this.galleryImages = this.galleryFiles;
+  //     this.productForm.enable();
+  //   }
+  // }
+
   async editProducts(event: any, type: string) {
-    const editTableDatas = event;
-    this.formDialog = true;
+  if (type !== 'Edit') return;
 
-    if (type === 'Edit') {
-      this.mode = 'edit';
-      this.currentId = editTableDatas._id;
-      this.productForm.patchValue({
-        ...editTableDatas,
-        gender: editTableDatas?.gender?._id,
-        category: editTableDatas?.category?._id,
-      });
+  this.formDialog = true;
+  this.mode = 'edit';
+  this.currentId = event._id;
 
-      const sizesArray = editTableDatas?.sizeStock?.map((s: any) => s.size) || [];
-      this.productForm.get('sizes')?.setValue(sizesArray);
-      const sizeStockArray = this.productForm?.get('sizeStock') as FormArray;
-      sizeStockArray.clear(); // Clear existing controls
-      sizesArray.forEach((size: string) => {
-        const stockObj = editTableDatas.sizeStock.find((item: any) => item.size === size);
-        const stockValue = stockObj ? stockObj.stock : 0;
-        sizeStockArray.push(this.fb.group({
+  // 1️⃣ Patch basic fields
+  this.productForm.patchValue({
+    ...event,
+    gender: event.gender?._id,
+    category: event.category?._id
+  });
+
+  // 2️⃣ Trigger gender-based size filtering FIRST
+  this.filterSizesByGender(event.gender?._id);
+
+  // 3️⃣ Extract sizes
+  const sizesArray = event.sizeStock?.map((s: any) => s.size) || [];
+
+  // 4️⃣ Set sizes AFTER options exist
+  setTimeout(() => {
+    this.productForm.get('sizes')?.setValue(sizesArray);
+
+    // 5️⃣ Build sizeStock FormArray
+    const sizeStockArray = this.productForm.get('sizeStock') as FormArray;
+    sizeStockArray.clear();
+
+    sizesArray.forEach((size: string) => {
+      const stockObj = event.sizeStock.find((item: any) => item.size === size);
+      sizeStockArray.push(
+        this.fb.group({
           size: [size],
-          stock: [stockValue, [Validators.required, Validators.min(0)]]
-        }));
-      });
-      this.fileInfo = editTableDatas.images;
-      this.singleImage = this.fileInfo;
-      this.galleryFiles = [...this.galleryFiles, ...editTableDatas.gallery];
-      this.galleryImages = this.galleryFiles;
-      this.productForm.enable();
-    }
-  }
+          stock: [stockObj?.stock || 0, [Validators.required, Validators.min(0)]]
+        })
+      );
+    });
+
+    // 6️⃣ Set total stock
+    this.productForm.get('totalStock')?.setValue(event.totalStock || 0);
+  });
+
+  // 7️⃣ Images
+  this.fileInfo = event.images;
+  this.singleImage = this.fileInfo;
+  this.galleryFiles = [...event.gallery];
+  this.galleryImages = this.galleryFiles;
+
+  this.productForm.enable();
+}
+
 
   onSubmit(): void {
     if (this.productForm.invalid) {

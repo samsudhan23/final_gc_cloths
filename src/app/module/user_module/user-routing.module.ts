@@ -31,7 +31,8 @@ export const routes: Routes = [
             { path: 'view-order/:orderId', component: ViewOrderPageComponent },
             { path: 'wishlist', component: UserWishlistComponent },
             { path: 'cart', component: UserCartComponent },
-            { path: 'categorywiseproduct/:genderName', component: CategorywiseproductComponent },
+            // { path: 'categorywiseproduct/:genderName', component: CategorywiseproductComponent },
+            { path: 'categorywiseproduct', component: CategorywiseproductComponent },
             {
                 path: 'shop',
                 loadComponent: () => import('./shop/shop.component').then(m => m.ShopComponent)
