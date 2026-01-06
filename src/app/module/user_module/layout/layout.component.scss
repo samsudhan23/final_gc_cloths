@@ -658,7 +658,11 @@ menu {
         --main-link-px: 12px;
     }
 }
-
+@media (max-width: 1800px) {
+    .m-header__right .m-header__mobile-right {
+       padding-right: 20px;
+    }
+}
 .logo-left-menu-center .m-header__left,
 .logo-left-menu-center .m-header__right {
     flex: 1 1 0%;
