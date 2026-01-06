@@ -87,6 +87,8 @@ export class HomeComponent implements OnInit {
       AOS.refresh();
       this.getProduct();
       this.getCategoryList();
+      this.setTargetDate();
+      this.startCountdown();
       // this.changeSlide();
     }
 
@@ -267,6 +269,58 @@ export class HomeComponent implements OnInit {
       const encryptedId = this.encryptionService.encrypt(product._id);
       this.router.navigate(['user/product-details', encryptedId]);
     }
+  }
+
+  days = '00';
+  hours = '00';
+  minutes = '00';
+  seconds = '00';
+
+  private timer: any;
+  private targetDate!: Date;
+
+  // Always sets target = today + 10 days
+  setTargetDate(): void {
+    const today = new Date();
+    // Force start time to 00:00:00
+    today.setHours(0, 0, 0, 0);
+    this.targetDate = new Date(today);
+    this.targetDate.setDate(today.getDate() + 10);
+  }
+
+  startCountdown(): void {
+    this.timer = setInterval(() => {
+      const now = new Date();
+      const distance = this.targetDate.getTime() - now.getTime();
+
+      // When countdown ends → recalculate next 10 days
+      if (distance <= 0) {
+        this.setTargetDate();
+        return;
+      }
+
+      const d = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const h = Math.floor((distance / (1000 * 60 * 60)) % 24);
+      const m = Math.floor((distance / (1000 * 60)) % 60);
+      const s = Math.floor((distance / 1000) % 60);
+
+      this.days = this.pad(d);
+      this.hours = this.pad(h);
+      this.minutes = this.pad(m);
+      this.seconds = this.pad(s);
+    }, 1000);
+  }
+
+  pad(value: number): string {
+    return value < 10 ? '0' + value : String(value);
+  }
+
+  ngOnDestroy(): void {
+    clearInterval(this.timer);
+  }
+
+  productlists() {
+    this.router.navigate(['user/categorywiseproduct']);
   }
 
 }
