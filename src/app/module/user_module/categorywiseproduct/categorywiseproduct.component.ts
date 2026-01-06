@@ -3,19 +3,23 @@ import { ToastrService } from 'ngx-toastr';
 import { AdminProductService } from '../../admin_module/service/productService/admin-product.service';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { AvatarModule } from 'primeng/avatar';
 import { BadgeModule } from 'primeng/badge';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { TabsModule } from 'primeng/tabs';
+import { CheckboxModule } from 'primeng/checkbox';
+import { SliderModule } from 'primeng/slider';
 import * as AOS from 'aos';
 import { EncryptionService } from '../../../shared/service/encryption.service';
 import { QuickViewComponent } from '../../../shared/components/quick-view/quick-view.component';
 import { WishlistService } from '../../admin_module/service/wishlistService/wishlist.service';
+import { CategoryService } from '../../admin_module/service/category/category.service';
 
 @Component({
   selector: 'app-categorywiseproduct',
-  imports: [CommonModule, BadgeModule, AvatarModule, InputTextModule, TabsModule, ButtonModule, RouterModule,QuickViewComponent],
+  imports: [CommonModule, BadgeModule, AvatarModule, InputTextModule, TabsModule, ButtonModule, RouterModule, QuickViewComponent, FormsModule, CheckboxModule, SliderModule],
   templateUrl: './categorywiseproduct.component.html',
   styleUrl: './categorywiseproduct.component.scss'
 })
@@ -23,14 +27,30 @@ export class CategorywiseproductComponent {
 
   selectedCategory: any;
   filteredProducts: any[] = [];
+  allProducts: any[] = []; // Store all products
+  baseFilteredProducts: any[] = []; // Store products filtered by route params (gender/category)
   categoryList: any[] = [];
+  genderList: any[] = [];
   productList: any;
   selectedGender: string = 'Men';
   wishListData: any[] = [];
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object, private productService: AdminProductService,
+  // Filter properties
+  selectedCategories: string[] = [];
+  selectedGenders: string[] = [];
+  selectedSizes: string[] = [];
+  priceRange: number[] = [0, 100000];
+  minPrice: number = 0;
+  maxPrice: number = 100000;
+  availableSizes: string[] = [];
+  isFilterOpen: boolean = true; // Mobile filter toggle
+
+  constructor(@Inject(PLATFORM_ID) private platformId: Object, 
+    private productService: AdminProductService,
+    private categoryService: CategoryService,
     private encryptionService: EncryptionService,
-    private toast: ToastrService, private router: Router,
+    private toast: ToastrService, 
+    private router: Router,
     private route: ActivatedRoute,
     private wishlistService: WishlistService,
   ) {
@@ -49,47 +69,198 @@ export class CategorywiseproductComponent {
     //   this.getProduct();
     // });
     this.route.queryParamMap.subscribe(params => {
+      this.selectedGender = params.get('gender') ?? '';
+      this.selectedCategory = params.get('category') ?? '';
 
-    this.selectedGender = params.get('gender') ?? '';
-    this.selectedCategory = params.get('category') ?? '';
+      console.log('Gender:', this.selectedGender);
+      console.log('Category:', this.selectedCategory);
 
-    console.log('Gender:', this.selectedGender);
-    console.log('Category:', this.selectedCategory);
+      this.getProduct();
+    });
+    this.getCategoryList();
+    this.getGenderList();
+  }
+  }
+  
+  getCategoryList() {
+    this.categoryService.getCategoriesMasterList().subscribe((res: any) => {
+      if (res.code === 200 && res.success === true) {
+        this.categoryList = res.result || [];
+      }
+    });
+  }
 
-    this.getProduct();
-  });
-      // this.changeSlide();
-    }
+  getGenderList() {
+    this.categoryService.getGenderList().subscribe((res: any) => {
+      if (res.code === 200 && res.success === true) {
+        this.genderList = res.result || [];
+      }
+    });
   }
 
 
   getProduct() {
     this.productService.getProductlist().subscribe((res: any) => {
       const allProducts = res.result;
-      // Filter based on selectedGender
+      this.allProducts = allProducts; // Store all products
+
+      // Initial filter based on route parameters
+      let initialFiltered = allProducts;
+      
       if (this.selectedGender && this.selectedGender.trim() !== '') {
-        this.filteredProducts = allProducts.filter(
+        initialFiltered = allProducts.filter(
           (item: any) =>
             item.gender?.genderName?.toLowerCase() ===
             this.selectedGender.toLowerCase()
         );
-         this.getWishlistdetails();
-      }
-      else if (this.selectedCategory && this.selectedCategory.trim() !== '') {
-        this.filteredProducts = allProducts.filter(
+      } else if (this.selectedCategory && this.selectedCategory.trim() !== '') {
+        initialFiltered = allProducts.filter(
           (item: any) =>
             item.category?.categoryName?.toLowerCase() ===
             this.selectedCategory.toLowerCase()
         );
-         this.getWishlistdetails();
       }
-       else {
-        this.filteredProducts = allProducts; // If no gender selected, show all
-      }
-      console.log('Filtered Products:', this.productList);
+
+      // Store base filtered products (from route params)
+      this.baseFilteredProducts = [...initialFiltered];
+
+      // Extract available sizes and price range from base filtered products
+      this.extractFilterOptions();
+      
+      // Apply additional filters
+      this.applyFilters();
+      this.getWishlistdetails();
     }, (error: any) => {
       this.toast.warning(error.error.message);
     })
+  }
+
+  extractFilterOptions() {
+    // Extract unique sizes from base filtered products (based on route params)
+    const sizesSet = new Set<string>();
+    this.baseFilteredProducts.forEach((product: any) => {
+      if (product.sizeStock && Array.isArray(product.sizeStock)) {
+        product.sizeStock.forEach((size: any) => {
+          if (size.size) {
+            sizesSet.add(size.size);
+          }
+        });
+      }
+    });
+    this.availableSizes = Array.from(sizesSet).sort();
+
+    // Extract price range from base filtered products
+    const prices = this.baseFilteredProducts.map((p: any) => p.discountPrice || p.price).filter((p: any) => p != null);
+    if (prices.length > 0) {
+      this.minPrice = Math.min(...prices);
+      this.maxPrice = Math.max(...prices);
+      // Only set priceRange if it's at default values
+      if (this.priceRange[0] === 0 && this.priceRange[1] === 100000) {
+        this.priceRange = [this.minPrice, this.maxPrice];
+      }
+    } else {
+      // Fallback if no products
+      this.minPrice = 0;
+      this.maxPrice = 100000;
+      this.priceRange = [0, 100000];
+    }
+  }
+
+  applyFilters() {
+    // Always start with base filtered products (from route params)
+    let filtered = [...this.baseFilteredProducts];
+
+    // Category filter (additional to route params)
+    if (this.selectedCategories.length > 0) {
+      filtered = filtered.filter((product: any) =>
+        this.selectedCategories.includes(product.category?.categoryName)
+      );
+    }
+
+    // Gender filter (additional to route params)
+    if (this.selectedGenders.length > 0) {
+      filtered = filtered.filter((product: any) =>
+        this.selectedGenders.includes(product.gender?.genderName)
+      );
+    }
+
+    // Size filter
+    if (this.selectedSizes.length > 0) {
+      filtered = filtered.filter((product: any) => {
+        if (!product.sizeStock || !Array.isArray(product.sizeStock)) return false;
+        return product.sizeStock.some((size: any) => 
+          this.selectedSizes.includes(size.size) && size.stock > 0
+        );
+      });
+    }
+
+    // Price filter
+    filtered = filtered.filter((product: any) => {
+      const price = product.discountPrice || product.price;
+      return price >= this.priceRange[0] && price <= this.priceRange[1];
+    });
+
+    this.filteredProducts = filtered;
+    this.getWishlistdetails();
+  }
+
+  onCategoryChange(categoryName: string, event: any) {
+    if (event.target.checked) {
+      this.selectedCategories.push(categoryName);
+    } else {
+      this.selectedCategories = this.selectedCategories.filter(c => c !== categoryName);
+    }
+    this.applyFilters();
+  }
+
+  onGenderChange(genderName: string, event: any) {
+    if (event.target.checked) {
+      this.selectedGenders.push(genderName);
+    } else {
+      this.selectedGenders = this.selectedGenders.filter(g => g !== genderName);
+    }
+    this.applyFilters();
+  }
+
+  onSizeChange(size: string, event: any) {
+    if (event.target.checked) {
+      this.selectedSizes.push(size);
+    } else {
+      this.selectedSizes = this.selectedSizes.filter(s => s !== size);
+    }
+    this.applyFilters();
+  }
+
+  onPriceChange() {
+    this.applyFilters();
+  }
+
+  clearAllFilters() {
+    this.selectedCategories = [];
+    this.selectedGenders = [];
+    this.selectedSizes = [];
+    // Reset price range to min/max from base filtered products
+    const prices = this.baseFilteredProducts.map((p: any) => p.discountPrice || p.price).filter((p: any) => p != null);
+    if (prices.length > 0) {
+      this.minPrice = Math.min(...prices);
+      this.maxPrice = Math.max(...prices);
+      this.priceRange = [this.minPrice, this.maxPrice];
+    } else {
+      this.priceRange = [0, 100000];
+    }
+    this.applyFilters();
+  }
+
+  toggleFilter() {
+    this.isFilterOpen = !this.isFilterOpen;
+  }
+
+  getCategoryCount(categoryName: string): number {
+    return this.baseFilteredProducts.filter((p: any) => p.category?.categoryName === categoryName).length;
+  }
+
+  getGenderCount(genderName: string): number {
+    return this.baseFilteredProducts.filter((p: any) => p.gender?.genderName === genderName).length;
   }
 
   // filterProducts(): void {
