@@ -14,9 +14,13 @@
                     <div class="m-logo__image-default m:display-flex m-image"
                         style="--aspect-ratio: 3.195266272189349;--aspect-ratio-mobile: 3.195266272189349">
 
-                        <img src="//crazymonk.in/cdn/shop/files/New-Logo-2024-s4.webp?v=1714044239" alt="Crazymonk"
+                        <!-- <img src="//crazymonk.in/cdn/shop/files/New-Logo-2024-s4.webp?v=1714044239" alt="Crazymonk"
                             srcset="//crazymonk.in/cdn/shop/files/New-Logo-2024-s4.webp?v=1714044239&amp;width=50 50w, //crazymonk.in/cdn/shop/files/New-Logo-2024-s4.webp?v=1714044239&amp;width=100 100w, //crazymonk.in/cdn/shop/files/New-Logo-2024-s4.webp?v=1714044239&amp;width=150 150w, //crazymonk.in/cdn/shop/files/New-Logo-2024-s4.webp?v=1714044239&amp;width=200 200w, //crazymonk.in/cdn/shop/files/New-Logo-2024-s4.webp?v=1714044239&amp;width=250 250w, //crazymonk.in/cdn/shop/files/New-Logo-2024-s4.webp?v=1714044239&amp;width=300 300w, //crazymonk.in/cdn/shop/files/New-Logo-2024-s4.webp?v=1714044239&amp;width=400 400w"
-                            height="33" class="m:inline-block">
+                            height="33" class="m:inline-block"> -->
+                             <img src="../../../../assets/images/Avatar/Clono_lines-1-removebg-preview.png"
+                                        alt="Crazymonk"
+                                        
+                                        width="1080" height="338" class="m:inline-block">
                     </div>
 
 
@@ -24,65 +28,56 @@
 
             </div>
 
-            <div class="m-header__mobile-right m:w-3/12 m:flex m:flex-1 m:justify-end">
-                <!-- Mobile Search -->
-                <div class="mobile-search-container">
-                    <div class="search-box-mobile" (click)="$event.stopPropagation()">
-                        <input type="text" 
-                               [(ngModel)]="searchQuery"
-                               (input)="onSearchInput($event)"
-                               (focus)="onSearchFocus()"
-                               (blur)="onSearchBlur()"
-                               (keyup.enter)="onSearchSubmit()"
-                               class="search-input-mobile" 
-                               placeholder="Search products...">
-                        <button class="search-btn-mobile" (click)="onSearchSubmit()">
-                            <i class="pi pi-search"></i>
-                        </button>
-                        <!-- Search Suggestions Dropdown -->
-                        <div class="search-suggestions" *ngIf="showSuggestions && searchSuggestions.length > 0">
-                            <div class="suggestions-header">
-                                <span>Search Results</span>
-                                <span class="suggestions-count">{{ searchSuggestions.length }}</span>
-                            </div>
-                            <div class="suggestions-list">
-                                <div *ngFor="let product of searchSuggestions" 
-                                     class="suggestion-item"
-                                     (click)="selectSuggestion(product)">
-                                    <img [src]="product.images" [alt]="product.productName" class="suggestion-image">
-                                    <div class="suggestion-details">
-                                        <h6 class="suggestion-title">{{ product.productName }}</h6>
-                                        <p class="suggestion-price">
-                                            <span *ngIf="product.discountPrice" class="discount-price">₹{{ product.discountPrice }}</span>
-                                            <span [class.old-price]="product.discountPrice">₹{{ product.price }}</span>
-                                        </p>
-                                        <span class="suggestion-category">{{ product.category?.categoryName }}</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="suggestions-footer" (click)="onSearchSubmit()">
-                                <span>View all results for "{{ searchQuery }}"</span>
-                                <i class="pi pi-arrow-right"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="m-header__mobile-right m:w-3/12 m:flex m:flex-1 m:justify-end m:items-center m:gap-2">
+                <!-- Mobile Search Icon -->
+                <button class="mobile-search-icon-btn" (click)="openSearchModal()" aria-label="Search">
+                    <i class="pi pi-search"></i>
+                </button>
 
-                <a href="/cart" class="m-cart-icon-bubble" aria-label="0" role="button" aria-haspopup="dialog">
-                    <span class="m-tooltip m:block m-tooltip--bottom m-tooltip--style-2">
-                        <svg class="m-svg-icon--medium" fill="currentColor" stroke="currentColor"
-                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                            <path
-                                d="M352 128C352 57.42 294.579 0 224 0 153.42 0 96 57.42 96 128H0v304c0 44.183 35.817 80 80 80h288c44.183 0 80-35.817 80-80V128h-96zM224 48c44.112 0 80 35.888 80 80H144c0-44.112 35.888-80 80-80zm176 384c0 17.645-14.355 32-32 32H80c-17.645 0-32-14.355-32-32V176h48v40c0 13.255 10.745 24 24 24s24-10.745 24-24v-40h160v40c0 13.255 10.745 24 24 24s24-10.745 24-24v-40h48v256z">
-                            </path>
-                        </svg>
-                        <!-- <span class="m-tooltip__content">Cart</span> -->
+                <!-- Mobile Wishlist Icon -->
+                <a class="mobile-header-icon" aria-label="Wishlist" (click)="movedToMenuPages('wishlist')">
+                    <span [pTooltip]="tooltipContentWishlistMobile" severity="secondary" tooltipPosition="bottom"
+                        class="m-tooltip m:block m-tooltip--bottom m-tooltip--style-2">
+                        <ng-template #tooltipContentWishlistMobile>
+                            <div class="flex items-center">
+                                <img width="24" height="24" src="../../../../assets/images/Avatar/icons8-heart-100.png" alt="">
+                                <span> <b>Wishlist</b> </span>
+                            </div>
+                        </ng-template>
+                        <p-overlaybadge [value]="WishlistLength" severity="danger">
+                            <img class="mobile-icon-img" src="../../../../assets/images/Avatar/icons8-heart-64.png" alt="Wishlist">
+                        </p-overlaybadge>
                     </span>
-                    <!-- <span class="m-cart-count-bubble m-cart-count m:hidden">0</span> -->
                 </a>
 
-
+                <!-- Mobile Cart Icon -->
+                <a class="mobile-header-icon" aria-label="Cart" (click)="movedToMenuPages('cart')">
+                    <span *ngIf="cartLength != 0" [pTooltip]="tooltipContentCartMobile" severity="secondary" tooltipPosition="bottom"
+                        class="m-tooltip m:block m-tooltip--bottom m-tooltip--style-2">
+                        <p-overlaybadge [value]="cartLength" severity="danger">
+                            <ng-template #tooltipContentCartMobile>
+                                <div class="flex items-center">
+                                    <img width="24" height="24" src="../../../../assets/images/Avatar/icons8-cart-48.png" alt="">
+                                    <span style="padding-left: 2px;"> <b>Cart</b> </span>
+                                </div>
+                            </ng-template>
+                            <img class="mobile-icon-img" src="../../../../assets/images/Avatar/icons8-cart-94.png" alt="Cart">
+                        </p-overlaybadge>
+                    </span>
+                    <!-- Empty Cart -->
+                    <span *ngIf="cartLength == 0" class="m-tooltip m:block m-tooltip--bottom m-tooltip--style-2"
+                        [pTooltip]="tooltipContentCartEmptyMobile" severity="secondary" tooltipPosition="bottom">
+                        <ng-template #tooltipContentCartEmptyMobile>
+                            <div class="flex items-center">
+                                <img width="24" height="24" src="../../../../assets/images/Avatar/icons8-cart-48.png" alt="">
+                                <span style="padding-left: 2px;"> <b>Cart</b> </span>
+                            </div>
+                        </ng-template>
+                        <img class="mobile-icon-img" src="../../../../assets/images/Avatar/icons8-cart-94.png" alt="Cart">
+                    </span>
+                </a>
             </div>
+
             <!-- Mobile Side menu -->
             <div [ngClass]="{ 'open': sidebarVisible }" class="m-menu-drawer open"
                 style="--menu-drawer-height: 858.140625px;">
@@ -150,10 +145,62 @@
                                 <a href="/collections/best-sellers" class="m-menu-mobile__link">
                                     Best Sellers
                                 </a>
-
-
                             </li>
                         </ul>
+
+                        <!-- Account/Profile Section at Bottom -->
+                        <div class="sidebar-bottom-section">
+                            <!-- Account/Profile Section -->
+                            <li class="m-menu-mobile__item m-menu-mobile__item--no-submenu sidebar-account-item">
+                                <a class="m-menu-mobile__link sidebar-account-link" (click)="navigateToProfile()">
+                                    <div class="sidebar-account-content">
+                                        <img class="sidebar-account-icon" src="../../../../assets/images/Avatar/icons8-account-94.png" alt="Account">
+                                        <span>My Account</span>
+                                    </div>
+                                </a>
+                            </li>
+
+                            <!-- Logout Option (if logged in) -->
+                            <li class="m-menu-mobile__item m-menu-mobile__item--no-submenu sidebar-logout-item" *ngIf="hasLogoutOption()">
+                                <a class="m-menu-mobile__link sidebar-logout-link" (click)="logout()">
+                                    <div class="sidebar-account-content">
+                                        <img class="sidebar-account-icon" src="../../../../assets/images/Avatar/logout.png" alt="Logout">
+                                        <span>Logout</span>
+                                    </div>
+                                </a>
+                            </li>
+                        </div>
+
+                          <!-- <div class="sidebar-bottom-section">
+                            <div class="">
+                                <div class="m-menu-customer__wrapper">
+                                    <li
+                                        class="m-menu-mobile__item m-menu-mobile__item--no-submenu sidebar-account-item">
+                                        <a class="m-menu-mobile__link sidebar-account-link"
+                                            (click)="navigateToProfile()">
+                                            <div class="sidebar-account-content">
+                                                <img class="sidebar-account-icon"
+                                                    src="../../../../assets/images/Avatar/icons8-account-94.png"
+                                                    alt="Account">
+                                                <span>My Account</span>
+                                            </div>
+                                        </a>
+                                    </li>
+
+                                    <li class="m-menu-mobile__item m-menu-mobile__item--no-submenu sidebar-logout-item"
+                                        *ngIf="hasLogoutOption()">
+                                        <a class="m-menu-mobile__link sidebar-logout-link" (click)="logout()">
+                                            <div class="sidebar-account-content">
+                                                <img class="sidebar-account-icon"
+                                                    src="../../../../assets/images/Avatar/logout.png" alt="Logout">
+                                                <span>Logout</span>
+                                            </div>
+                                        </a>
+                                    </li>
+                                </div>
+                            </div>
+
+                        </div> -->
                     </div>
                 </div>
             </div>
@@ -241,7 +288,7 @@
                                         srcset="//crazymonk.in/cdn/shop/files/New-Logo-2024-s4.webp?v=1714044239&amp;width=50 50w, //crazymonk.in/cdn/shop/files/New-Logo-2024-s4.webp?v=1714044239&amp;width=100 100w, //crazymonk.in/cdn/shop/files/New-Logo-2024-s4.webp?v=1714044239&amp;width=150 150w, //crazymonk.in/cdn/shop/files/New-Logo-2024-s4.webp?v=1714044239&amp;width=200 200w, //crazymonk.in/cdn/shop/files/New-Logo-2024-s4.webp?v=1714044239&amp;width=250 250w, //crazymonk.in/cdn/shop/files/New-Logo-2024-s4.webp?v=1714044239&amp;width=300 300w, //crazymonk.in/cdn/shop/files/New-Logo-2024-s4.webp?v=1714044239&amp;width=400 400w, //crazymonk.in/cdn/shop/files/New-Logo-2024-s4.webp?v=1714044239&amp;width=500 500w"
                                         width="1080" height="338" class="m:inline-block"> -->
 
-                                        <img src="../../../../assets/images/Avatar/1.png"
+                                        <img src="../../../../assets/images/Avatar/Clono_lines-1-removebg-preview.png"
                                         alt="Crazymonk"
                                         
                                         width="1080" height="338" class="m:inline-block">
@@ -447,6 +494,89 @@
 
     </div>
 </section>
+
+<!-- Mobile Search Modal/Popup - Full Page (Outside header for proper z-index) -->
+<div class="search-modal-overlay-full" *ngIf="searchModalVisible">
+    <div class="search-modal-content-full">
+        <!-- Header with Close Button -->
+        <div class="search-modal-header-full">
+            <div class="search-header-left">
+                <h2 class="search-modal-title">Search Products</h2>
+            </div>
+            <button class="search-modal-close-full" (click)="closeSearchModal()" aria-label="Close">
+                <i class="pi pi-times"></i>
+            </button>
+        </div>
+
+        <!-- Search Input Section -->
+        <div class="search-input-section-full">
+            <div class="search-box-full">
+                <i class="pi pi-search search-icon-full"></i>
+                <input type="text" 
+                       [(ngModel)]="searchQuery"
+                       (input)="onSearchInput($event)"
+                       (focus)="onSearchFocus()"
+                       (keyup.enter)="onSearchSubmit(); closeSearchModal();"
+                       (keyup.escape)="closeSearchModal()"
+                       class="search-input-full" 
+                       placeholder="Search products, categories, brands...">
+                <button class="search-clear-btn" *ngIf="searchQuery" (click)="clearSearch()" aria-label="Clear">
+                    <i class="pi pi-times"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Search Results Section -->
+        <div class="search-results-section-full">
+            <!-- Show suggestions if available -->
+            <div *ngIf="showSuggestions && searchSuggestions.length > 0" class="search-suggestions-full">
+                <div class="suggestions-header-full">
+                    <span class="suggestions-title">Search Results</span>
+                    <span class="suggestions-count-full">{{ searchSuggestions.length }} found</span>
+                </div>
+                <div class="suggestions-list-full">
+                    <div *ngFor="let product of searchSuggestions" 
+                         class="suggestion-item-full"
+                         (click)="selectSuggestion(product); closeSearchModal();">
+                        <img [src]="product.images" [alt]="product.productName" class="suggestion-image-full">
+                        <div class="suggestion-details-full">
+                            <h6 class="suggestion-title-full">{{ product.productName }}</h6>
+                            <p class="suggestion-price-full">
+                                <span *ngIf="product.discountPrice" class="discount-price-full">₹{{ product.discountPrice }}</span>
+                                <span [class.old-price-full]="product.discountPrice">₹{{ product.price }}</span>
+                            </p>
+                            <span class="suggestion-category-full">{{ product.category?.categoryName }} • {{ product.gender?.genderName }}</span>
+                        </div>
+                        <i class="pi pi-arrow-right suggestion-arrow"></i>
+                    </div>
+                </div>
+                <div class="suggestions-footer-full" (click)="onSearchSubmit(); closeSearchModal();">
+                    <span>View all {{ searchSuggestions.length }} results for "{{ searchQuery }}"</span>
+                    <i class="pi pi-arrow-right"></i>
+                </div>
+            </div>
+
+            <!-- Empty state when no search query -->
+            <div *ngIf="!searchQuery || searchQuery.trim().length === 0" class="search-empty-state">
+                <div class="empty-state-content">
+                    <i class="pi pi-search empty-state-icon"></i>
+                    <p class="empty-state-text">Start typing to search for products</p>
+                    <p class="empty-state-subtext">Search by product name, category, or brand</p>
+                </div>
+            </div>
+
+            <!-- No results state -->
+            <div *ngIf="searchQuery && searchQuery.trim().length >= 2 && !showSuggestions" class="search-no-results">
+                <div class="no-results-content">
+                    <i class="pi pi-inbox no-results-icon"></i>
+                    <p class="no-results-text">No products found</p>
+                    <p class="no-results-subtext">Try different keywords or check spelling</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="pt-[6rem]">
     <div class="">
         <router-outlet></router-outlet>
