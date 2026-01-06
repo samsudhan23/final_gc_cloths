@@ -372,7 +372,11 @@ export class LayoutComponent {
 
   openSubNav(item: any) {
     this.sideSubMenu = !this.sideSubMenu;
-    this.router.navigate(['user/categorywiseproduct', item.genderName]);
+    this.router.navigate(
+      ['user/categorywiseproduct'],
+      { queryParams: { gender: item.genderName } }
+    );
+    // this.router.navigate(['user/categorywiseproduct', item.genderName]);
   }
   movedToMenuPages(pages: String) {
     if (pages === 'wishlist') {
