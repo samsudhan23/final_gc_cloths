@@ -436,8 +436,16 @@
     align-items: center;
     margin-left: -16px;
     margin-right: -16px;
+    padding: 10px 0px 10px 0px;
 }
-
+@media (max-width: 425px) {
+  :host ::ng-deep .p-overlaybadge .p-badge {
+    height: 10px;
+    min-width: 10px !important;
+    font-size: 2px !important;
+    padding: 2px 4px !important;
+  }
+}
 .logo-left-menu-center .m-header__left,
 .logo-left-menu-center .m-header__right {
     flex: 1 1 0%;
@@ -669,7 +677,7 @@ menu {
 }
 
 .m-header__right {
-    padding-top: 15px;
+    // padding-top: 15px;
     justify-content: flex-end;
 }
 
