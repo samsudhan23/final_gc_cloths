@@ -1,0 +1,25 @@
+.filter-skeleton-wrapper {
+  width: 100%;
+  padding: 1rem;
+}
+
+.filter-header-skeleton,
+.filter-group-skeleton,
+.price-range-skeleton,
+.filter-results-skeleton {
+  width: 100%;
+}
+
+.filter-options-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.filter-option-skeleton {
+  width: 100%;
+}
+
+.price-inputs-skeleton {
+  width: 100%;
+}

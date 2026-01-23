@@ -6,7 +6,7 @@
     <div *ngIf="!isLoggedIn">
         <div class="profile-shell">
             <div class="account-page">
-                <aside class="sidebar" aria-label="Account navigation">
+                <div class="sidebar" aria-label="Account navigation">
                     <div class="welcome">
                         <button class="avatar editable" type="button" (click)="openProfileEditor()"
                             title="Edit profile">
@@ -31,7 +31,7 @@
                             <span class="label">{{ item.label }}</span>
                         </button>
                     </nav>
-                </aside>
+                </div>
 
                 <main class="content">
                     <section *ngIf="activeMenu === 'orders'" class="orders-section">
