@@ -402,6 +402,7 @@ export class LayoutComponent {
       ['user/categorywiseproduct'],
       { queryParams: { gender: item.genderName } }
     );
+    this.sidebarVisible = !this.sidebarVisible;
     // this.router.navigate(['user/categorywiseproduct', item.genderName]);
   }
   movedToMenuPages(pages: String) {
