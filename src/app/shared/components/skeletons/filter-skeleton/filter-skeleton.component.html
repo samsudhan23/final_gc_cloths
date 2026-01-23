@@ -1,0 +1,52 @@
+<div class="filter-skeleton-wrapper">
+  <!-- Filter Header -->
+  <div class="filter-header-skeleton" style="margin-bottom: 1rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <p-skeleton width="8rem" height="1.5rem"></p-skeleton>
+      <p-skeleton width="5rem" height="1.5rem"></p-skeleton>
+    </div>
+  </div>
+
+  <!-- Filter Groups -->
+  <div class="filter-groups-skeleton">
+    <div *ngFor="let group of filterGroups" class="filter-group-skeleton" style="margin-bottom: 1rem;">
+      <!-- Group Title -->
+      <div class="filter-group-title-skeleton" style="margin-bottom: 0.75rem;">
+        <p-skeleton width="10rem" height="1.25rem"></p-skeleton>
+      </div>
+
+      <!-- Filter Options -->
+      <div class="filter-options-skeleton">
+        <div *ngFor="let item of [].constructor(group.items)" class="filter-option-skeleton" style="margin-bottom: 0.5rem;">
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <p-skeleton width="1.25rem" height="1.25rem" shape="square"></p-skeleton>
+            <p-skeleton width="8rem" height="1rem"></p-skeleton>
+            <p-skeleton width="2rem" height="1rem" shape="circle"></p-skeleton>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Price Range Skeleton -->
+    <div class="price-range-skeleton" style="margin-bottom: 1rem;">
+      <div class="filter-group-title-skeleton" style="margin-bottom: 0.75rem;">
+        <p-skeleton width="10rem" height="1.25rem"></p-skeleton>
+      </div>
+      <div class="price-inputs-skeleton" style="margin-bottom: 0.5rem;">
+        <div style="display: flex; gap: 0.5rem;">
+          <p-skeleton width="45%" height="2.5rem"></p-skeleton>
+          <p-skeleton width="45%" height="2.5rem"></p-skeleton>
+        </div>
+      </div>
+      <p-skeleton width="100%" height="0.5rem"></p-skeleton>
+      <div style="margin-top: 0.5rem;">
+        <p-skeleton width="12rem" height="1rem"></p-skeleton>
+      </div>
+    </div>
+
+    <!-- Results Count Skeleton -->
+    <div class="filter-results-skeleton">
+      <p-skeleton width="15rem" height="1.25rem"></p-skeleton>
+    </div>
+  </div>
+</div>

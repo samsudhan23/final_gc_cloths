@@ -1,0 +1,28 @@
+.product-card-skeleton-wrapper {
+  width: 100%;
+}
+
+.product-card-skeleton {
+  background: #fff;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.product-image-skeleton {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.product-badge-skeleton {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.product-title-skeleton,
+.product-price-skeleton,
+.product-rating-skeleton,
+.product-button-skeleton {
+  width: 100%;
+}

@@ -16,10 +16,12 @@ import { EncryptionService } from '../../../shared/service/encryption.service';
 import { QuickViewComponent } from '../../../shared/components/quick-view/quick-view.component';
 import { WishlistService } from '../../admin_module/service/wishlistService/wishlist.service';
 import { CategoryService } from '../../admin_module/service/category/category.service';
+import { ProductCardSkeletonComponent } from '../../../shared/components/skeletons/product-card-skeleton/product-card-skeleton.component';
+import { FilterSkeletonComponent } from '../../../shared/components/skeletons/filter-skeleton/filter-skeleton.component';
 
 @Component({
   selector: 'app-categorywiseproduct',
-  imports: [CommonModule, BadgeModule, AvatarModule, InputTextModule, TabsModule, ButtonModule, RouterModule, QuickViewComponent, FormsModule, CheckboxModule, SliderModule],
+  imports: [CommonModule, BadgeModule, AvatarModule, InputTextModule, TabsModule, ButtonModule, RouterModule, QuickViewComponent, FormsModule, CheckboxModule, SliderModule, ProductCardSkeletonComponent, FilterSkeletonComponent],
   templateUrl: './categorywiseproduct.component.html',
   styleUrl: './categorywiseproduct.component.scss'
 })
@@ -44,6 +46,9 @@ export class CategorywiseproductComponent {
   maxPrice: number = 100000;
   availableSizes: string[] = [];
   isFilterOpen: boolean = true; // Mobile filter toggle
+  isLoading: boolean = false;
+  isLoadingCategories: boolean = false;
+  isLoadingGenders: boolean = false;
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object, 
     private productService: AdminProductService,
@@ -83,23 +88,32 @@ export class CategorywiseproductComponent {
   }
   
   getCategoryList() {
+    this.isLoadingCategories = true;
     this.categoryService.getCategoriesMasterList().subscribe((res: any) => {
       if (res.code === 200 && res.success === true) {
         this.categoryList = res.result || [];
       }
+      this.isLoadingCategories = false;
+    }, (error: any) => {
+      this.isLoadingCategories = false;
     });
   }
 
   getGenderList() {
+    this.isLoadingGenders = true;
     this.categoryService.getGenderList().subscribe((res: any) => {
       if (res.code === 200 && res.success === true) {
         this.genderList = res.result || [];
       }
+      this.isLoadingGenders = false;
+    }, (error: any) => {
+      this.isLoadingGenders = false;
     });
   }
 
 
   getProduct() {
+    this.isLoading = true;
     this.productService.getProductlist().subscribe((res: any) => {
       const allProducts = res.result;
       this.allProducts = allProducts; // Store all products
@@ -130,8 +144,10 @@ export class CategorywiseproductComponent {
       // Apply additional filters
       this.applyFilters();
       this.getWishlistdetails();
+      this.isLoading = false;
     }, (error: any) => {
       this.toast.warning(error.error.message);
+      this.isLoading = false;
     })
   }
 
