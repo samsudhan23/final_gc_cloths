@@ -1,126 +1,156 @@
 <section class="bg-[#f4fae7] text-gray-900">
-  <!-- Hero -->
-  <div class="max-w-6xl mx-auto px-6 py-16 md:py-24 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-    <div data-aos="fade-right">
-      <span class="inline-block bg-[#ffe8f3] text-[#6b1f45] px-3 py-1 rounded-full text-sm font-semibold mb-4">About Us</span>
-      <h1 class="text-3xl md:text-5xl font-extrabold leading-tight mb-4">We craft delightful shopping experiences</h1>
-      <p class="text-gray-600 mb-6 max-w-xl">
-        We are a customer-first e-commerce brand delivering curated products, fast shipping and helpful support.
-        Built with love, backed with great service.
-      </p>
+  <div class="mx-auto max-w-screen-xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
+    <!-- Hero -->
+    <div class="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] items-center">
+      <div data-aos="fade-right">
+        <span class="inline-flex items-center rounded-full bg-[#ffe8f3] px-3 py-1 text-sm font-semibold text-[#6b1f45]">About CLONO</span>
+        <h1 class="mt-6 text-3xl font-extrabold leading-tight tracking-tight text-[#1c274c] sm:text-4xl lg:text-5xl">Welcome to CLONO — style built for confidence</h1>
+        <p class="mt-6 max-w-2xl text-base leading-8 text-gray-600 sm:text-lg">
+          CLONO is made for everyday life with clean silhouettes, premium details, and a relaxed attitude. Founded in 2025, our collections are designed to help you feel confident and comfortable in every moment.
+        </p>
+        <p class="mt-4 max-w-2xl text-base leading-8 text-gray-600 sm:text-lg">
+          Whether you’re dressing for work, weekend plans, or a special occasion, our pieces deliver modern polish without sacrificing ease.
+        </p>
 
-      <div class="flex flex-wrap gap-3">
-        <a data-aos="zoom-in" class="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-[#1c274c] text-white font-semibold hover:opacity-95 transition"
-           href="/shop">
-          <i class="bi bi-cart-fill"></i>
-          Shop Now
-        </a>
-
-        <a data-aos="zoom-in" data-aos-delay="100" class="inline-flex items-center gap-2 px-5 py-3 rounded-lg border border-[#ffe8f3] text-[#1c274c] hover:bg-[#fff2f7] transition"
-           href="/contact">
-          <i class="bi bi-telephone-fill"></i>
-          Contact Sales
-        </a>
-      </div>
-    </div>
-
-    <!-- Hero visual -->
-    <div class="flex justify-center md:justify-end" data-aos="fade-left">
-      <div class="w-full max-w-md p-6 rounded-2xl bg-[#ffe8f3] shadow-lg">
-        <img src="assets/images/Products/prod.jpg" class="w-full h-48 object-cover rounded-lg mb-4" alt="Products">
-        <h3 class="text-lg font-semibold text-[#6b1f45]">Our curated collections</h3>
-        <p class="text-sm text-[#4b3b3b] mt-2">Hand-picked, quality first — discover new arrivals and best sellers.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- Stats -->
-  <div class="max-w-6xl mx-auto px-6 py-10 grid grid-cols-2 md:grid-cols-4 gap-6">
-    <div *ngFor="let s of stats; let i = index"
-         class="bg-white/50 backdrop-blur rounded-xl p-6 text-center shadow-sm"
-         data-aos="fade-up" [attr.data-aos-delay]="i*150">
-      <div class="text-3xl font-extrabold text-[#1c274c]">{{ s.current | number }}</div>
-      <div class="mt-2 text-sm text-gray-600">{{ s.label }}</div>
-    </div>
-  </div>
-
-  <!-- Timeline -->
-  <div class="max-w-6xl mx-auto px-6 py-12">
-    <h2 class="text-2xl font-bold mb-6" data-aos="fade-up">Our Journey</h2>
-    <div class="relative border-l border-gray-200 ml-3">
-      <ng-container *ngFor="let t of timeline; let i = index">
-        <div class="mb-8 ml-6 relative" data-aos="fade-up" [attr.data-aos-delay]="i*200">
-          <div class="absolute -left-6 top-0 w-12 h-12 rounded-full bg-[#ffe8f3] flex items-center justify-center ring-4 ring-white">
-            <div class="text-sm font-bold text-[#6b1f45]">{{ t.year }}</div>
-          </div>
-          <div class="bg-white rounded-xl p-5 shadow-sm">
-            <h3 class="font-semibold text-lg">{{ t.title }}</h3>
-            <p class="mt-2 text-gray-600">{{ t.desc }}</p>
-          </div>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a data-aos="zoom-in" class="inline-flex items-center justify-center gap-2 rounded-full bg-[#1c274c] px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:opacity-95" href="/shop">
+            <i class="bi bi-cart-fill"></i>
+            Shop Now
+          </a>
+          <a data-aos="zoom-in" data-aos-delay="100" class="inline-flex items-center justify-center gap-2 rounded-full border border-[#ffe8f3] bg-white px-6 py-3 text-sm font-semibold text-[#1c274c] transition hover:bg-[#fff2f7]" href="/contact">
+            <i class="bi bi-telephone-fill"></i>
+            Contact Sales
+          </a>
         </div>
-      </ng-container>
-    </div>
-  </div>
+      </div>
 
-  <!-- Team -->
-  <div class="max-w-6xl mx-auto px-6 py-12">
-    <div class="flex items-center justify-between mb-6">
-      <h2 class="text-2xl font-bold" data-aos="fade-right">Meet the Team</h2>
-      <p class="text-sm text-gray-600" data-aos="fade-left">People behind the magic</p>
+      <div class="flex justify-center lg:justify-end" data-aos="fade-left">
+        <div class="w-full max-w-md p-6 rounded-2xl bg-[#ffe8f3] shadow-lg">
+          <img src="assets/images/Products/prod.jpg" class="w-full h-48 object-cover rounded-lg mb-4" alt="Products">
+          <h3 class="text-lg font-semibold text-[#6b1f45]">Our curated collections</h3>
+          <p class="text-sm text-[#4b3b3b] mt-2">Hand-picked, quality first — discover new arrivals and best sellers.</p>
+        </div>
+      </div>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-      <ng-container *ngFor="let m of team; let i = index">
-        <div class="bg-white rounded-2xl p-6 text-center shadow-md hover:shadow-lg transition"
-             data-aos="fade-up" [attr.data-aos-delay]="i*150">
-          <div class="w-28 h-28 mx-auto rounded-full overflow-hidden mb-4">
-            <img [src]="m.img" alt="{{m.name}}" class="w-full h-full object-cover">
+    <!-- Brand values -->
+    <div class="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div class="rounded-3xl border border-white/80 bg-white/80 p-6 shadow-sm backdrop-blur transition hover:shadow-md">
+        <div class="text-3xl font-bold text-[#1c274c]">Quality</div>
+        <p class="mt-3 text-sm leading-6 text-gray-600">Premium materials and elevated finishes ensure every piece feels good and lasts longer.</p>
+      </div>
+      <div class="rounded-3xl border border-white/80 bg-white/80 p-6 shadow-sm backdrop-blur transition hover:shadow-md">
+        <div class="text-3xl font-bold text-[#1c274c]">Versatility</div>
+        <p class="mt-3 text-sm leading-6 text-gray-600">Mix-and-match staples that work across your wardrobe, from relaxed weekends to polished days.</p>
+      </div>
+      <div class="rounded-3xl border border-white/80 bg-white/80 p-6 shadow-sm backdrop-blur transition hover:shadow-md">
+        <div class="text-3xl font-bold text-[#1c274c]">Confidence</div>
+        <p class="mt-3 text-sm leading-6 text-gray-600">Style that supports your individuality and makes getting dressed feel effortless.</p>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="mt-16 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div *ngFor="let s of stats; let i = index" class="rounded-3xl bg-white/80 p-6 text-center shadow-sm backdrop-blur" data-aos="fade-up" [attr.data-aos-delay]="i*150">
+        <div class="text-3xl font-extrabold text-[#1c274c]">{{ s.current | number }}</div>
+        <div class="mt-2 text-sm text-gray-600">{{ s.label }}</div>
+      </div>
+    </div>
+
+    <!-- Timeline -->
+    <div class="max-w-6xl mx-auto px-4 py-12 sm:px-0">
+      <h2 class="text-2xl font-bold text-[#1c274c]" data-aos="fade-up">Our story</h2>
+      <p class="mt-3 max-w-2xl text-gray-600" data-aos="fade-up">From concept to collection, CLONO is built around timeless style and real-life confidence.</p>
+      <div class="relative mt-10 border-l border-gray-200 pl-6">
+        <ng-container *ngFor="let t of timeline; let i = index">
+          <div class="mb-8 ml-6 relative" data-aos="fade-up" [attr.data-aos-delay]="i*200">
+            <div class="absolute -left-6 top-0 w-12 h-12 rounded-full bg-[#ffe8f3] flex items-center justify-center ring-4 ring-white">
+              <div class="text-sm font-bold text-[#6b1f45]">{{ t.year }}</div>
+            </div>
+            <div class="bg-white rounded-xl p-5 shadow-sm">
+              <h3 class="font-semibold text-lg text-[#1c274c]">{{ t.title }}</h3>
+              <p class="mt-2 text-gray-600">{{ t.desc }}</p>
+            </div>
           </div>
-          <div class="font-semibold text-[#1c274c]">{{ m.name }}</div>
-          <div class="text-sm text-gray-500 mb-4">{{ m.role }}</div>
-          <button (click)="openMember(m)"
-            class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#ffe8f3] text-[#6b1f45] font-medium hover:opacity-95 transition">
-            View Profile
+        </ng-container>
+      </div>
+    </div>
+
+    <!-- Team -->
+    <div class="mt-16 lg:mt-20">
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <h2 class="text-2xl font-bold text-[#1c274c]">Meet the team</h2>
+        <p class="max-w-xl text-sm text-gray-600">A creative collective shaping the CLONO experience from design to delivery.</p>
+      </div>
+
+      <div class="mt-10 grid gap-8 sm:grid-cols-2 xl:grid-cols-3">
+        <ng-container *ngFor="let m of team; let i = index">
+          <div class="team-flip-card" data-aos="fade-up" [attr.data-aos-delay]="i*150">
+            <div class="team-flip-card-inner">
+              <div class="team-flip-card-front">
+                <div class="team-avatar-front">
+                  <img [src]="m.img" alt="{{m.name}}" class="team-image-front">
+                  <div class="team-name-overlay">{{ m.name }}</div>
+                </div>
+              </div>
+              <div class="team-flip-card-back">
+                <div class="team-content-back">
+                  <h3 class="team-name-back">{{ m.name }}</h3>
+                  <p class="team-role-back">{{ m.role }}</p>
+                  <p class="team-bio">{{ m.bio }}</p>
+                  <button (click)="openMember(m)" class="team-button-back">
+                    <span>View Profile</span>
+                    <i class="bi bi-person-circle"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+
+    <!-- FAQ -->
+    <div class="mt-16 lg:mt-20">
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h2 class="text-2xl font-bold text-[#1c274c]">Frequently asked questions</h2>
+          <p class="mt-3 max-w-2xl text-gray-600">Everything you want to know about CLONO shipping, returns, and order care.</p>
+        </div>
+      </div>
+
+      <div class="mt-8 grid gap-4 lg:grid-cols-2">
+        <div class="rounded-3xl bg-white p-6 shadow-sm" *ngFor="let q of [
+          {q:'What is your return policy?', a:'Returns are accepted within 30 days for unworn items with original tags attached.'},
+          {q:'How long does shipping take?', a:'Most orders arrive within 5-7 business days. Express shipping is available at checkout.'},
+          {q:'Do you ship internationally?', a:'Yes — CLONO ships globally. Rates and delivery estimates vary by destination.'},
+          {q:'How can I track my order?', a:'You’ll receive a tracking email once your order ships, so you can follow it every step of the way.'}
+        ]; let i = index" data-aos="fade-up" [attr.data-aos-delay]="i*150">
+          <button class="w-full text-left flex items-center justify-between text-left" (click)="toggleFaq(i)">
+            <span class="font-medium text-gray-900">{{ q.q }}</span>
+            <i class="bi" [ngClass]="openFaq === i ? 'bi-dash-lg' : 'bi-plus-lg'"></i>
           </button>
+          <div class="mt-4 text-gray-600" *ngIf="openFaq === i">{{ q.a }}</div>
         </div>
-      </ng-container>
-    </div>
-  </div>
-
-  <!-- FAQ -->
-  <div class="max-w-6xl mx-auto px-6 py-12">
-    <h2 class="text-2xl font-bold mb-6" data-aos="fade-up">Frequently asked questions</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div class="bg-white rounded-xl p-4"
-           *ngFor="let q of [
-        {q:'What is your return policy?', a:'30 days return with original packaging.'},
-        {q:'How long does shipping take?', a:'Standard 5-7 business days (expedited available).'},
-        {q:'Do you ship internationally?', a:'Yes — shipping rates apply.'},
-        {q:'How can I track my order?', a:'You will receive an email with tracking details.'}
-      ]; let i = index"
-           data-aos="fade-up" [attr.data-aos-delay]="i*150">
-        <button class="w-full text-left flex justify-between items-center" (click)="toggleFaq(i)">
-          <div class="font-medium">{{ q.q }}</div>
-          <i class="bi" [ngClass]="openFaq === i ? 'bi-dash-lg' : 'bi-plus-lg'"></i>
-        </button>
-        <div class="mt-3 text-gray-600" *ngIf="openFaq === i">{{ q.a }}</div>
       </div>
     </div>
-  </div>
 
-  <!-- Newsletter -->
-  <div class="max-w-6xl mx-auto px-6 py-12" data-aos="fade-up">
-    <div class="bg-[#1c274c] text-white rounded-2xl p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-6">
-      <div>
-        <h3 class="text-2xl font-bold text-white">Stay in the loop</h3>
-        <p class="mt-2 text-gray-200">Exclusive offers, product drops and stories — straight to your inbox.</p>
+    <!-- Newsletter -->
+    <div class="mt-16 lg:mt-20" data-aos="fade-up">
+      <div class="rounded-[32px] bg-[#1c274c] p-8 text-white shadow-xl sm:p-10">
+        <div class="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
+          <div class="max-w-2xl">
+            <h3 class="text-2xl font-bold text-white">Join the CLONO community</h3>
+            <p class="mt-3 text-gray-300">Get first access to new drops, style inspiration, and special offers.</p>
+          </div>
+
+          <form #nf="ngForm" (ngSubmit)="onSubscribe(nf)" class="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <input type="email" name="email" ngModel required placeholder="Your email"
+                   class="min-w-0 flex-1 rounded-2xl border border-transparent bg-white px-4 py-3 text-gray-900 outline-none focus:border-[#ffe8f3] focus:ring-2 focus:ring-[#ffe8f3]" />
+            <button type="submit" class="rounded-2xl bg-[#ffe8f3] px-6 py-3 text-sm font-semibold text-[#1c274c] transition hover:opacity-95">Subscribe</button>
+          </form>
+        </div>
       </div>
-
-      <form #nf="ngForm" (ngSubmit)="onSubscribe(nf)" class="w-full md:w-auto flex gap-2">
-        <input type="email" name="email" ngModel required placeholder="Your email"
-               class="px-4 py-3 rounded-lg bg-white text-gray-800 border border-transparent focus:outline-none focus:ring-2 focus:ring-[#ffe8f3]" />
-        <button type="submit" class="px-5 py-3 rounded-lg bg-[#ffe8f3] text-[#6b1f45] font-semibold">Subscribe</button>
-      </form>
     </div>
   </div>
 </section>
