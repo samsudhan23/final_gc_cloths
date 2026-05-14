@@ -1,6 +1,6 @@
 export const enviornment = {
-    // url: "http://localhost:5000/api/",
-    url: "https://node-ec.onrender.com/api/",
+    url: "https://node-ec-1.onrender.com/api/",
+    // url: "https://node-ec.onrender.com/api/",
     production: false
 
 }
