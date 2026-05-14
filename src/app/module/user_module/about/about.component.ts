@@ -16,25 +16,24 @@ export class AboutComponent implements OnInit, OnDestroy {
 
   // Counters
   stats = [
-    { label: 'Products', value: 2450, current: 0 },
-    { label: 'Happy Customers', value: 18500, current: 0 },
-    { label: 'Orders Delivered', value: 13240, current: 0 },
-    { label: 'Years', value: 7, current: 0 }
+    { label: 'Products', value: 18, current: 0 },
+    { label: 'Happy Customers', value: 120, current: 0 },
+    { label: 'Orders Delivered', value: 95, current: 0 },
+    { label: 'Years', value: 1, current: 0 }
   ];
 
   // Timeline items
   timeline = [
-    { year: '2018', title: 'Founded', desc: 'We started with a small catalogue and big dreams.' },
-    { year: '2019', title: 'First 10k Orders', desc: 'Reached 10k orders within the first year.' },
-    { year: '2021', title: 'Nationwide Shipping', desc: 'Expanded our logistic footprint.' },
-    { year: '2023', title: 'New Collections', desc: 'Launched curated private label collections.' }
+    { year: '2025', title: 'Founded', desc: 'CLONO launched as a fresh clothing startup with a focus on confidence and comfort.' },
+    { year: '2025', title: 'First Collection', desc: 'Released our debut lineup of versatile essentials and standout pieces.' },
+    { year: '2026', title: 'Growing Community', desc: 'Built a loyal customer base through thoughtful design and friendly service.' }
   ];
 
   // Team
   team = [
-    { name: 'Asha Kumar', role: 'Founder / CEO', bio: 'Product & operations lead. Loves design and coffee.', img: 'assets/images/Avatar/default.jpg' },
-    { name: 'Rahul Verma', role: 'CTO', bio: 'Builds scalable systems and APIs.', img: 'assets/images/Avatar/default.jpg' },
-    { name: 'Maya Iyer', role: 'Head of Design', bio: 'UX / UI and brand wizard.', img: 'assets/images/Avatar/default.jpg' }
+    { name: 'Gopi Saravanan', role: 'Founder / CEO', bio: 'Product & operations lead. Loves design and coffee.', img: 'assets/images/Avatar/default.jpg' },
+    { name: 'Swetha', role: 'CTO', bio: 'Builds scalable systems and APIs.', img: 'assets/images/Avatar/default.jpg' },
+    { name: 'Gopi', role: 'Head of Design', bio: 'UX / UI and brand wizard.', img: 'assets/images/Avatar/default.jpg' }
   ];
   selectedMember: any = null;
 
