@@ -30,6 +30,14 @@ export class AdminProductService {
     return this.http.post<apiResponse>(`${enviornment.url}deleteProducts`, id);
   }
 
+  deleteGalleryImage(productId: string, imageUrl: string, imageIndex: number): Observable<apiResponse> {
+    return this.http.post<apiResponse>(`${enviornment.url}deleteGalleryImage`, {
+      productId,
+      imageUrl: imageUrl?.trim() || '',
+      imageIndex,
+    });
+  }
+
   geyProductsById(id: any): Observable<apiResponse> {
     return this.http.get<apiResponse>(enviornment.url + "getByIDProducts/" + id);
   }
