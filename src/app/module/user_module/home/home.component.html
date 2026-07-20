@@ -320,7 +320,9 @@
                                                 <span>({{ product.rating.count }})</span>
                                             </div>
 
-                                            <button class="btn btn-dark buy-btn" style="font-size:small; width:auto; padding:10px;" (click)="viewDetails(product ,'data')">
+                                            <button class="btn btn-dark buy-btn"
+                                                style="font-size:small; width:auto; padding:10px;"
+                                                (click)="viewDetails(product ,'data')">
                                                 Add To Cart <i class="bi bi-bag ml-2"></i>
                                             </button>
                                         </div>
@@ -435,7 +437,7 @@
         </div>
     </section>
     <!-- Check our collection -->
-    <section class="collection-section">
+    <!-- <section class="collection-section">
         <div class="w-layout-blockcontainer container-fluid w-container">
             <div class="section-title">
                 <h2 class="title-header">Check our collection</h2>
@@ -507,7 +509,52 @@
                 </div>
             </div>
         </div>
+    </section> -->
+
+    <!-- Explore the Shelves — comic grid -->
+    <section class="explore-shelves-section" aria-label="Explore the Shelves">
+        <div class="explore-shelves-grid">
+            <div class="explore-shelves-left">
+                <div class="explore-shelves-header">
+                    <h2>Explore the T-Shirts</h2>
+                </div>
+                <div class="explore-shelves-feature">
+                    <img
+                        src="../../../../assets/images/random.png"
+                        alt="Comic shelves tour" />
+                    <div class="explore-shelves-bubble">
+                        <p>A tour through our curated universe of rare finds and classic issues.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="explore-shelves-right">
+                <a class="explore-shelf-item explore-shelf-item--01" (click)="productlists()" role="button">
+                    <span class="explore-shelf-num">01</span>
+                    <span class="explore-shelf-label">New Products</span>
+                </a>
+                <a class="explore-shelf-item explore-shelf-item--02" (click)="productlists()" role="button">
+                    <span class="explore-shelf-num">02</span>
+                    <span class="explore-shelf-label">Collector's Editions</span>
+                </a>
+                <a class="explore-shelf-item explore-shelf-item--03" (click)="productlists()" role="button">
+                    <span class="explore-shelf-num">03</span>
+                    <span class="explore-shelf-label">Best Sellers</span>
+                </a>
+                <a class="explore-shelf-shop" (click)="productlists()" role="button" aria-label="Shop All">
+                    <span>Shop All</span>
+                    <svg class="explore-shelf-arrow" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M7 17L17 7M17 7H9M17 7v8" fill="none" stroke="currentColor" stroke-width="2.4"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </a>
+            </div>
+        </div>
     </section>
+
+    <div class="mb-3"><img alt=""
+            src="https://prod-img.thesouledstore.com/static/spiderVerse/p1recapdesk_1f89da.jpg?w=1920&amp;dpr=1"
+            class="gm-loaded gm-observing gm-observing-cb"></div>
     <!-- Offer -->
     <section class="cta-section">
         <div class="w-layout-blockcontainer container-fluid padding-zero w-container">
@@ -547,7 +594,8 @@
                                         <div class="day-text">Sec<br></div>
                                     </div>
                                 </div>
-                                <div class="button-block"><a (click)="productlists()" class="button w-inline-block cursor-pointer">
+                                <div class="button-block"><a (click)="productlists()"
+                                        class="button w-inline-block cursor-pointer">
                                         <div class="button-hover"
                                             style="transform: translate3d(0%, 0%, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); transform-style: preserve-3d;">
                                         </div>

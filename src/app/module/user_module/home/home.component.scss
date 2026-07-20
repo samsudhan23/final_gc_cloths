@@ -3903,8 +3903,8 @@ blockquote {
     padding-bottom: 25px;
     display: flex;
     position: relative;
-    animation: mymove 3s infinite;
-    animation-timing-function: linear;
+    // animation: mymove 3s infinite;
+    // animation-timing-function: linear;
 }
 
 @keyframes mymove {
@@ -3927,8 +3927,8 @@ blockquote {
     display: flex;
     position: relative;
     border-bottom: 1px solid var(--border-color);
-    animation: margquee3 3s infinite;
-    animation-timing-function: linear;
+    // animation: margquee3 3s infinite;
+    // animation-timing-function: linear;
 }
 
 @keyframes margquee3 {
@@ -9585,4 +9585,288 @@ blockquote {
     background: linear-gradient(135deg, #ff4d4d 0%, #ff1a75 100%);
     color: #fff;
     box-shadow: 0 6px 15px rgba(255, 77, 77, 0.4);
+}
+
+/* =========================================================
+   Explore the Shelves — comic / pop-art grid
+   ========================================================= */
+.explore-shelves-section {
+    --shelves-cream: #fdf8f0;
+    --shelves-gray: #e5e5e5;
+    --shelves-yellow: #f4c542;
+    --shelves-ink: #000;
+    --shelves-gap: 14px;
+    --shelves-border: 2.5px solid var(--shelves-ink);
+    --shelves-display: "Bangers", Impact, "Arial Black", sans-serif;
+    --shelves-label: "Archivo Black", "Arial Black", Impact, sans-serif;
+
+    box-sizing: border-box;
+    background: var(--shelves-cream);
+    padding: clamp(28px, 4vw, 56px) clamp(16px, 3vw, 40px);
+    width: 100%;
+}
+
+.explore-shelves-section *,
+.explore-shelves-section *::before,
+.explore-shelves-section *::after {
+    box-sizing: border-box;
+}
+
+.explore-shelves-grid {
+    display: grid;
+    grid-template-columns: 1.55fr 1fr;
+    gap: var(--shelves-gap);
+    // max-width: 1280px;
+    margin: 0 auto;
+    align-items: stretch;
+}
+
+.explore-shelves-left {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    gap: var(--shelves-gap);
+    min-height: 0;
+}
+
+.explore-shelves-header {
+    background: var(--shelves-gray);
+    border: var(--shelves-border);
+    padding: clamp(18px, 2.4vw, 28px) clamp(20px, 2.8vw, 36px);
+    display: flex;
+    align-items: center;
+}
+
+.explore-shelves-header h2 {
+    margin: 0;
+    font-family: var(--shelves-display);
+    font-size: clamp(1.85rem, 3.4vw, 3.25rem);
+    font-weight: 400;
+    font-style: italic;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--shelves-ink);
+    line-height: 1;
+}
+
+.explore-shelves-feature {
+    position: relative;
+    border: var(--shelves-border);
+    overflow: hidden;
+    background: #d9d9d9;
+    min-height: 420px;
+}
+
+.explore-shelves-feature img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 51% 0%;
+}
+
+.explore-shelves-bubble {
+    position: absolute;
+    top: clamp(16px, 3vw, 36px);
+    left: clamp(14px, 2.5vw, 28px);
+    max-width: min(340px, 72%);
+    background: #fff;
+    border: 3px solid var(--shelves-ink);
+    box-shadow: 5px 5px 0 var(--shelves-ink);
+    padding: 16px 18px 18px;
+    z-index: 2;
+}
+
+.explore-shelves-bubble::after {
+    content: "";
+    position: absolute;
+    left: 42%;
+    bottom: -14px;
+    width: 0;
+    height: 0;
+    border-left: 12px solid transparent;
+    border-right: 12px solid transparent;
+    border-top: 14px solid var(--shelves-ink);
+}
+
+.explore-shelves-bubble::before {
+    content: "";
+    position: absolute;
+    left: calc(42% + 2px);
+    bottom: -9px;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 11px solid #fff;
+    z-index: 1;
+}
+
+.explore-shelves-bubble p {
+    margin: 0;
+    font-family: "Lato", "Helvetica Neue", Arial, sans-serif;
+    font-size: clamp(0.92rem, 1.15vw, 1.05rem);
+    font-weight: 600;
+    line-height: 1.35;
+    color: var(--shelves-ink);
+}
+
+.explore-shelves-right {
+    display: grid;
+    grid-template-rows: repeat(3, 1fr) auto;
+    gap: var(--shelves-gap);
+    min-height: 0;
+}
+
+.explore-shelf-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: clamp(12px, 1.8vw, 22px);
+    padding: clamp(18px, 2.2vw, 28px) clamp(18px, 2.4vw, 30px);
+    border: var(--shelves-border);
+    text-decoration: none;
+    color: var(--shelves-ink);
+    cursor: pointer;
+    overflow: hidden;
+    background: #fff;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.explore-shelf-item:hover {
+    transform: translateY(-2px);
+}
+
+.explore-shelf-item--01 {
+    background: #fff;
+}
+
+.explore-shelf-item--02 {
+    background: var(--shelves-gray);
+}
+
+.explore-shelf-item--03 {
+    background: #fff;
+}
+
+.explore-shelf-item--01::after,
+.explore-shelf-item--03::after {
+    content: "";
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    pointer-events: none;
+    background-image: radial-gradient(circle, #000 1.35px, transparent 1.45px);
+    background-size: 7px 7px;
+    opacity: 0.9;
+    -webkit-mask-image: linear-gradient(225deg, #000 35%, transparent 72%);
+    mask-image: linear-gradient(225deg, #000 35%, transparent 72%);
+}
+
+.explore-shelf-item--01::after {
+    top: -8px;
+    right: -8px;
+}
+
+.explore-shelf-item--03::after {
+    bottom: -8px;
+    right: -8px;
+    -webkit-mask-image: linear-gradient(315deg, #000 35%, transparent 72%);
+    mask-image: linear-gradient(315deg, #000 35%, transparent 72%);
+}
+
+.explore-shelf-num {
+    flex: 0 0 auto;
+    font-family: var(--shelves-display);
+    font-size: clamp(3.2rem, 5.5vw, 5.4rem);
+    font-style: italic;
+    font-weight: 400;
+    line-height: 0.85;
+    letter-spacing: 0.02em;
+    color: #fff;
+    -webkit-text-stroke: 2.5px #000;
+    paint-order: stroke fill;
+    text-shadow:
+        2px 2px 0 #000,
+        -1px -1px 0 #000;
+}
+
+.explore-shelf-label {
+    position: relative;
+    z-index: 1;
+    font-family: var(--shelves-label);
+    font-size: clamp(1.05rem, 1.7vw, 1.55rem);
+    font-weight: 400;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+}
+
+.explore-shelf-shop {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 88px;
+    padding: 20px 24px;
+    background: var(--shelves-yellow);
+    border: var(--shelves-border);
+    color: var(--shelves-ink);
+    text-decoration: none;
+    cursor: pointer;
+    font-family: var(--shelves-display);
+    font-size: clamp(1.65rem, 2.8vw, 2.35rem);
+    font-style: italic;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.explore-shelf-shop:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.05);
+}
+
+.explore-shelf-arrow {
+    width: 1.05em;
+    height: 1.05em;
+    flex-shrink: 0;
+}
+
+@media (max-width: 900px) {
+    .explore-shelves-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .explore-shelves-feature {
+        min-height: 340px;
+        aspect-ratio: 4 / 3;
+    }
+
+    .explore-shelves-right {
+        grid-template-rows: none;
+    }
+
+    .explore-shelf-item {
+        min-height: 96px;
+    }
+}
+
+@media (max-width: 560px) {
+    .explore-shelves-section {
+        --shelves-gap: 10px;
+        padding: 20px 12px;
+    }
+
+    .explore-shelves-bubble {
+        max-width: 85%;
+        padding: 12px 14px;
+    }
+
+    .explore-shelf-num {
+        font-size: 2.8rem;
+        -webkit-text-stroke: 2px #000;
+    }
+
+    .explore-shelf-shop {
+        min-height: 72px;
+    }
 }
