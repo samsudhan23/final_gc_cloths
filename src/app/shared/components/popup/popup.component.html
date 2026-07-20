@@ -32,7 +32,8 @@
                 </p-image>
                 <!-- Delete Icon shown on hover -->
                 <p-button [rounded]="true" class="absolute top-2 right-3 hidden group-hover:block" icon="pi pi-trash"
-                    aria-label="Save" severity="danger" (click)="deleteImage(i)" />
+                    aria-label="Delete gallery image" severity="danger" [loading]="deletingIndex === i"
+                    [disabled]="deletingIndex !== null" (click)="deleteImage(i)" />
             </div>
             <div class="file-info rounded-md shadow-lg mt-4 p-2 border-dotted border-lime-600 bg-green-400">
                 {{ getGalleryDisplayName(galleries[i]) }}

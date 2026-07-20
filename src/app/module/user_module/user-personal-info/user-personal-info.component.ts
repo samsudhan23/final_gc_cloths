@@ -243,7 +243,7 @@ export class UserPersonalInfoComponent implements OnInit {
           this.toast.success(res.message || 'Profile updated successfully');
           
           // Update avatar display from response
-          if (res.result?.avatar?.data) {
+          if (res.result?.avatar) {
             this.updateAvatarDisplay(res.result.avatar);
           }
           
@@ -262,9 +262,14 @@ export class UserPersonalInfoComponent implements OnInit {
     );
   }
 
-  updateAvatarDisplay(avatar: { data: string; contentType: string }): void {
-    if (avatar && avatar.data) {
-      // Convert base64 to data URL for display
+  updateAvatarDisplay(avatar: string | { data: string; contentType: string }): void {
+    if (typeof avatar === 'string' && avatar) {
+      this.avatarDisplayUrl = avatar;
+      this.user = { ...this.user, avatarUrl: avatar };
+      return;
+    }
+
+    if (avatar && typeof avatar === 'object' && avatar.data) {
       this.avatarDisplayUrl = `data:${avatar.contentType};base64,${avatar.data}`;
       this.user = { ...this.user, avatarUrl: this.avatarDisplayUrl };
     }

@@ -157,13 +157,13 @@ export class ProductManagementComponent {
 
     const selectedGender = this.genderList.find(g => g._id === genderId);
 
-    if (selectedGender?.genderName === 'Men') {
+    if (selectedGender?.genderName === 'Men' || selectedGender?.genderName === 'Male') {
       this.filteredSizes = this.dressSizesWithMeasurements.filter(size =>
         ['M', 'L', 'XL', '2XL'].includes(size.label)
       );
     }
 
-    if (selectedGender?.genderName === 'Woman') {
+    if (selectedGender?.genderName === 'Woman'|| selectedGender?.genderName === 'Female') {
       this.filteredSizes = this.dressSizesWithMeasurements.filter(size =>
         ['XS', 'S', 'M', 'L'].includes(size.label)
       );
@@ -205,14 +205,22 @@ export class ProductManagementComponent {
 
     })
   }
+  onGalleryChanged(updated: any[]): void {
+    this.galleryFiles = [...updated];
+    this.galleryImages = [...updated];
+    if (this.mode === 'edit') {
+      this.productList();
+    }
+  }
+
   onFileChange(event: Event, type: 'images' | 'gallery') {
     const target = event.target as HTMLInputElement;
     if (target.files) {
       if (type === 'images') {
-        this.imageFile = target.files[0]; // single image
-        this.fileInfo = this.imageFile.name
-        this.singleImage = this.fileInfo
-        this.addImage = this.imageFile
+        this.imageFile = target.files[0];
+        this.fileInfo = this.imageFile.name;
+        this.singleImage = this.imageFile;
+        this.addImage = this.imageFile;
         this.showFileName = true;
       } else if (type === 'gallery') { //Multiple images
         const newFiles = Array.from(target.files)
@@ -271,7 +279,13 @@ export class ProductManagementComponent {
   }
   openNew() {
     this.formDialog = true;
-    this.mode = 'add'
+    this.mode = 'add';
+    this.imageFile = null;
+    this.fileInfo = '';
+    this.singleImage = '';
+    this.addImage = '';
+    this.galleryFiles = [];
+    this.galleryImages = [];
   }
 
   // Calculate Total Stock
@@ -332,6 +346,7 @@ export class ProductManagementComponent {
     this.productForm.reset();
     this.galleryFiles = []
     this.galleryImages = []
+    this.imageFile = null;
     this.singleImage = '';
     this.addImage = '';
     this.fileInfo = '';
@@ -349,6 +364,7 @@ export class ProductManagementComponent {
       this.productForm.reset();
       this.galleryFiles = []
       this.galleryImages = [];
+      this.imageFile = null;
       this.singleImage = '';
       this.addImage = '';
       this.fileInfo = '';
@@ -437,11 +453,13 @@ export class ProductManagementComponent {
     this.productForm.get('totalStock')?.setValue(event.totalStock || 0);
   });
 
-  // 7️⃣ Images
+  // 7️⃣ Images — clear stale file from a previous product edit/add
+  this.imageFile = null;
   this.fileInfo = event.images;
-  this.singleImage = this.fileInfo;
-  this.galleryFiles = [...event.gallery];
-  this.galleryImages = this.galleryFiles;
+  this.singleImage = event.images;
+  this.addImage = null;
+  this.galleryFiles = [...(event.gallery || [])];
+  this.galleryImages = [...this.galleryFiles];
 
   this.productForm.enable();
 }
@@ -475,17 +493,18 @@ export class ProductManagementComponent {
       formData.append('totalStock', FormControlValues.totalStock);
       formData.append('tags', FormControlValues.tags);
       formData.append('category', FormControlValues.category);
-      if (this.imageFile) {
+      if (this.imageFile instanceof File) {
         formData.append('images', this.imageFile, this.imageFile.name);
+      } else if (this.mode === 'edit' && typeof this.fileInfo === 'string' && this.fileInfo.startsWith('http')) {
+        formData.append('existingImage', this.fileInfo);
       }
       this.galleryFiles.forEach(file => {
         if (file instanceof File) {
           // New file: upload the actual file
           formData.append('gallery', file, file.name);
         } else if (typeof file === 'string') {
-          // Existing image URL: extract filename
-          let tmp = file.split('http://localhost:5000/assets/Products/')[1];
-          formData.append('existingGallery', tmp);
+          // Existing image: send full Cloudinary URL or legacy path as-is
+          formData.append('existingGallery', file);
         }
       });
       if (this.mode === 'add') {
