@@ -251,9 +251,9 @@
                                 </div>
                             </div>
                             <div *ngIf="filteredProducts.length > 0" class="row g-4">
-                                <!-- Loop through products - Show only first 4 products -->
+                                <!-- Loop through products - Show only first 4 products | slice:0:4-->
                                 <div class="col-lg-3 col-md-4 col-sm-6"
-                                    *ngFor="let product of filteredProducts | slice:0:4">
+                                    *ngFor="let product of filteredProducts">
                                     <div class="product-card">
 
                                         <div class="product-img cursor-pointer" (click)="viewDetails(product ,'data')">
@@ -512,7 +512,7 @@
     </section> -->
 
     <!-- Explore the Shelves — comic grid -->
-    <section class="explore-shelves-section" aria-label="Explore the Shelves">
+    <!-- <section class="explore-shelves-section" aria-label="Explore the Shelves">
         <div class="explore-shelves-grid">
             <div class="explore-shelves-left">
                 <div class="explore-shelves-header">
@@ -550,11 +550,11 @@
                 </a>
             </div>
         </div>
-    </section>
+    </section> -->
 
-    <div class="mb-3"><img alt=""
+    <!-- <div class="mb-3"><img alt=""
             src="https://prod-img.thesouledstore.com/static/spiderVerse/p1recapdesk_1f89da.jpg?w=1920&amp;dpr=1"
-            class="gm-loaded gm-observing gm-observing-cb"></div>
+            class="gm-loaded gm-observing gm-observing-cb"></div> -->
     <!-- Offer -->
     <section class="cta-section">
         <div class="w-layout-blockcontainer container-fluid padding-zero w-container">
@@ -713,11 +713,11 @@
         </div> -->
     <!-- </section> -->
 
-    <section>
+    <!-- <section>
         <div class="container py-5">
             <h2 class="text-center mb-5">What our client say</h2>
             <div class="testimonial-grid">
-                <!-- Testimonial 1 -->
+              
                 <div class="testimonial-card text-center">
                     <div class="testimonial-icon">❝</div>
                     <p class="testimonial">
@@ -728,7 +728,7 @@
                     <div class="testimonial-role">Operations Manager</div>
                 </div>
 
-                <!-- Testimonial 2 -->
+              
                 <div class="testimonial-card text-center">
                     <div class="testimonial-icon">❝</div>
                     <p class="testimonial">
@@ -739,7 +739,7 @@
                     <div class="testimonial-role">Designer Manager</div>
                 </div>
 
-                <!-- Testimonial 3 -->
+              
                 <div class="testimonial-card text-center">
                     <div class="testimonial-icon">❝</div>
                     <p class="testimonial">
@@ -750,7 +750,7 @@
                     <div class="testimonial-role">Marketing Lead</div>
                 </div>
 
-                <!-- Testimonial 4 -->
+            
                 <div class="testimonial-card text-center">
                     <div class="testimonial-icon">❝</div>
                     <p class="testimonial">
@@ -762,10 +762,10 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
 
     <!-- marquee 2 section -->
-    <section class="marquee-2-section">
+    <!-- <section class="marquee-2-section">
         <div class="w-layout-blockcontainer container-fluid w-container">
             <div class="marquee-block">
                 <div class="gallery-marquee-content"
@@ -1085,7 +1085,7 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
 
     <!-- Footer -->
 
