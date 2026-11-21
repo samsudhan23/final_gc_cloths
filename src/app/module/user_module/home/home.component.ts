@@ -186,6 +186,7 @@ export class HomeComponent implements OnInit {
           { _id: 'all', categoryName: 'All' },
           ...categories
         ];
+        console.log('this.categoryList: ', this.categoryList);
       }
     });
   }
@@ -193,6 +194,7 @@ export class HomeComponent implements OnInit {
   getProduct() {
     this.productService.getProductlist().subscribe((res: any) => {
       this.productList = res.result;
+      console.log(' this.productList: ',  this.productList);
       if (this.productList && this.productList.length > 0) {
         this.animated = this.productList;
         this.interval = setInterval(() => this.next(), 5000);
